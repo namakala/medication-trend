@@ -7,6 +7,8 @@
 # Whitelist specific filetype
 !*ignore
 !*R
+!*sql
+!*py
 !*md
 !LICENSE
 !*txt
