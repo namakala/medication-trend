@@ -1,0 +1,12 @@
+# Blacklist everything
+*
+
+# Whitelist the directory contents
+!*/
+
+# Whitelist specific filetype
+!*ignore
+!*R
+!*md
+!LICENSE
+!*txt
