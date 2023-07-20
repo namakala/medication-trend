@@ -47,13 +47,7 @@ SELECT
   (
     PARTITION BY
       ID,
-      (prescrib_date >= med_lag1 OR prescrib_date >= med_lag2 OR prescrib_date >= med_lag3) -- Need to introduce lag here
-  ) AS concurrent_atc,
-  prescrib_date >= DATE_ADD(prescrib_date, INTERVAL days_taking_med DAY) AS less,
-  JSON_ARRAYAGG(atc) OVER
-  (
-    PARTITION BY ID, prescrib_date
-    ORDER BY atc
-  )
+      (prescrib_date <= med_lag1 OR prescrib_date <= med_lag2 OR prescrib_date <= med_lag3) -- Need to introduce lag here
+  ) AS concurrent_atc
 FROM t
 ;
