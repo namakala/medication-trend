@@ -33,7 +33,7 @@
     - WHO/ILO: 18-25, 25-35, 35-45, 45-55, >56
     - Theory: 18-25, 25-45, 45-55, >56
   - Report: Interim analysis should be discussed and reported to IADB as well
-- Discuss with Ninjke regarding the medication and policy in the Netherlands
+- Discuss with Nynke Bosman regarding the medication and policy in the Netherlands
 - Ask Fang about Dutch's guideline on MDD and anxiety disorder $\to$ Use this as a baseline to select the medication
 - There's a table describing zip code into socioeconomic status
 - Ask Frederick about courses for time-series analysis
