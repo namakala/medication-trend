@@ -1,3 +1,4 @@
+-- Extended Prescription
 CREATE TEMPORARY TABLE __extendedPrescription(INDEX(anopat), INDEX(afldat), INDEX(doses))
 SELECT 
   *, 
@@ -9,6 +10,7 @@ WHERE ((LEFT(ATC,3) IN ("N01", "N02", "N03", "N04", "N05", "N06", "N07")))
 AND afldat BETWEEN '1994-01-01' AND '2022-12-31'
 ORDER BY anopat, zinr, afldat
 
+-- Gap 1A
 CREATE TEMPORARY TABLE __gap_1_a(INDEX(anopat), INDEX(zinr), INDEX(startdat), index(doses))
 SELECT 
   *,
@@ -17,6 +19,7 @@ SELECT
 FROM __extendedPrescription 
 ORDER BY anopat, zinr, afldat
 
+-- Gap 1
 CREATE TEMPORARY TABLE __gap_1
 SELECT 
   *,
@@ -27,6 +30,7 @@ SELECT
 FROM __gap_1_a
 ORDER BY anopat, zinr, afldat
 
+-- Gap
 CREATE TEMPORARY TABLE __gap
 SELECT
   jaar,
@@ -49,6 +53,7 @@ SELECT
 IF(gap is null, @sum_gap := 0, @sum_gap:= IFNULL(@sum_gap,0) + gap) total_gap
 FROM __gap_1
 
+-- Gap corrected
 CREATE TEMPORARY TABLE __gap_corrected(INDEX(anopat), INDEX(ATC), INDEX(Zinr)) 
 SELECT  
   jaar, 
@@ -77,6 +82,7 @@ UPDATE __gap_corrected
 SET corrected_startdat = startdat + interval (-1 * sum_gapp) day, 
 corrected_stopdat = stopdat + interval (-1 * sum_gapp) day
 
+-- Shifted 1
 CREATE TEMPORARY TABLE shifted_1(INDEX(anopat), INDEX(ATC), INDEX(Zinr), INDEX(startdat), INDEX(stopdat)) 
 SELECT  
   jaar, 
@@ -98,6 +104,7 @@ SELECT
 FROM __gap_corrected
 ORDER BY anopat, startdat
 
+-- Persistence A
 CREATE TEMPORARY TABLE persistence_a(INDEX(anopat), INDEX(zinr), INDEX(startdat), index(doses))
 SELECT 
   *,
@@ -106,6 +113,7 @@ SELECT
 FROM shifted_1 
 ORDER BY anopat, startdat
 
+-- Persistence B
 CREATE TEMPORARY TABLE persistence_b
 SELECT 
   a.*,
@@ -115,6 +123,7 @@ SELECT
 FROM persistence_a a
 ORDER BY anopat, startdat
 
+-- Persistence
 CREATE  TABLE persistence
 SELECT
   jaar,
