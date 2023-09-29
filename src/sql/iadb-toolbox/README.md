@@ -93,13 +93,153 @@ This query uses `__gap_1` as its source of data, where it takes all fields and r
 
 ## Gap
 
+```sql
+
+CREATE TEMPORARY TABLE __gap
+
+SELECT
+  jaar,
+  recnr,
+  anopat,
+  Zinr,
+  Afldat,
+  Aantal,
+  eenheid,
+  Dagdos,
+  VK,
+  Arts,
+  ATC,
+  Nddd,
+  Ndgn,
+  doses,
+  startdat,
+  stopdat,
+  gap,
+IF(gap is null, @sum_gap := 0, @sum_gap:= IFNULL(@sum_gap,0) + gap) total_gap
+FROM __gap_1
+
+```
+
 ## Gap corrected
+
+```sql
+
+CREATE TEMPORARY TABLE __gap_corrected(INDEX(anopat), INDEX(ATC), INDEX(Zinr)) 
+
+SELECT  
+  jaar, 
+  recnr, 
+  anopat, 
+  Zinr,     
+  Afldat,     
+  Aantal,  
+  eenheid, 
+  Dagdos,    
+  Vk,   
+  Arts, 
+  ATC,     
+  Nddd,   
+  Ndgn, 
+  doses,
+  startdat,   
+  stopdat,    
+  gap, 
+  IF(gap IS NULL, 0, IF(@g + gap > 0, 0, IF(@g + gap < -10000, 0,  @g + gap))) sum_gapp,
+  @g := IF(gap IS NULL, 0, IF(@g + gap > 0, 0, IF(@g + gap < -10000, 0,  @g + gap))) test
+FROM __gap
+ORDER BY anopat, zinr, afldat
+
+UPDATE __gap_corrected 
+SET corrected_startdat = startdat + interval (-1 * sum_gapp) day, 
+corrected_stopdat = stopdat + interval (-1 * sum_gapp) day
+
+```
 
 ## Shifted 1
 
+```sql
+
+CREATE TEMPORARY TABLE shifted_1(INDEX(anopat), INDEX(ATC), INDEX(Zinr), INDEX(startdat), INDEX(stopdat)) 
+
+SELECT  
+  jaar, 
+  recnr, 
+  anopat, 
+  Zinr,     
+  Afldat,     
+  Aantal,  
+  eenheid, 
+  Dagdos,    
+  Vk,   
+  Arts, 
+  ATC,     
+  Nddd,   
+  Ndgn, 
+  doses,
+  corrected_startdat startdat,   
+  corrected_stopdat stopdat    
+FROM __gap_corrected
+ORDER BY anopat, startdat
+
+```
+
 ## Persistence A
+
+```sql
+
+CREATE TEMPORARY TABLE persistence_a(INDEX(anopat), INDEX(zinr), INDEX(startdat), index(doses))
+
+SELECT 
+  *,
+  @d prev_stop,
+  @d := stopdat tmp
+FROM shifted_1 
+ORDER BY anopat, startdat
+
+```
 
 ## Persistence B
 
+```sql
+
+CREATE TEMPORARY TABLE persistence_b
+
+SELECT 
+  a.*,
+  IF((prev_stop = '0001-01-01') OR (@a != anopat), null, IF(-1 * (TIMESTAMPDIFF(DAY, startdat, prev_stop)+1)<0, 0, -1 * (TIMESTAMPDIFF(DAY, startdat, prev_stop)+1))) gap,
+  @at := atc,
+  @a := anopat
+FROM persistence_a a
+ORDER BY anopat, startdat
+
+```
+
 ## Persistence
+
+```sql
+
+CREATE  TABLE persistence
+
+SELECT
+  jaar,
+  recnr,
+  anopat,
+  Zinr,
+  Afldat,
+  Aantal,
+  eenheid,
+  Dagdos,
+  VK,
+  Arts,
+  ATC,
+  Nddd,
+  Ndgn,
+  doses,
+  startdat,
+  stopdat,
+  gap,
+IF(gap is null, @sum_gap := 0, @sum_gap:= IFNULL(@sum_gap,0) + gap) total_gap
+FROM persistence_b
+
+```
 
