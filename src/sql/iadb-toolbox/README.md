@@ -46,7 +46,7 @@ The table is ordered by:
 
 ```sql
 
-CREATE TEMPORARY TABLE __gap_1_a(INDEX(anopat), INDEX(zinr), INDEX(startdat), index(doses))
+CREATE TABLE __gap_1_a(INDEX(anopat), INDEX(zinr), INDEX(startdat), index(doses))
 
 SELECT 
   *,
@@ -68,7 +68,7 @@ It means that it takes field `stopdat` and assign it to a local variable called 
 
 ```sql
 
-CREATE TEMPORARY TABLE __gap_1
+CREATE TABLE __gap_1
 
 SELECT 
   *,
@@ -95,7 +95,7 @@ This query uses `__gap_1` as its source of data, where it takes all fields and r
 
 ```sql
 
-CREATE TEMPORARY TABLE __gap
+CREATE TABLE __gap
 
 SELECT
   jaar,
@@ -124,7 +124,7 @@ FROM __gap_1
 
 ```sql
 
-CREATE TEMPORARY TABLE __gap_corrected(INDEX(anopat), INDEX(ATC), INDEX(Zinr)) 
+CREATE TABLE __gap_corrected(INDEX(anopat), INDEX(ATC), INDEX(Zinr)) 
 
 SELECT  
   jaar, 
@@ -159,7 +159,7 @@ corrected_stopdat = stopdat + interval (-1 * sum_gapp) day
 
 ```sql
 
-CREATE TEMPORARY TABLE shifted_1(INDEX(anopat), INDEX(ATC), INDEX(Zinr), INDEX(startdat), INDEX(stopdat)) 
+CREATE TABLE shifted_1(INDEX(anopat), INDEX(ATC), INDEX(Zinr), INDEX(startdat), INDEX(stopdat)) 
 
 SELECT  
   jaar, 
@@ -187,7 +187,7 @@ ORDER BY anopat, startdat
 
 ```sql
 
-CREATE TEMPORARY TABLE persistence_a(INDEX(anopat), INDEX(zinr), INDEX(startdat), index(doses))
+CREATE TABLE persistence_a(INDEX(anopat), INDEX(zinr), INDEX(startdat), index(doses))
 
 SELECT 
   *,
@@ -202,7 +202,7 @@ ORDER BY anopat, startdat
 
 ```sql
 
-CREATE TEMPORARY TABLE persistence_b
+CREATE TABLE persistence_b
 
 SELECT 
   a.*,
