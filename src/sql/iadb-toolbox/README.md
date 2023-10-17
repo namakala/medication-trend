@@ -281,7 +281,7 @@ This query uses `persistence_a` as its source, returning three additional fields
 
 ```sql
 
-CREATE  TABLE persistence
+CREATE  TABLE persistence2
 
 SELECT
   jaar,
