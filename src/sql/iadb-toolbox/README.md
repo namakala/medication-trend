@@ -1,6 +1,6 @@
 # Persistence Query
 
-The query creates xx tables:
+The query creates 9 tables:
 
 1. Extended prescription
 1. Gap 1A
@@ -89,7 +89,19 @@ ORDER BY anopat, zinr, afldat
 
 ```
 
-This query uses `__gap_1` as its source of data, where it takes all fields and returned two additional fields:
+This query uses `__gap_1` as its source of data, where it takes all fields and returned four additional fields:
+
+- `gap` which tests for the assigned variables against the following conditions:
+  - Conditions:
+    - `@a` == `anopat`
+    - `@z` == `zinr`
+    - `@d` == `doses`
+    - `prev_stop` is not a null
+  - On success: Return a date time difference of the `prev_stop` and (`startdat` - 1 day)
+  - On failure: Return a null
+- `@z` which takes the value of `zinr`
+- `@a` which takes the value of `anopat`
+- `@d` which takes the value of `doses`
 
 ## Gap
 
@@ -119,6 +131,13 @@ IF(gap is null, @sum_gap := 0, @sum_gap:= IFNULL(@sum_gap,0) + gap) total_gap
 FROM __gap_1
 
 ```
+
+This query uses `__gap_1` as its source of data, where it takes only the necessary fields and returning one additional field:
+
+- `total_gap` which tests the `gap` against the following condition:
+  - Condition: `gap` is null
+  - On success: Set the `@sum_gap` as 0
+  - On failure: Increment the `@sum_gap` by the number of `gap`
 
 ## Gap corrected
 
@@ -155,6 +174,21 @@ corrected_stopdat = stopdat + interval (-1 * sum_gapp) day
 
 ```
 
+This query uses `__gap` as its source of data and return two additional fields:
+
+- `sum_gapp` which test for the following condition:
+  - Condition: `gap` is null
+  - On success: Return 0
+  - On failure: Test for the following condition:
+    - Condition: `@g` + `gap` > 0
+    - On success: Return 0
+    - On failure: Test for the following condition:
+      - Condition: `@g` + `gap` < -10000
+      - On success: Return 0
+      - On failure: `@g` + `gap`
+  - Side note: This step is intended to correct the value of the `total_gap`, for when if `gap` is not null and within a realistic scale, it will be added to the value of `@g`
+- `test` which takes the value of `@g`, an assigned variables coming from the condition set above (see explanation on `sum_gapp`)
+
 ## Shifted 1
 
 ```sql
@@ -183,6 +217,8 @@ ORDER BY anopat, startdat
 
 ```
 
+This query uses `__gap_corrected` data as its source then it replaced `startdat` and `stopdat` with `corrected_startdat` and `corrected_stopdat` respectively.
+
 ## Persistence A
 
 ```sql
@@ -198,6 +234,11 @@ ORDER BY anopat, startdat
 
 ```
 
+This query use `shifted_1` as its source, taking all the fields and returning two additional fields:
+
+- `prev_stop` from `@d`
+- `tmp` from `@d`, an assigned variable containing `stopdat`
+
 ## Persistence B
 
 ```sql
@@ -206,13 +247,35 @@ CREATE TABLE persistence_b
 
 SELECT 
   a.*,
-  IF((prev_stop = '0001-01-01') OR (@a != anopat), null, IF(-1 * (TIMESTAMPDIFF(DAY, startdat, prev_stop)+1)<0, 0, -1 * (TIMESTAMPDIFF(DAY, startdat, prev_stop)+1))) gap,
+  IF
+  (
+    (prev_stop = '0001-01-01') OR (@a != anopat),
+    null,
+    IF
+    (
+      -1 * (TIMESTAMPDIFF(DAY, startdat, prev_stop)+1)<0,
+      0,
+      -1 * (TIMESTAMPDIFF(DAY, startdat, prev_stop)+1)
+    )
+  ) gap,
   @at := atc,
   @a := anopat
 FROM persistence_a a
 ORDER BY anopat, startdat
 
 ```
+
+This query uses `persistence_a` as its source, returning three additional fields:
+
+- `@at` as a variable assigned to contain `atc`
+- `@a` as a variable assigned to contain `anopat`
+- `gap` which test for the following condition:
+  - Condition: Semantically undefined `prev_stop` (`0001-01-01`) OR variable `@a` does not hold the same value as `anopat`
+  - On success: Return `null`, implying data incoherence
+  - On failure: Test for the following condition:
+    - Condition: (1 + `prev_stop` - `startdat`) < 0
+    - On success: Return 0
+    - On failure: Return -1 * (1 + `prev_stop` - `startdat`)
 
 ## Persistence
 
@@ -243,3 +306,9 @@ FROM persistence_b
 
 ```
 
+This query uses `persistence_b` as its source, returning one additional field:
+
+- `total_gap` which test for the following condition:
+  - Condition: `gap` is `null`
+  - On success: Set the variable `@sum_gap` as 0
+  - On failure: Increment the value of variable `@sum_gap` by `gap`
