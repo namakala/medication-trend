@@ -13,6 +13,10 @@ pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 
 ```
 
+# Source of data
+
+The data is obtained from [IADB](https://iadb.nl/) with a restricted access. After obtaining the access, you may read the following [documentation](https://apodat.iadb.nl/voorbeelden/iadb_vars.html) describing standard IADB variables.
+
 # Getting started
 
 Most of the works in this repository, especially the `R` scripts, should be directly reproducible. You'll need [`git`](https://git-scm.com/downloads), [`R`](https://www.r-project.org/), [`quarto`](https://quarto.org/docs/download/), and more conveniently [RStudio IDE](https://posit.co/downloads/) installed and running well in your system. You simply need to fork/clone this repository using RStudio by following [this tutorial, start right away from `Step 2`](https://book.cds101.com/using-rstudio-server-to-clone-a-github-repo-as-a-new-project.html#step---2). Using terminal in linux/MacOS, you can issue the following command:
