@@ -87,21 +87,30 @@ splitAtc <- function(tbl, atcs) {
   #' @param tbl IADB data frame
   #' @param atcs A character vector indicating the ATC variable name
   #' @return A tibble containing multiple ATC entries for each recorded date
-  atc_tbls <- tbl[[atcs]] %>% lapply(
-    function(atc) {
-      atc   %<>% as.character() %>% strsplit(split = ",") %>% unlist()
-      label  <-  gsub(x = atc, ";.*", "")
-      dose   <-  atc %>%
-        {gsub(x = ., ".*;|\\s.+", "")} %>%
-        as.numeric()
 
-      tbl <- tibble::tibble(label, dose, "n" = 1) %>%
-        groupAtc() %>%
-        subset(!.$label == "")
+  # Calculate unique patients within the dataset
+  N <- unique(tbl$anopat) %>% length()
 
-      return(tbl)
-    }
-  )
+  # Iterate through a vector of combined ATCs
+  atc_tbls <- apply(tbl, 1, function(entry) {
+    anopat   <- entry[1]
+    startdat <- entry[2]
+    atc      <- entry[4]
+
+    atc   %<>% as.character() %>% strsplit(split = ",") %>% unlist()
+    label  <- gsub(x = atc, ";.*", "")
+    dose   <- atc %>%
+      {gsub(x = ., ".*;|\\s.+", "")} %>%
+      as.numeric()
+
+    tbl <- tibble::tibble(
+      label, dose, "n" = 1, "N" = N, "id" = anopat, "date" = startdat
+    ) %>%
+      groupAtc() %>%
+      subset(.$label != "")
+
+    return(tbl)
+  })
 
   atc_tbl <- do.call(rbind, atc_tbls)
   
