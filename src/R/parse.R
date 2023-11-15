@@ -21,7 +21,8 @@ readIADB <- function(filepath, ...) {
   #' @param filepath The complete path of the data
   #' @inheritDotParams vroom::vroom
   #' @return An indexed tibble data frame
-  tbl <- vroom::vroom(filepath, delim = ";", ...) %>%
+  coltype = "cDDci"
+  tbl <- vroom::vroom(filepath, delim = ";", col_types = coltype, ...) %>%
     tibble::add_column(
       "month" = format(.$startdat, "%m"),
       "year"  = format(.$startdat, "%y")
