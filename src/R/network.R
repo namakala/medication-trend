@@ -1,6 +1,44 @@
 # Functions to prepare for a graph object
 
-pairByRow <- function(atc_tbl, all = FALSE) {
+genLabel <- function() {
+  #' Generate Matrix Label
+  #'
+  #' Generate label for matrix dimension, the label is set to ATC group name by
+  #' default
+  #'
+  #' @return A vector of character object
+  label <- c(
+      "Alimentary and metabolism",
+      "Blood",
+      "Cardiovascular",
+      "Dermatologicals",
+      "Genitourinary",
+      "Systemic hormonal",
+      "Systemic anti-infectives",
+      "Antineoplastics",
+      "Musculoskeletal",
+      "Anesthetic",
+      "Analgesics",
+      "Antiepileptics",
+      "Antiparkinson",
+      "Antipsychotics",
+      "Anxiolytics",
+      "Hypnotics and sedatives",
+      "Antidepressants",
+      "Psychostimulants",
+      "Psycholeptics + psychoanaleptics",
+      "Antidementia",
+      "Other nervous system drugs",
+      "Antiparasitics",
+      "Respiratory",
+      "Sensory",
+      "Others"
+  )
+
+  return(label)
+}
+
+pairByRow <- function(atc_tbl, ..., weight = "weight") {
   #' Make Pairwise Row Combination
   #'
   #' Create a pairwise combination for each row of the input data frame.
@@ -10,8 +48,8 @@ pairByRow <- function(atc_tbl, all = FALSE) {
   #' `igraphs::graph.data.frame`).
   #'
   #' @param atc_tbl A data frame containing split ATC
-  #' @param all Boolean indicating whether to return a complete list of
-  #' weight or not
+  #' @param weight Method to weight, either `n` or `weight`
+  #' @inheritDotParams base::aggregate
   #' @return A data frame for generating graph object, containing number of
   #' edges and its weight
 
@@ -19,40 +57,73 @@ pairByRow <- function(atc_tbl, all = FALSE) {
   atc_tbl %<>% inset2("weight", value = ifelse(.$dose != 0, .$n / .$dose, .$n))
 
   # Get the combination index
-  id   <- RcppAlgos::comboGeneral(nrow(atc_tbl), 2, nThreads = 2)
-  from <- id[, 1]
-  to   <- id[, 2]
+  if (nrow(atc_tbl) > 1) {
+    id   <- RcppAlgos::comboGeneral(nrow(atc_tbl), 2, nThreads = 2)
+    from <- id[, 1]
+    to   <- id[, 2]
+  } else {
+    from <- to <- 1
+  }
 
   tbl_from <- atc_tbl[from, ] %>% set_names(paste(names(.), "from", sep = "_"))
   tbl_to   <- atc_tbl[to, ]   %>% set_names(paste(names(.), "to",   sep = "_"))
 
   # Combine the column based on the index
   tbl_pair <- cbind(tbl_from, tbl_to) %>%
-    inset2("weight", value = mean(c(.$weight_from, .$weight_to)))
-  return(tbl_pair)
+    inset2("weight", value = {.$weight_from + .$weight_to} / 2)
 
   # Aggregate the metrics
-  if (all) {
-
-    tbl_agg <- tbl_pair %>% {
-      list(
-        aggregate(n_from ~ group_from + group_to, data = ., sum),
-        aggregate(N_from ~ group_from + group_to, data = ., mean),
-        aggregate(weight ~ group_from + group_to, data = ., sum)
-      )
-    } %>%
-      {Reduce(\(x, y) merge(x, y), .)} %>%
-      set_names(c("from", "to", "n", "N", "weight")) %>%
-      inset2("reg_n", value = .$n / .$N)
-
-  } else {
-
-    tbl_agg <- aggregate(weight ~ group_from + group_to, data = tbl_pair, sum) %>%
-      set_names(c("from", "to", "weight"))
-
-  }
-
+  form <- sprintf("%s ~ group_from + group_to", weight) %>% as.formula()
+  tbl_agg <- aggregate(form, data = tbl_pair, ...) %>%
+    set_names(c("from", "to", "weight"))
+  
   return(tbl_agg)
+}
+
+mkMatrix <- function(atc_tbl, ...) {
+  #' Make Matrix
+  #'
+  #' Create an adjacency matrix from a split ATC data frame
+  #'
+  #' @param atc_tbl A data frame containing split ATC entries
+  #' @param ... Parameter passed on to `pairByRow`
+  #' @return A sparse adjacency matrix
+
+  # Generate parameters to create an empty matrix
+  label <- genLabel()
+  size  <- length(label)
+
+  # Set the group as factor
+  atc_tbl %<>%
+    inset2("group",  value = factor(.$group, levels = label))
+
+  # Get a list of user IDs
+  uids <- unique(atc_tbl$id) %>% set_names(., .)
+
+  # Iterate the row entry of ATC data frame
+  mtxs <- lapply(uids, function(uid) {
+    sub_tbl <- atc_tbl %>% subset(.$id == uid)
+    groups  <- sub_tbl$group
+    agg_tbl <- pairByRow(sub_tbl, ...)
+
+    # Generate an empty matrix as a placeholder, set locators for rows and cols
+    mtx <- Matrix::Matrix(
+      0, nrow = size, ncol = size,
+      dimnames = label %>% list(., .),
+      sparse = TRUE
+    )
+
+    loc <- with(agg_tbl, list("row" = from, "col" = to))
+
+    # Fill in the matrix
+    mtx[loc$row, loc$col] <- agg_tbl$weight
+
+    return(mtx)
+  })
+   
+  mtx <- Reduce(\(x, y) x + y, mtxs)
+
+  return(mtx)
 }
 
 mkGraph <- function(atc_tbl) {
@@ -60,12 +131,13 @@ mkGraph <- function(atc_tbl) {
   #'
   #' Create a graph object from a pairwise combination data frame
   #'
-  #' @param atc_tbl A data frame containing split ATC
+  #' @param atc_tbl A data frame containing split ATC entries
   #' @return Medication graph from pairwises of ATC
 
-  tbl_agg <- pairByRow(atc_tbl)
-  tbl     <- tbl_agg %>% extract(c("from", "to", "weight"))
-  graph   <- igraph::graph_from_data_frame(tbl, directed = FALSE)
+  mtx   <- mkMatrix(atc_tbl, sum)
+  graph <- igraph::graph_from_adjacency_matrix(
+    mtx, weighted = TRUE, mode = "directed"
+  )
 
   return(graph)
 }
@@ -77,7 +149,7 @@ getMetrics <- function(graph) {
   #' @param graph Medication graph from pairwises of ATC
   #' @return A data frame containing node names and its metrics
   pagerank <- igraph::page_rank(graph) %>% extract2("vector")
-  eigen <- igraph::eigen_centrality(graph) %>%
+  eigen    <- igraph::eigen_centrality(graph) %>%
     extract2("vector") %>%
     divide_by(sum(.))
 

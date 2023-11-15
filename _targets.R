@@ -21,7 +21,7 @@ iadb_raw <- lsData(pattern = "iadb")
 
 # Switcher for testing or production
 is_test <- FALSE
-iadb    <- ifelse(is_test, iadb_raw[[1]], iadb_raw[[2]])
+iadb    <- ifelse(is_test, iadb_raw[[2]], iadb_raw[[1]])
 
 # Set the analysis pipeline
 list(
@@ -38,23 +38,23 @@ list(
     iteration = "vector"
   ),
 
-  ## Generate graph objects from the split ATC data frame
-  #tar_target(
-  #  iadb_graph,
-  #  lapply(tbl_iadb_split_atc, mkGraph),
-  #  pattern   = map(tbl_iadb_split_atc),
-  #  iteration = "list",
-  #  priority  = 0
-  #),
+  # Generate graph objects from the split ATC data frame
+  tar_target(
+    iadb_graph,
+    lapply(tbl_iadb_split_atc, mkGraph),
+    pattern   = map(tbl_iadb_split_atc),
+    iteration = "list",
+    priority  = 0
+  ),
 
-  ## Calculate metrics for the graph objects
-  #tar_target(
-  #  iadb_metrics,
-  #  lapply(iadb_graph, function(branch) {
-  #    lapply(branch, getMetrics) %>% combineMetrics()
-  #  }) %>%
-  #    {do.call(rbind, .)}
-  #),
+  # Calculate metrics for the graph objects
+  tar_target(
+    iadb_metrics,
+    lapply(iadb_graph, function(branch) {
+      lapply(branch, getMetrics) %>% combineMetrics()
+    }) %>%
+      {do.call(rbind, .)}
+  ),
 
   # Generate documentation
   tar_quarto(readme, "README.qmd", priority = 0)
