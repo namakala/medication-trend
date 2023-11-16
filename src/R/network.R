@@ -8,31 +8,31 @@ genLabel <- function() {
   #'
   #' @return A vector of character object
   label <- c(
-      "Alimentary and metabolism",
-      "Blood",
-      "Cardiovascular",
-      "Dermatologicals",
-      "Genitourinary",
-      "Systemic hormonal",
-      "Systemic anti-infectives",
-      "Antineoplastics",
-      "Musculoskeletal",
-      "Anesthetic",
-      "Analgesics",
-      "Antiepileptics",
-      "Antiparkinson",
-      "Antipsychotics",
-      "Anxiolytics",
-      "Hypnotics and sedatives",
-      "Antidepressants",
-      "Psychostimulants",
-      "Psycholeptics + psychoanaleptics",
-      "Antidementia",
-      "Other nervous system drugs",
-      "Antiparasitics",
-      "Respiratory",
-      "Sensory",
-      "Others"
+    "Alimentary and metabolism",
+    "Blood",
+    "Cardiovascular",
+    "Dermatologicals",
+    "Genitourinary",
+    "Systemic hormonal",
+    "Systemic anti-infectives",
+    "Antineoplastics",
+    "Musculoskeletal",
+    "Anesthetic",
+    "Analgesics",
+    "Antiepileptics",
+    "Antiparkinson",
+    "Antipsychotics",
+    "Anxiolytics",
+    "Hypnotics and sedatives",
+    "Antidepressants",
+    "Psychostimulants",
+    "Psycholeptics + psychoanaleptics",
+    "Antidementia",
+    "Other nervous system drugs",
+    "Antiparasitics",
+    "Respiratory",
+    "Sensory",
+    "Others"
   )
 
   return(label)
@@ -44,7 +44,7 @@ pairByRow <- function(atc_tbl, ..., weight = "weight") {
   #' Create a pairwise combination for each row of the input data frame.
   #' Pairwise combination is created by indexing each row number. Indexed row
   #' entries are then paired to generate a `from` and `to` field combinations.
-  #' This combination will is useful for generating a graph object (see
+  #' This combination is intended for generating a graph object (see
   #' `igraphs::graph.data.frame`).
   #'
   #' @param atc_tbl A data frame containing split ATC
