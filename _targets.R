@@ -56,6 +56,11 @@ list(
       {do.call(rbind, .)}
   ),
 
+  # Compute the descriptive statistical summary of the daily records
+  tar_target(
+    iadb_stats, lapply(tbl_iadb_split_atc, fieldSummary) %>% combineMetrics()
+  ),
+
   # Generate documentation
   tar_quarto(readme, "README.qmd", priority = 0)
 

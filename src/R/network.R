@@ -134,9 +134,14 @@ mkGraph <- function(atc_tbl) {
   #' @param atc_tbl A data frame containing split ATC entries
   #' @return Medication graph from pairwises of ATC
 
-  mtx   <- mkMatrix(atc_tbl, sum)
-  graph <- igraph::graph_from_adjacency_matrix(
-    mtx, weighted = TRUE, mode = "directed"
+  graph <- tryCatch(
+    {
+      mtx <- mkMatrix(atc_tbl, sum)
+      igraph::graph_from_adjacency_matrix(
+        mtx, weighted = TRUE, mode = "directed"
+      )
+    },
+    error = \(e) NULL
   )
 
   return(graph)
@@ -148,15 +153,22 @@ getMetrics <- function(graph) {
   #' Calculate graph metrics from a given medication graphs
   #' @param graph Medication graph from pairwises of ATC
   #' @return A data frame containing node names and its metrics
-  pagerank <- igraph::page_rank(graph) %>% extract2("vector")
-  eigen    <- igraph::eigen_centrality(graph) %>%
-    extract2("vector") %>%
-    divide_by(sum(.))
 
-  metrics <- data.frame(eigen, pagerank) %>%
-    tibble::add_column("group" = rownames(.), .before = 1)
+  is_graph <- igraph::is_igraph(graph)
 
-  return(metrics)
+  if (is_graph) {
+    pagerank <- igraph::page_rank(graph) %>% extract2("vector")
+    eigen    <- igraph::eigen_centrality(graph) %>%
+      extract2("vector") %>%
+      divide_by(sum(.))
+
+    metrics <- data.frame(eigen, pagerank) %>%
+      tibble::add_column("group" = rownames(.), .before = 1)
+
+    return(metrics)
+  }
+
+  return(graph)
 }
 
 combineMetrics <- function(list_metrics) {
@@ -167,9 +179,12 @@ combineMetrics <- function(list_metrics) {
   #'
   #' @param list_metrics List of graph metrics
   #' @return A combined data frame of graph metrics
+  is_null <- sapply(list_metrics, is.null)
+  list_metrics %<>% extract(!is_null)
+
   tbl <- do.call(rbind, list_metrics) %>%
     tibble::add_column(
-      "date" = gsub(x = rownames(.), "\\..*", "") %>% as.Date(),
+      "date" = gsub(x = rownames(.), "^.*_|\\..*", "") %>% as.Date(),
       .after = 1
     ) %>%
     tibble::tibble()
