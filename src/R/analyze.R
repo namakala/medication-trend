@@ -3,8 +3,9 @@
 fieldSummary <- function(tbl) {
   #' Summary of Multiple Fields
   #'
-  #' Calculate descriptive statistical summary using several fields This
-  #' function takes a split ATC data frame as its input.
+  #' Calculate descriptive statistical summary using several fields. This
+  #' function takes a split ATC data frame as its input, which is already
+  #' grouped per day.
   #'
   #' @param tbl Split ATC data frame
   #' @return An aggregate data frame

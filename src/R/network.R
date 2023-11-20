@@ -45,7 +45,7 @@ pairByRow <- function(atc_tbl, ..., weight = "weight") {
   #' Pairwise combination is created by indexing each row number. Indexed row
   #' entries are then paired to generate a `from` and `to` field combinations.
   #' This combination is intended for generating a graph object (see
-  #' `igraphs::graph.data.frame`).
+  #' `igraph::graph.data.frame`).
   #'
   #' @param atc_tbl A data frame containing split ATC
   #' @param weight Method to weight, either `n` or `weight`
