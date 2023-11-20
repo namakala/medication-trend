@@ -61,6 +61,18 @@ list(
     iadb_stats, lapply(tbl_iadb_split_atc, fieldSummary) %>% combineMetrics()
   ),
 
+  # Merge graph metrics and descriptive statistics as a time-series data
+  tar_target(iadb_ts, mergeTS(iadb_metrics, iadb_stats)),
+
+  # Visualize the data for initial exploration
+  tar_map(
+    unlist = FALSE,
+    values = tibble::tibble(
+      "y" = c("n_claim", "n_patient", "claim2patient", "eigen", "pagerank")
+    ),
+    tar_target(dotplot, vizDot(iadb_ts, y = y, nrow = 4))
+  ),
+
   # Generate documentation
   tar_quarto(readme, "README.qmd", priority = 0)
 
