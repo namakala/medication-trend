@@ -21,7 +21,7 @@ vizDot <- function(tbl, y, ...) {
   )
 
   plt <- ggplot(tbl, aes(x = date, y = get(y))) +
-    geom_point(alpha = 0.4) +
+    geom_point(alpha = 0.4, size = 0.6) +
     facet_wrap(~group, scales = "free_y", ...) +
     labs(x = "Year", y = labelname)
 
