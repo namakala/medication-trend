@@ -74,7 +74,7 @@ list(
   ),
 
   # Perform time-series decomposition per group of medications
-  tar_target(group, levels(iadb_ts$group)),
+  tar_target(groupname, unique(iadb_ts$group) %>% as.character()),
 
   tar_map(
     unlist = TRUE,
@@ -85,8 +85,8 @@ list(
     ),
     tar_target(
       iadb_decom,
-      timeDecomp(iadb_ts, varname = tvar, group = group, period = period, method = method),
-      pattern = map(group),
+      timeDecomp(iadb_ts, varname = tvar, group = groupname, period = period, method = method),
+      pattern = map(groupname),
       iteration = "list"
     )
   ),
