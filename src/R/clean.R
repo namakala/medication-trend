@@ -89,6 +89,9 @@ mergeTS <- function(tbl_metrics, tbl_stats) {
       .$date  >= "2018-01-01" &
       .$date  <= "2022-12-31"
     )
+  
+  # Return as a time series
+  ts <- tbl_clean %>% tsibble::as_tsibble(key = group, index = date)
 
-  return(tbl_clean)
+  return(ts)
 }

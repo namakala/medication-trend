@@ -70,7 +70,25 @@ list(
     values = tibble::tibble(
       "y" = c("n_claim", "n_patient", "claim2patient", "eigen", "pagerank")
     ),
-    tar_target(dotplot, vizDot(iadb_ts, y = y, nrow = 4))
+    tar_target(plt_dot, vizDot(iadb_ts, y = y, nrow = 4))
+  ),
+
+  # Perform time-series decomposition per group of medications
+  tar_target(group, levels(iadb_ts$group)),
+
+  tar_map(
+    unlist = TRUE,
+    values = tidyr::expand_grid(
+      "period" = c(paste(1:3, "week"), paste(1:2, "month")),
+      "method" = c("classic", "loess"),
+      "tvar"   = c("eigen", "pagerank", "claim2patient")
+    ),
+    tar_target(
+      iadb_decom,
+      timeDecomp(iadb_ts, varname = tvar, group = group, period = period, method = method),
+      pattern = map(group),
+      iteration = "list"
+    )
   ),
 
   # Generate documentation
