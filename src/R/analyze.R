@@ -61,3 +61,4 @@ timeDecomp <- function(ts, varname, groupname, period, method, ...) {
 
   return(decomp)
 }
+

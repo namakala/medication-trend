@@ -62,36 +62,55 @@ list(
   ),
 
   # Merge graph metrics and descriptive statistics as a time-series data
-  tar_target(iadb_ts, mergeTS(iadb_metrics, iadb_stats)),
+  tar_target(vizDotParams, data.frame(
+    "metrics" = c("n_claim", "n_patient", "claim2patient", "eigen", "pagerank"),
+    "scales"  = c("free_y", "free_y", "fixed", "fixed", "fixed")
+  )),
 
-  # Visualize the data for initial exploration
   tar_map(
     unlist = FALSE,
-    values = tibble::tibble(
-      "y" = c("n_claim", "n_patient", "claim2patient", "eigen", "pagerank")
-    ),
-    tar_target(plt_dot, vizDot(iadb_ts, y = y, nrow = 4))
-  ),
-
-  # Perform time-series decomposition per group of medications
-  tar_target(groupname, unique(iadb_ts$group) %>% as.character()),
-
-  tar_map(
-    unlist = TRUE,
-    values = tidyr::expand_grid(
-      "period" = c(paste(1:3, "week"), paste(1:2, "month")),
-      "method" = c("classic", "loess"),
-      "tvar"   = c("eigen", "pagerank", "claim2patient")
+    values = data.frame("type" = c("day", "week", "month", "quarter")),
+    tar_target(ts, mergeTS(iadb_metrics, iadb_stats, type = type)),
+    tar_target(
+      plt_dot,
+      vizDot(ts, y = vizDotParams$metrics, scales = vizDotParams$scales, nrow = 4),
+      pattern = map(vizDotParams),
+      iteration = "list"
     ),
     tar_target(
-      iadb_decom,
-      timeDecomp(iadb_ts, varname = tvar, group = groupname, period = period, method = method),
-      pattern = map(groupname),
+      plt_acf,
+      vizAutocor(ts, y = vizDotParams$metrics, type = "ACF", lag_max = 12),
+      pattern = map(vizDotParams),
+      iteration = "list"
+    ),
+    tar_target(
+      plt_pacf,
+      vizAutocor(ts, y = vizDotParams$metrics, type = "PACF", lag_max = 12),
+      pattern = map(vizDotParams),
       iteration = "list"
     )
   ),
 
+  ## Perform time-series decomposition per group of medications
+  #tar_target(groupname, unique(ts$group) %>% as.character()),
+
+  #tar_map(
+  #  unlist = TRUE,
+  #  values = tidyr::expand_grid(
+  #    "period" = c(paste(1:3, "week"), paste(1:3, "month")),
+  #    "method" = c("classic", "loess"),
+  #    "tvar"   = c("eigen", "pagerank", "claim2patient", "n_claim")
+  #  ),
+  #  tar_target(
+  #    iadb_decom,
+  #    timeDecomp(ts, varname = tvar, group = groupname, period = period, method = method),
+  #    pattern = map(groupname),
+  #    iteration = "list"
+  #  )
+  #),
+
   # Generate documentation
+  tar_quarto(report, "docs", profile = "report"),
   tar_quarto(readme, "README.qmd", priority = 0)
 
 )

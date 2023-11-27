@@ -1,0 +1,3 @@
+# Methods
+
+- Determine confidence interval in ACF: https://stats.stackexchange.com/questions/211628/how-is-the-confidence-interval-calculated-for-the-acf-function

@@ -1,0 +1,172 @@
+---
+knitr:
+  opts_chunk:
+    fig.width: 12
+    fig.height: 8
+---
+
+```{r init}
+
+pkgs <- c("targets", "magrittr")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+
+```
+
+# Results
+
+## Descriptive analysis
+
+In this section,
+
+{{< pagebreak >}}
+
+\KOMAoptions{paper=landscape,pagesize}
+\recalctypearea
+
+### Time-series on a daily interval
+
+```{r, fig.width = 14}
+
+tar_read(plt_dot_day)[[1]]
+tar_read(plt_dot_day)[[2]]
+tar_read(plt_dot_day)[[3]]
+tar_read(plt_dot_day)[[4]]
+
+```
+
+{{< pagebreak >}}
+
+### Time-series on a weekly interval
+
+```{r, fig.width = 14}
+
+tar_read(plt_dot_week)[[1]]
+tar_read(plt_dot_week)[[2]]
+tar_read(plt_dot_week)[[3]]
+tar_read(plt_dot_week)[[4]]
+
+```
+
+{{< pagebreak >}}
+
+### Time-series on a monthly interval
+
+```{r, fig.width = 14}
+
+tar_read(plt_dot_month)[[1]]
+tar_read(plt_dot_month)[[2]]
+tar_read(plt_dot_month)[[3]]
+tar_read(plt_dot_month)[[4]]
+
+```
+
+{{< pagebreak >}}
+
+### Exploring seasonality within the number of medication claims (day) {#sec-nclaim-day}
+
+```{r}
+
+tar_read(plt_acf_day)[[1]]
+tar_read(plt_pacf_day)[[1]]
+
+```
+
+### Exploring seasonality within the number of patients (day) {#sec-npat-day}
+
+```{r}
+
+tar_read(plt_acf_day)[[2]]
+tar_read(plt_pacf_day)[[2]]
+
+```
+
+### Exploring seasonality within the claim-to-patient ratio (day) {#sec-ratio-day}
+
+```{r}
+
+tar_read(plt_acf_day)[[3]]
+tar_read(plt_pacf_day)[[3]]
+
+```
+
+### Exploring seasonality within the eigenvector centrality (day) {#sec-eigen-day}
+
+```{r}
+
+tar_read(plt_acf_day)[[4]]
+tar_read(plt_pacf_day)[[4]]
+
+```
+
+### Exploring seasonality within the number of medication claims (week) {#sec-nclaim-week}
+
+```{r}
+
+tar_read(plt_acf_week)[[1]]
+tar_read(plt_pacf_week)[[1]]
+
+```
+
+### Exploring seasonality within the number of patients (week) {#sec-npat-week}
+
+```{r}
+
+tar_read(plt_acf_week)[[2]]
+tar_read(plt_pacf_week)[[2]]
+
+```
+
+### Exploring seasonality within the claim-to-patient ratio (week) {#sec-ratio-week}
+
+```{r}
+
+tar_read(plt_acf_week)[[3]]
+tar_read(plt_pacf_week)[[3]]
+
+```
+
+### Exploring seasonality within the eigenvector centrality (week) {#sec-eigen-week}
+
+```{r}
+
+tar_read(plt_acf_week)[[4]]
+tar_read(plt_pacf_week)[[4]]
+
+```
+
+### Exploring seasonality within the number of medication claims (month) {#sec-nclaim-month}
+
+```{r}
+
+tar_read(plt_acf_month)[[1]]
+tar_read(plt_pacf_month)[[1]]
+
+```
+
+### Exploring seasonality within the number of patients (month) {#sec-npat-month}
+
+```{r}
+
+tar_read(plt_acf_month)[[2]]
+tar_read(plt_pacf_month)[[2]]
+
+```
+
+### Exploring seasonality within the claim-to-patient ratio (month) {#sec-ratio-month}
+
+```{r}
+
+tar_read(plt_acf_month)[[3]]
+tar_read(plt_pacf_month)[[3]]
+
+```
+
+### Exploring seasonality within the eigenvector centrality (month) {#sec-eigen-month}
+
+```{r}
+
+tar_read(plt_acf_month)[[4]]
+tar_read(plt_pacf_month)[[4]]
+
+```
+
