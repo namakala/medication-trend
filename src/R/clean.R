@@ -56,7 +56,7 @@ getNeuroMeds <- function() {
   return(res)
 }
 
-mergeTS <- function(tbl_metrics, tbl_stats) {
+mergeTS <- function(tbl_metrics, tbl_stats, ...) {
   #' Merge Time Series Data
   #'
   #' Get the time-series data frame by combining graph-object centrality
@@ -68,6 +68,7 @@ mergeTS <- function(tbl_metrics, tbl_stats) {
   #' @param tbl_metrics A data frame containing node names and its metrics
   #' @param tbl_stats An aggregate data frame summarizing the number of daily
   #' claims for each medication group
+  #' @param ... Parameters to pass on to `aggregateTS`
   #' @return A tidy time-series data frame combining graph's metrics and the
   #' field summary
   tbl <- merge(tbl_metrics, tbl_stats, all.x = TRUE) %>%
@@ -89,9 +90,58 @@ mergeTS <- function(tbl_metrics, tbl_stats) {
       .$date  >= "2018-01-01" &
       .$date  <= "2022-12-31"
     )
+
+  if (hasArg("type")) {
+    ts <- tbl_clean %>% aggregateTS(...)
+    return(ts)
+  }
   
   # Return as a time series
   ts <- tbl_clean %>% tsibble::as_tsibble(key = group, index = date)
 
   return(ts)
 }
+
+aggregateTS <- function(ts, type = "week", ...) {
+  #' Aggregate Time Series
+  #'
+  #' Aggregate time-series data into week, month, or quarter
+  #'
+  #' @param ts A tidy time-series data frame, usually the returned value of
+  #' `mergeTS`. Could also be a data frame containing `index` (and optionally
+  #' `key`) to generate a `tsibble`.
+  #' @param type Type of aggregation, supporting either `week`, `month`, or
+  #' `quarter`
+  #' @return A tidy time-series data with aggregated metrics
+
+  if (type == "week") {
+    ts %<>% inset2("date", value = tsibble::yearweek(.$date))
+  } else if (type == "month") {
+    ts %<>% inset2("date", value = tsibble::yearmonth(.$date))
+  } else if (type == "quarter") {
+    ts %<>% inset2("date", value = tsibble::yearquarter(.$date))
+  } else {
+    warning("Returning time-series of daily records")
+    ts %<>% tsibble::as_tsibble(key = group, index = date)
+    return(ts)
+  }
+
+  ts %<>% tibble::tibble()
+
+  ts_agg <- ts %>%
+    dplyr::group_by(group, date) %>%
+    dplyr::summarize(
+      "date"          = min(date),
+      "eigen"         = mean(eigen, na.rm = TRUE),
+      "pagerank"      = mean(pagerank, na.rm = TRUE),
+      "n_claim"       = sum(n_claim, na.rm = TRUE),
+      "n_patient"     = sum(n_patient, na.rm = TRUE),
+      "claim2patient" = sum(n_claim, na.rm = TRUE) / sum(n_patient, na.rm = TRUE),
+      "neur_med"      = all(neuro_med)
+    ) %>%
+    dplyr::ungroup() %>%
+    tsibble::as_tsibble(key = group, index = date)
+
+  return(ts_agg)
+}
+
