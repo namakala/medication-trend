@@ -169,4 +169,3 @@ tar_read(plt_acf_month)[[4]]
 tar_read(plt_pacf_month)[[4]]
 
 ```
-

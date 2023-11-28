@@ -172,3 +172,19 @@ vizAutocor <- function(ts, y, type = "ACF", ...) {
 
   return(plt)
 }
+
+saveFig <- function(plt, path, args, ...) {
+  #' Save Generated Figure
+  #'
+  #' Save the generated plot as a figure document written the specified path
+  #'
+  #' @param plt A GGPlot2 object
+  #' @param path A specified path to write the figure
+  #' @param args A character vector of arguments to construct the filename
+  #' @inheritDotParams ggplot2::ggsave
+  #' @return This function does not return anything *except* writing the figure
+  #' into the specified path
+  fname <- sprintf("%s.pdf", paste(args, collapse = "_"))
+  fpath <- sprintf("%s/%s", path, fname)
+  ggplot2::ggsave(fpath, plot = plt, device = "pdf", ...)
+}

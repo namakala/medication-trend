@@ -71,23 +71,68 @@ list(
     unlist = FALSE,
     values = data.frame("type" = c("day", "week", "month", "quarter")),
     tar_target(ts, mergeTS(iadb_metrics, iadb_stats, type = type)),
+
+    # Visualize the dot plot
     tar_target(
       plt_dot,
       vizDot(ts, y = vizDotParams$metrics, scales = vizDotParams$scales, nrow = 4),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
+
+    # Visualize ACF and PACF
     tar_target(
       plt_acf,
       vizAutocor(ts, y = vizDotParams$metrics, type = "ACF", lag_max = 12),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
+
     tar_target(
       plt_pacf,
       vizAutocor(ts, y = vizDotParams$metrics, type = "PACF", lag_max = 12),
       pattern = map(vizDotParams),
       iteration = "list"
+    ),
+
+    # Write generated plots into the specified dir
+    tar_target(
+      fig_dot,
+      saveFig(
+        plt_dot,
+        path   = "docs/_fig",
+        args   = c("plt_dot", type, vizDotParams$metrics),
+        width  = 14,
+        height = 8
+      ),
+      pattern = map(plt_dot, vizDotParams),
+      format = "file"
+    ),
+
+    tar_target(
+      fig_acf,
+      saveFig(
+        plt_acf,
+        path   = "docs/_fig",
+        args   = c("plt_acf", type, vizDotParams$metrics),
+        width  = 12,
+        height = 8
+      ),
+      pattern = map(plt_acf, vizDotParams),
+      format = "file"
+    ),
+
+    tar_target(
+      fig_pacf,
+      saveFig(
+        plt_pacf,
+        path   = "docs/_fig",
+        args   = c("plt_pacf", type, vizDotParams$metrics),
+        width  = 12,
+        height = 8
+      ),
+      pattern = map(plt_pacf, vizDotParams),
+      format = "file"
     )
   ),
 
