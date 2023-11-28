@@ -1760,20 +1760,22 @@
     },
     "quarto": {
       "Package": "quarto",
-      "Version": "1.3",
+      "Version": "1.3.4",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "https://quarto-dev.r-universe.dev",
       "Requirements": [
+        "cli",
         "jsonlite",
         "later",
         "processx",
+        "rlang",
         "rmarkdown",
         "rsconnect",
         "rstudioapi",
         "utils",
         "yaml"
       ],
-      "Hash": "79e1cff980960b566ddc4ddb1a49a13d"
+      "Hash": "3f2b1a009954055bc43197ed19365ca1"
     },
     "rappdirs": {
       "Package": "rappdirs",
