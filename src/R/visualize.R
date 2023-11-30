@@ -58,6 +58,22 @@ setStripColor <- function(group) {
   return(strip_col)
 }
 
+saveFig <- function(plt, path, args, ...) {
+  #' Save Generated Figure
+  #'
+  #' Save the generated plot as a figure document written the specified path
+  #'
+  #' @param plt A GGPlot2 object
+  #' @param path A specified path to write the figure
+  #' @param args A character vector of arguments to construct the filename
+  #' @inheritDotParams ggplot2::ggsave
+  #' @return This function does not return anything *except* writing the figure
+  #' into the specified path
+  fname <- sprintf("%s.pdf", paste(args, collapse = "_"))
+  fpath <- sprintf("%s/%s", path, fname)
+  ggplot2::ggsave(fpath, plot = plt, device = "pdf", ...)
+}
+
 vizDot <- function(tbl, y, groupname = NULL, ...) {
   #' Visualize the Dot Plot
   #'
@@ -158,7 +174,7 @@ vizAutocor <- function(ts, y, type = "ACF", ...) {
     geom_segment(aes(x = lag, xend = lag, y = 0, yend = ac), alpha = 0.6, lwd = ts_ac$size, color = ts_ac$color) +
     geom_point(alpha = 0.6, size = ts_ac$size, color = ts_ac$color) +
     ggh4x::facet_wrap2(~group, nrow = 4, strip = strip_col) +
-    scale_x_continuous(n.breaks = max(ts_ac$lag) %>% as.numeric()) +
+    scale_x_continuous(n.breaks = max(ts_ac$lag) %>% as.numeric() %>% divide_by(2) %>% round()) +
     labs(
       x = sprintf("Lag (%s)", tsibble:::format.interval(feasts:::interval_pull.cf_lag(ts_ac))),
       y = sprintf("%s of %s", type, labelname),
@@ -173,18 +189,23 @@ vizAutocor <- function(ts, y, type = "ACF", ...) {
   return(plt)
 }
 
-saveFig <- function(plt, path, args, ...) {
-  #' Save Generated Figure
+vizPair <- function(ts, groupname) {
+  #' Generate a Pair Plot
   #'
-  #' Save the generated plot as a figure document written the specified path
+  #' Generate a pair plot to describe the time series
   #'
-  #' @param plt A GGPlot2 object
-  #' @param path A specified path to write the figure
-  #' @param args A character vector of arguments to construct the filename
-  #' @inheritDotParams ggplot2::ggsave
-  #' @return This function does not return anything *except* writing the figure
-  #' into the specified path
-  fname <- sprintf("%s.pdf", paste(args, collapse = "_"))
-  fpath <- sprintf("%s/%s", path, fname)
-  ggplot2::ggsave(fpath, plot = plt, device = "pdf", ...)
+  #' @param ts A tidy time-series data frame, usually the output of `mergeTS`
+  #' function
+  #' @param groupname A group of medication to subset the data frame
+  #' @return A GGPlot2 object
+  require("ggplot2")
+
+  sub_ts <- ts %>%
+    subset(.$group == groupname, select = c(eigen:claim2patient, event))
+
+  plt <- GGally::ggpairs(sub_ts, aes(color = event, alpha = 0.6)) +
+    labs(title = groupname)
+
+  return(plt)
 }
+
