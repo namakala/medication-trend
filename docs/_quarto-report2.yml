@@ -1,0 +1,11 @@
+project:
+  output-dir: _render/report2
+  execute-dir: project
+
+book:
+  title: "Analysis Report 2"
+  author: "Aly Lamuri"
+  chapters:
+    - index.qmd
+    - methods.qmd
+    - results2.qmd

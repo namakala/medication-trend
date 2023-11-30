@@ -1,0 +1,34 @@
+project:
+  type: book
+
+profile:
+  default: report
+
+bibliography: ref.bib
+knitr:
+  opts_chunk:
+    echo: false
+    eval: true
+    error: false
+    message: false
+    warning: false
+    fig.width: 10
+    fig.height: 8
+    out.width: "100%"
+    comment: "|"
+
+execute:
+  freeze: auto
+
+format:
+  pdf:
+    include-in-header:
+      text: |
+        \usepackage{longtable}
+        \usepackage{amsmath}
+        \usepackage{amssymb}
+        \usepackage{multicol}
+        \usepackage{float}
+        \usepackage{typearea}
+        \floatplacement{figure}{htbp}
+        \floatplacement{table}{htbp}
