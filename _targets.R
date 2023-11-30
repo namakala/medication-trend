@@ -70,6 +70,8 @@ list(
   tar_map(
     unlist = FALSE,
     values = data.frame("type" = c("day", "week", "month", "quarter")),
+
+    # Merge time-series and calculate the descriptive stat
     tar_target(ts, mergeTS(iadb_metrics, iadb_stats, type = type)),
 
     # Visualize the dot plot
@@ -80,17 +82,17 @@ list(
       iteration = "list"
     ),
 
-    # Visualize ACF and PACF
+    # Visualize the pair plot, ACF, and PACF
     tar_target(
       plt_acf,
-      vizAutocor(ts, y = vizDotParams$metrics, type = "ACF", lag_max = 12),
+      vizAutocor(ts, y = vizDotParams$metrics, type = "ACF", lag_max = 24),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
 
     tar_target(
       plt_pacf,
-      vizAutocor(ts, y = vizDotParams$metrics, type = "PACF", lag_max = 12),
+      vizAutocor(ts, y = vizDotParams$metrics, type = "PACF", lag_max = 24),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
@@ -136,23 +138,38 @@ list(
     )
   ),
 
-  ## Perform time-series decomposition per group of medications
-  #tar_target(groupname, unique(ts$group) %>% as.character()),
+  # Set medication groups for iteration
+  tar_target(med_groups, unique(ts_quarter$group)),
 
-  #tar_map(
-  #  unlist = TRUE,
-  #  values = tidyr::expand_grid(
-  #    "period" = c(paste(1:3, "week"), paste(1:3, "month")),
-  #    "method" = c("classic", "loess"),
-  #    "tvar"   = c("eigen", "pagerank", "claim2patient", "n_claim")
-  #  ),
-  #  tar_target(
-  #    iadb_decom,
-  #    timeDecomp(ts, varname = tvar, group = groupname, period = period, method = method),
-  #    pattern = map(groupname),
-  #    iteration = "list"
-  #  )
-  #),
+  # Descriptive statistics on the time-series data
+  tar_target(desc_ts, describe(ts_day, type = "mean")),
+  tar_target(
+    plt_pair,
+    describe(ts_day, type = "pair", groupname = med_groups),
+    pattern = map(med_groups),
+    iteration = "list"
+  ),
+
+  # Perform time-series decomposition per metrics
+  tar_map(
+    unlist = TRUE,
+    values = tidyr::expand_grid(
+      "method" = c("classic", "loess"),
+      "tvar"   = c("eigen", "pagerank", "claim2patient", "n_claim")
+    ),
+    tar_map(
+      unlist = TRUE,
+      values = list(
+        "ts_dat" = rlang::syms(paste("ts", c("day", "week", "month"), sep = "_")),
+        "period" = paste(1, c("week", "month", "year"))
+      ),
+      tar_target(decom, timeDecomp(ts_dat, varname = tvar, period = period, method = method)),
+      tar_target(
+        plt_decom,
+        vizDot(decom, y = "season_adjust", nrow = 4) + labs(y = getLabel(tvar))
+      )
+    )
+  ),
 
   # Generate documentation
   tar_quarto(report, "docs", profile = "report"),

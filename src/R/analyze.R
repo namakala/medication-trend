@@ -21,7 +21,7 @@ fieldSummary <- function(tbl) {
   return(res)
 }
 
-timeDecomp <- function(ts, varname, groupname, period, method, ...) {
+timeDecomp <- function(ts, varname, period, method, ...) {
   #' Time Series Decomposition
   #'
   #' An extended wrapper for `stats::decompose` and `stats::stl`, conveniently
@@ -30,7 +30,6 @@ timeDecomp <- function(ts, varname, groupname, period, method, ...) {
   #'
   #' @param ts A time series data, usually resulting form the `mergeTS` function
   #' @param varname A variable name indicating the time series to decompose
-  #' @param groupname The grouping variable to subset data
   #' @param period Period of time when calculating the moving average or LOESS
   #' @param method Method of decomposition, only accepts `classic` (moving
   #' average) and `loess` (LOESS)
@@ -39,11 +38,10 @@ timeDecomp <- function(ts, varname, groupname, period, method, ...) {
   require("feasts")
 
   form <- sprintf("%s ~ season(period = '%s')", varname, period) %>% as.formula()
-  sub_ts <- ts %>% subset(.$group == groupname)
 
   if (method == "classic") {
 
-    decomp <- sub_ts %>%
+    decomp <- ts %>%
       fabletools::model(feasts::classical_decomposition(
         form, ...
       )) %>%
@@ -51,7 +49,7 @@ timeDecomp <- function(ts, varname, groupname, period, method, ...) {
 
   } else if (method == "loess") {
 
-    decomp <- sub_ts %>%
+    decomp <- ts %>%
       fabletools::model(feasts::STL(
         form, iteration = 10
       )) %>%

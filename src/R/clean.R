@@ -78,6 +78,9 @@ mergeTS <- function(tbl_metrics, tbl_stats, ...) {
   tbl_clean <- tbl %>%
     inset2("group", value = setGroupFactor(.$group)) %>% # Set factor
     inset2("neuro_med", value = .$group %in% getNeuroMeds()) %>% # Neuro meds
+    inset2("event", value = { # Pre/during COVID-19
+      ifelse(.$date < "2020-01-30", "Pre-COVID-19", "COVID-19")
+    }) %>%
     inset( # Replace `NA` with 0
       c("n_claim", "claim2patient"),
       value = list(
@@ -137,7 +140,8 @@ aggregateTS <- function(ts, type = "week", ...) {
       "n_claim"       = sum(n_claim, na.rm = TRUE),
       "n_patient"     = sum(n_patient, na.rm = TRUE),
       "claim2patient" = sum(n_claim, na.rm = TRUE) / sum(n_patient, na.rm = TRUE),
-      "neur_med"      = all(neuro_med)
+      "neuro_med"     = all(neuro_med),
+      "event"         = table(event) |> sort() |> names() |> tail(1)
     ) %>%
     dplyr::ungroup() %>%
     tsibble::as_tsibble(key = group, index = date)

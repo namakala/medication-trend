@@ -10,18 +10,35 @@ knitr:
 pkgs <- c("targets", "magrittr")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 
+options(digits = 2)
+
 ```
 
 # Results
 
-## Descriptive analysis
+## Descriptive analysis of the raw data
 
 In this section,
+
+```{r}
+#| tbl-cap: Mean difference of all metrics before and during COVID-19
+
+tar_read(desc_ts) %>% knitr::kable()
+
+```
 
 {{< pagebreak >}}
 
 \KOMAoptions{paper=landscape,pagesize}
 \recalctypearea
+
+### Paired plot of all metrics for each medication group
+
+```{r}
+
+tar_read(plt_pair)
+
+```
 
 ### Time-series on a daily interval
 
@@ -169,3 +186,36 @@ tar_read(plt_acf_month)[[4]]
 tar_read(plt_pacf_month)[[4]]
 
 ```
+
+## Descriptive analysis of the deseasonalized data
+
+### Time-series on a daily interval
+
+```{r}
+
+tar_read(plt_decom_ts_day_1.week_classic_n_claim)
+tar_read(plt_decom_ts_day_1.week_classic_claim2patient)
+tar_read(plt_decom_ts_day_1.week_classic_eigen)
+
+```
+
+### Time-series on a weekly interval
+
+```{r}
+
+tar_read(plt_decom_ts_week_1.month_classic_n_claim)
+tar_read(plt_decom_ts_week_1.month_classic_claim2patient)
+tar_read(plt_decom_ts_week_1.month_classic_eigen)
+
+```
+
+### Time-series on a monthly interval
+
+```{r}
+
+tar_read(plt_decom_ts_month_1.year_classic_n_claim)
+tar_read(plt_decom_ts_month_1.year_classic_claim2patient)
+tar_read(plt_decom_ts_month_1.year_classic_eigen)
+
+```
+
