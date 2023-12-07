@@ -60,3 +60,49 @@ timeDecomp <- function(ts, varname, period, method, ...) {
   return(decomp)
 }
 
+timeDiff <- function(ts, n = 1, ...) {
+  #' Time-Series Differencing
+  #'
+  #' Perform n-order time-series differencing
+  #'
+  #' @param ts A tidy time series data frame, usually the output of `mergeTS`
+  #' @param n Order of differences
+  #' @inheritDotParams base::diff
+  #' @return A tidy time-series data frame
+  if (is.vector(ts)) {
+    pad     <- rep(NA, n)
+    ts_diff <- c(pad, diff(ts, differences = n, ...))
+  } else {
+    ts_diff <- ts %>%
+      dplyr::group_by(group) %>%
+      dplyr::mutate(
+        eigen         = timeDiff(eigen, n = n, ...),
+        pagerank      = timeDiff(pagerank, n = n, ...),
+        n_claim       = timeDiff(n_claim, n = n, ...),
+        n_patient     = timeDiff(n_patient, n = n, ...),
+        claim2patient = timeDiff(claim2patient, n = n, ...)
+      ) %>%
+      dplyr::ungroup()
+  }
+
+  return(ts_diff)
+}
+
+fitModel <- function(ts, groupname, y, type = "arima", ...) {
+  #' Fit Time-Series Model
+  #'
+  #' Fit a model to explain or forecast time-series data frame
+  #'
+  #' @param ts A tidy time-series data frame
+  #' @param groupname The name of medication group to subset the data
+  #' @param y Metrics to evaluate
+  #' @param type The type of model to fit
+  #' @param ... Parameters to specify the model
+  #' @return A model object
+  sub_ts <- ts %>% subset(.$group == groupname, select = y)
+  if (type == "arima") {
+    mod <- sub_ts %>% forecast::auto.arima(...)
+  }
+
+  return(mod)
+}

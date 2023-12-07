@@ -118,8 +118,6 @@ vizDot <- function(tbl, y, groupname = NULL, ...) {
   return(plt)
 }
 
-vizDot(tar_read(ts_day), "n_claim")
-
 vizAutocor <- function(ts, y, type = "ACF", ...) {
   #' Visualize the Autocorrelation Plot
   #'
@@ -209,3 +207,21 @@ vizPair <- function(ts, groupname) {
   return(plt)
 }
 
+vizArima <- function(mod, y, groupname, ...) {
+  #' Visualize ARIMA forecast
+  #'
+  #' Visualize ARIMA forecast from the `forecast` package using its autoplot
+  #' function
+  #'
+  #' @param mod An ARIMA model, usually the output of `forecast::auto.arima`
+  #' @param y Metric names to set the y label
+  #' @param groupname Medication group name, set as the subtitle
+  #' @return A GGPlot2 object
+  require("ggplot2")
+
+  plt <- forecast::autoplot(mod) +
+    labs(y = getLabel(y), subtitle = groupname) +
+    ggpubr::theme_pubclean()
+
+  return(plt)
+}

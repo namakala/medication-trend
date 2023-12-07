@@ -1,0 +1,9 @@
+project:
+  output-dir: _render/descriptive
+
+book:
+  title: "Exploratory Descriptive Analysis"
+  author: "Aly Lamuri"
+  chapters:
+    - index.qmd
+    - results/descriptive.qmd

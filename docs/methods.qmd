@@ -1,3 +1,13 @@
 # Methods
 
+- Transform time-series data as a series of graph objects
+- Calculate centrality from each graph, insert it to the original time-series data
+- Smoothen the time-series by aggregating to weekly, monthly, and quarterly interval
+- Evaluate autocorrelation using ACF and PACF plots
 - Determine confidence interval in ACF: https://stats.stackexchange.com/questions/211628/how-is-the-confidence-interval-calculated-for-the-acf-function
+- Perform first-order differencing and time-series decomposition:
+  - Time-series decomposition only applicable to medication claim data in a daily interval, where it shows repeating autocorrelation every seven days
+  - Data in other intervals does not present with seasonality
+  - Choice: Use deseasonalized time-series in a daily interval OR use weekly aggregated data
+  - Decision: Use weekly data because the seasonal pattern in a daily interval only implies administrative patterns (e.g. more patients claiming medication during start of the week or weekend, but not mid week)
+- Exploratory ARIMA modelling following the Hyndman-Khandakar algorithm

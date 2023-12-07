@@ -71,8 +71,9 @@ list(
     unlist = FALSE,
     values = data.frame("type" = c("day", "week", "month", "quarter")),
 
-    # Merge time-series and calculate the descriptive stat
+    # Merge time-series and calculate the first-degree diff
     tar_target(ts, mergeTS(iadb_metrics, iadb_stats, type = type)),
+    tar_target(ts_diff, timeDiff(ts)),
 
     # Visualize the dot plot
     tar_target(
@@ -171,8 +172,39 @@ list(
     )
   ),
 
+  # Automatically fit an ARIMA model for each medication and metrics
+  tar_map(
+    unlist = FALSE,
+    values = list("y" = c("n_claim", "claim2patient", "eigen")),
+    tar_target(
+      mod_arima,
+      fitModel(ts_week, groupname = med_groups, y = y, type = "arima"),
+      pattern = map(med_groups),
+      iteration = "list"
+    ),
+    tar_target(
+      mod_arima_eval,
+      feasts::ljung_box(mod_arima %>% extract2("residuals")),
+      pattern = map(mod_arima),
+      iteration = "list"
+    ),
+    tar_target(
+      mod_arima_forecast,
+      forecast::forecast(mod_arima),
+      pattern = map(mod_arima),
+      iteration = "list"
+    ),
+    tar_target(
+      plt_arima_forecast,
+      vizArima(mod_arima_forecast, y = y, groupname = med_groups),
+      pattern = map(mod_arima_forecast, med_groups),
+      iteration = "list"
+    )
+  ),
+
   # Generate documentation
-  tar_quarto(report, "docs", profile = "report"),
+  tar_quarto(report_descriptive, "docs", profile = "descriptive"),
+  tar_quarto(report_arima, "docs", profile = "arima"),
   tar_quarto(readme, "README.qmd", priority = 0)
 
 )

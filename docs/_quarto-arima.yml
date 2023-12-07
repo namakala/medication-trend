@@ -1,0 +1,9 @@
+project:
+  output-dir: _render/arima
+
+book:
+  title: "Exploratory ARIMA Modelling"
+  author: "Aly Lamuri"
+  chapters:
+    - index.qmd
+    - results/arima.qmd
