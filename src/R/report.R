@@ -15,6 +15,8 @@ describe <- function(ts, type, ...) {
     res <- describeMean(ts, ...)
   } else if (type == "pair") {
     res <- vizPair(ts, ...)
+  } else if (type == "polar") {
+    res <- vizPolar(ts, ...)
   }
 
   return(res)

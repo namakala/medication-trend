@@ -92,8 +92,22 @@ list(
     ),
 
     tar_target(
+      plt_acf_diff,
+      vizAutocor(ts_diff, y = vizDotParams$metrics, type = "ACF", lag_max = 24),
+      pattern = map(vizDotParams),
+      iteration = "list"
+    ),
+
+    tar_target(
       plt_pacf,
       vizAutocor(ts, y = vizDotParams$metrics, type = "PACF", lag_max = 24),
+      pattern = map(vizDotParams),
+      iteration = "list"
+    ),
+
+    tar_target(
+      plt_pacf_diff,
+      vizAutocor(ts_diff, y = vizDotParams$metrics, type = "PACF", lag_max = 24),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
@@ -176,30 +190,46 @@ list(
   tar_map(
     unlist = FALSE,
     values = list("y" = c("n_claim", "claim2patient", "eigen")),
+
+    # Generate polar plots on monthly basis
+    tar_target(
+      plt_polar,
+      describe(ts_diff_month, type = "polar", y = y, groupname = med_groups),
+      pattern = map(med_groups),
+      iteration = "list"
+    ),
+
+    # Fit ARIMA models
     tar_target(
       mod_arima,
       fitModel(ts_week, groupname = med_groups, y = y, type = "arima"),
       pattern = map(med_groups),
       iteration = "list"
     ),
+
+    # Evaluate ARIMA models
     tar_target(
       mod_arima_eval,
       feasts::ljung_box(mod_arima %>% extract2("residuals")),
       pattern = map(mod_arima),
       iteration = "list"
     ),
+
+    # Forecast ARIMA models
     tar_target(
       mod_arima_forecast,
       forecast::forecast(mod_arima),
       pattern = map(mod_arima),
       iteration = "list"
     ),
+
     tar_target(
       plt_arima_forecast,
       vizArima(mod_arima_forecast, y = y, groupname = med_groups),
       pattern = map(mod_arima_forecast, med_groups),
       iteration = "list"
     )
+
   ),
 
   # Generate documentation

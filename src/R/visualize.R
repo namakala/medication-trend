@@ -225,3 +225,47 @@ vizArima <- function(mod, y, groupname, ...) {
 
   return(plt)
 }
+
+vizMonth <- function(ts, y, groupname) {
+  #' Visualize Monthly Trend
+  #'
+  #' Visualize trend of a monthly data using month name as the x axis
+  #'
+  #' @param ts A time-series data frame, usually `ts_month` or its derivatives
+  #' @param y A metric names of the time-series data
+  #' @param groupname A group of medication to subset the data frame
+  #' @return A GGplot2 object
+  require("ggplot2")
+  require("tsibble")
+
+  ts %<>%
+    subset(.$group == groupname) %>%
+    dplyr::mutate(
+      "month" = lubridate::month(date, label = TRUE, abbr = FALSE),
+      "year"  = lubridate::year(date) %>% ordered()
+    )
+
+  plt <- ggplot(ts, aes(x = month, y = get(y), fill = year)) +
+    geom_histogram(stat = "identity", position = "dodge", alpha = 0.6) +
+    labs(title = groupname, y = getLabel(y)) +
+    ggpubr::theme_pubclean()
+
+  return(plt)
+}
+
+vizPolar <- function(...) {
+  #' Visualize a Polar Plot
+  #'
+  #' Visualize monthly trend with a side-by-side plot of polar and line plot
+  #'
+  #' @param ... Parameters to pass on to `vizMonth`
+  #' @return A GGplot2 object
+  require("ggplot2")
+
+  plt_line  <- vizMonth(...)
+  plt_polar <- plt_line + coord_polar()
+
+  plt <- ggpubr::ggarrange(plt_line, plt_polar)
+
+  return(plt)
+}
