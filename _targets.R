@@ -21,7 +21,7 @@ iadb_raw <- lsData(pattern = "iadb")
 
 # Switcher for testing or production
 is_test <- FALSE
-iadb    <- ifelse(is_test, iadb_raw[[1]], iadb_raw[[2]])
+iadb    <- ifelse(is_test, iadb_raw[["sub"]], iadb_raw[["data/raw/iadb"]])
 
 # Set the analysis pipeline
 list(
