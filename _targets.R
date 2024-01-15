@@ -202,7 +202,7 @@ list(
     # Fit ARIMA models
     tar_target(
       mod_arima,
-      fitModel(ts_week, groupname = med_groups, y = y, type = "arima"),
+      fitModel(ts_month, groupname = med_groups, y = y, type = "arima"),
       pattern = map(med_groups),
       iteration = "list"
     ),

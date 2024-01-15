@@ -247,8 +247,9 @@ vizMonth <- function(ts, y, groupname) {
 
   plt <- ggplot(ts, aes(x = month, y = get(y), fill = year)) +
     geom_histogram(stat = "identity", position = "dodge", alpha = 0.6) +
-    labs(title = groupname, y = getLabel(y)) +
-    ggpubr::theme_pubclean()
+    labs(title = groupname, y = getLabel(y), x = "") +
+    ggpubr::theme_pubclean() +
+    theme(legend.position = c(0, 0.1), legend.title = element_blank())
 
   return(plt)
 }
@@ -267,5 +268,5 @@ vizPolar <- function(...) {
 
   plt <- ggpubr::ggarrange(plt_line, plt_polar)
 
-  return(plt)
+  return(plt_polar)
 }
