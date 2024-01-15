@@ -194,7 +194,7 @@ list(
     # Generate polar plots on monthly basis
     tar_target(
       plt_polar,
-      describe(ts_diff_month, type = "polar", y = y, groupname = med_groups),
+      vizPolar(ts = ts_diff_month, y = y, groupname = med_groups),
       pattern = map(med_groups),
       iteration = "list"
     ),

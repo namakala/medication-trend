@@ -226,7 +226,7 @@ vizArima <- function(mod, y, groupname, ...) {
   return(plt)
 }
 
-vizMonth <- function(ts, y, groupname) {
+vizMonth <- function(ts, y, groupname = NULL) {
   #' Visualize Monthly Trend
   #'
   #' Visualize trend of a monthly data using month name as the x axis
@@ -238,8 +238,14 @@ vizMonth <- function(ts, y, groupname) {
   require("ggplot2")
   require("tsibble")
 
+  if (!is.null(groupname)) {
+    ts      %<>% subset(.$group == groupname)
+    plt_lab  <-  labs(title = groupname, x = "", y = getLabel(y))
+  } else {
+    plt_lab  <- labs(x = "", y = getLabel(y))
+  }
+
   ts %<>%
-    subset(.$group == groupname) %>%
     dplyr::mutate(
       "month" = lubridate::month(date, label = TRUE, abbr = FALSE),
       "year"  = lubridate::year(date) %>% ordered()
@@ -247,9 +253,8 @@ vizMonth <- function(ts, y, groupname) {
 
   plt <- ggplot(ts, aes(x = month, y = get(y), fill = year)) +
     geom_histogram(stat = "identity", position = "dodge", alpha = 0.6) +
-    labs(title = groupname, y = getLabel(y), x = "") +
-    ggpubr::theme_pubclean() +
-    theme(legend.position = c(0, 0.1), legend.title = element_blank())
+    plt_lab +
+    ggpubr::theme_pubclean()
 
   return(plt)
 }
@@ -257,16 +262,22 @@ vizMonth <- function(ts, y, groupname) {
 vizPolar <- function(...) {
   #' Visualize a Polar Plot
   #'
-  #' Visualize monthly trend with a side-by-side plot of polar and line plot
+  #' Visualize monthly trend with a faceted polar plot
   #'
   #' @param ... Parameters to pass on to `vizMonth`
   #' @return A GGplot2 object
   require("ggplot2")
 
-  plt_line  <- vizMonth(...)
-  plt_polar <- plt_line + coord_polar()
+  plt_month <- vizMonth(...)
+  plt_polar <- plt_month +
+    coord_polar() +
+    theme(legend.position = "bottom", legend.title = element_blank())
 
-  plt <- ggpubr::ggarrange(plt_line, plt_polar)
+  if (!hasArg(groupname)) {
+    plt_polar <- plt_polar +
+      facet_wrap(~group, nrow = 4) +
+      theme(legend.position = "right", legend.title = element_blank())
+  }
 
   return(plt_polar)
 }
