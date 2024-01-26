@@ -20,8 +20,20 @@ reportMod <- function(mods) {
   res   <- mods %>%
     set_names(label) %>%
     lapply(function(mod) {
-      mod %>% lmtest::coeftest() %>% broom::tidy() %>% data.frame()
+      tryCatch(
+        mod %>% lmtest::coeftest() %>% broom::tidy() %>% data.frame(),
+        error = function(e) { # In case error due to no AR nor MA component
+          data.frame(
+            "term" = NA,
+            "estimate" = NA,
+            "std.error" = NA,
+            "statistic" = NA,
+            "p.value" = NA
+          )
+        }
+      )
     }) %>%
+    subset(subset = !is.na(.)) %>%
     {do.call(rbind, .)} %>%
     tibble::add_column("Model" = gsub(x = rownames(.), "\\..*", ""), .before = 1) %>%
     set_rownames(c()) %>%

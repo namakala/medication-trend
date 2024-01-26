@@ -88,6 +88,40 @@ timeDiff <- function(ts, n = 1, ...) {
   return(ts_diff)
 }
 
+evalUnitRoot <- function(ts, y, summarize = TRUE) {
+  #' Calculate the Augmented Dickey-Fuller Test
+  #'
+  #' Test for stationarity using the ADF test. Stationary time-series will have
+  #' a significant p-value.
+  #'
+  #' @param ts A time-series data
+  #' @param y Metrics to evaluate
+  #' @param summarize A boolean to return only the summary of time-series
+  #' presenting with non-stationarity
+  #' @return A tidy data frame containing the results of the ADF test
+
+  meds <- ts$group %>% unique() %>% set_names(., .)
+  res  <- lapply(meds, function(med) {
+    ts %>%
+      subset(.$group == med) %>%
+      extract2(y) %>%
+      na.omit() %>%
+      tseries::pp.test() %>% # Calculate the ADF test
+      broom::tidy() %>%
+      data.frame()
+  }) %>%
+    {do.call(rbind, .)} %>% # Combining all results
+    inset2("group", value = rownames(.)) %>%
+    inset2("metric", value = y) %>%
+    tibble::tibble()
+
+  if (summarize) {
+    res %<>% subset(.$p.value >= 0.05, select = c(group, metric))
+  }
+
+  return(res)
+}
+
 fitModel <- function(ts, groupname, y, type = "arima", ...) {
   #' Fit Time-Series Model
   #'

@@ -61,12 +61,13 @@ list(
     iadb_stats, lapply(tbl_iadb_split_atc, fieldSummary) %>% combineMetrics()
   ),
 
-  # Merge graph metrics and descriptive statistics as a time-series data
+  # Set iteration parameters of metrics and scales for visualization
   tar_target(vizDotParams, data.frame(
     "metrics" = c("n_claim", "n_patient", "claim2patient", "eigen", "pagerank"),
     "scales"  = c("free_y", "free_y", "fixed", "fixed", "fixed")
   )),
 
+  # Merge graph metrics and descriptive statistics as a time-series data
   tar_map(
     unlist = FALSE,
     values = data.frame("type" = c("day", "week", "month", "quarter")),
@@ -74,6 +75,12 @@ list(
     # Merge time-series and calculate the first-degree diff
     tar_target(ts, mergeTS(iadb_metrics, iadb_stats, type = type)),
     tar_target(ts_diff, timeDiff(ts)),
+    tar_target(ts_diff2, timeDiff(ts, n = 2)),
+
+    # Assess stationarity using the Augmented Dickey-Fuller test
+    tar_target(ts_uroot, evalUnitRoot(ts, y = vizDotParams$metrics), pattern = map(vizDotParams)),
+    tar_target(ts_diff_uroot, evalUnitRoot(ts_diff, y = vizDotParams$metrics), pattern = map(vizDotParams)),
+    tar_target(ts_diff2_uroot, evalUnitRoot(ts_diff2, y = vizDotParams$metrics), pattern = map(vizDotParams)),
 
     # Visualize the dot plot
     tar_target(
@@ -83,31 +90,38 @@ list(
       iteration = "list"
     ),
 
+    tar_target(
+      plt_dot_diff,
+      vizDot(ts_diff, y = vizDotParams$metrics, scales = vizDotParams$scales, nrow = 4),
+      pattern = map(vizDotParams),
+      iteration = "list"
+    ),
+
     # Visualize the pair plot, ACF, and PACF
     tar_target(
       plt_acf,
-      vizAutocor(ts, y = vizDotParams$metrics, type = "ACF", lag_max = 24),
+      vizAutocor(ts, y = vizDotParams$metrics, type = "ACF", lag_max = 52),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
 
     tar_target(
       plt_acf_diff,
-      vizAutocor(ts_diff, y = vizDotParams$metrics, type = "ACF", lag_max = 24),
+      vizAutocor(ts_diff, y = vizDotParams$metrics, type = "ACF", lag_max = 52),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
 
     tar_target(
       plt_pacf,
-      vizAutocor(ts, y = vizDotParams$metrics, type = "PACF", lag_max = 24),
+      vizAutocor(ts, y = vizDotParams$metrics, type = "PACF", lag_max = 52),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
 
     tar_target(
       plt_pacf_diff,
-      vizAutocor(ts_diff, y = vizDotParams$metrics, type = "PACF", lag_max = 24),
+      vizAutocor(ts_diff, y = vizDotParams$metrics, type = "PACF", lag_max = 52),
       pattern = map(vizDotParams),
       iteration = "list"
     ),
@@ -186,7 +200,7 @@ list(
     )
   ),
 
-  # Automatically fit an ARIMA model for each medication and metrics
+  # Set variables to fit in an ARIMA model
   tar_map(
     unlist = FALSE,
     values = list("y" = c("n_claim", "claim2patient", "eigen")),
@@ -202,7 +216,7 @@ list(
     # Fit ARIMA models
     tar_target(
       mod_arima,
-      fitModel(ts_month, groupname = med_groups, y = y, type = "arima"),
+      fitModel(ts_month, groupname = med_groups, y = y, type = "arima", test = "pp"),
       pattern = map(med_groups),
       iteration = "list"
     ),
@@ -235,6 +249,7 @@ list(
   # Generate documentation
   tar_quarto(report_descriptive, "docs", profile = "descriptive"),
   tar_quarto(report_arima, "docs", profile = "arima"),
+  tar_quarto(report_seasonality, "docs", profile = "seasonality"),
   tar_quarto(readme, "README.qmd", priority = 0)
 
 )

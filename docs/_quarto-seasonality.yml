@@ -1,0 +1,9 @@
+project:
+  output-dir: _render/seasonality
+
+book:
+  title: "Exploratory Seasonality Analysis"
+  author: "Aly Lamuri"
+  chapters:
+    - index.qmd
+    - results/seasonality.qmd

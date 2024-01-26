@@ -1,0 +1,99 @@
+---
+knitr:
+  opts_chunk:
+    fig.width: 12
+    fig.height: 6
+---
+
+\KOMAoptions{paper=landscape,pagesize}
+\recalctypearea
+
+```{r init}
+
+pkgs <- c("magrittr", "targets")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+
+options(digits = 2)
+
+```
+
+# Results
+
+## Dot plots
+
+### Time-series on a weekly interval
+
+```{r, fig.width = 14}
+
+tar_read(plt_dot_diff_week)[[1]]
+tar_read(plt_dot_diff_week)[[2]]
+tar_read(plt_dot_diff_week)[[3]]
+tar_read(plt_dot_diff_week)[[4]]
+
+```
+
+{{< pagebreak >}}
+
+## Autocorrelation plots
+
+### Exploring seasonality within the number of medication claims (month) {#sec-nclaim-month}
+
+```{r}
+
+tar_read(plt_acf_diff_month)[[1]]
+tar_read(plt_pacf_diff_month)[[1]]
+
+```
+
+### Exploring seasonality within the claim-to-patient ratio (month) {#sec-ratio-month}
+
+```{r}
+
+tar_read(plt_acf_diff_month)[[3]]
+tar_read(plt_pacf_diff_month)[[3]]
+
+```
+
+### Exploring seasonality within the eigenvector centrality (month) {#sec-eigen-month}
+
+```{r}
+
+tar_read(plt_acf_diff_month)[[4]]
+tar_read(plt_pacf_diff_month)[[4]]
+
+```
+
+{{< pagebreak >}}
+
+\KOMAoptions{paper=portrait,pagesize}
+\recalctypearea
+
+## Polar Plots
+
+### Number of claim
+
+```{r}
+
+tar_read(plt_polar_n_claim)
+
+```
+
+{{< pagebreak >}}
+
+### Claim-to-patient ratio
+
+```{r}
+
+tar_read(plt_polar_claim2patient)
+
+```
+
+{{< pagebreak >}}
+
+### Eigenvector centrality
+
+```{r}
+
+tar_read(plt_polar_eigen)
+
+```
