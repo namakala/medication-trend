@@ -139,7 +139,8 @@ mkGraph <- function(atc_tbl) {
       mtx <- mkMatrix(atc_tbl, sum)
       igraph::graph_from_adjacency_matrix(
         mtx, weighted = TRUE, mode = "directed"
-      )
+      ) %>%
+        igraph::as.undirected(mode = "collapse")
     },
     error = \(e) NULL
   )
@@ -157,12 +158,14 @@ getMetrics <- function(graph) {
   is_graph <- igraph::is_igraph(graph)
 
   if (is_graph) {
+    degree   <- igraph::degree(graph)
+    strength <- igraph::strength(graph)
     pagerank <- igraph::page_rank(graph) %>% extract2("vector")
     eigen    <- igraph::eigen_centrality(graph) %>%
       extract2("vector") %>%
       divide_by(sum(.))
 
-    metrics <- data.frame(eigen, pagerank) %>%
+    metrics <- data.frame(eigen, pagerank, degree, strength) %>%
       tibble::add_column("group" = rownames(.), .before = 1)
 
     return(metrics)

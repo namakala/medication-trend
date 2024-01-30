@@ -32,7 +32,9 @@ getLabel <- function(metric) {
     metric == "n_patient" ~ "The number of patients prescribed for a medication",
     metric == "claim2patient" ~ "Medication claim to patient ratio",
     metric == "eigen" ~ "Eigenvector centrality",
-    metric == "pagerank" ~ "Page rank centrality"
+    metric == "pagerank" ~ "Page rank centrality",
+    metric == "degree" ~ "Node degree",
+    metric == "strength" ~ "Weighted node degree"
   )
 
   return(labelname)

@@ -63,7 +63,7 @@ list(
 
   # Set iteration parameters of metrics and scales for visualization
   tar_target(vizDotParams, data.frame(
-    "metrics" = c("n_claim", "n_patient", "claim2patient", "eigen", "pagerank"),
+    "metrics" = c("n_claim", "n_patient", "claim2patient", "eigen", "strength"),
     "scales"  = c("free_y", "free_y", "fixed", "fixed", "fixed")
   )),
 
@@ -184,7 +184,7 @@ list(
     unlist = TRUE,
     values = tidyr::expand_grid(
       "method" = c("classic", "loess"),
-      "tvar"   = c("eigen", "pagerank", "claim2patient", "n_claim")
+      "tvar"   = c("eigen", "strength", "claim2patient", "n_claim")
     ),
     tar_map(
       unlist = TRUE,

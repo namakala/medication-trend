@@ -59,8 +59,7 @@ graph LR
   subgraph Legend
     direction LR
     x7420bd9270f8d27d([""Up to date""]):::uptodate --- x5b3426b4c7fa7dbc([""Started""]):::started
-    x5b3426b4c7fa7dbc([""Started""]):::started --- x4b0c520b8bc07c5b([""Errored""]):::errored
-    x4b0c520b8bc07c5b([""Errored""]):::errored --- xbf4603d6c2c2ad6b([""Stem""]):::none
+    x5b3426b4c7fa7dbc([""Started""]):::started --- xbf4603d6c2c2ad6b([""Stem""]):::none
     xbf4603d6c2c2ad6b([""Stem""]):::none --- x70a5fa6bea6f298d[""Pattern""]:::none
     x70a5fa6bea6f298d[""Pattern""]:::none --- xf0bce276fe2b9d3e>""Function""]:::none
     xf0bce276fe2b9d3e>""Function""]:::none --- x5bffbffeae195fc9{{""Object""}}:::none
@@ -94,9 +93,6 @@ graph LR
     x6c212354357aadc8>"mergeTS"]:::uptodate --> x161c318befd047bc(["ts_quarter"]):::uptodate
     xc78421dd0f40e7eb>"timeDecomp"]:::uptodate --> x75194963d4e125a5(["decom_ts_week_1.month_loess_pagerank"]):::uptodate
     xe654ad4c04f23a28(["ts_week"]):::uptodate --> x75194963d4e125a5(["decom_ts_week_1.month_loess_pagerank"]):::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x2fa7893b9e204626["ts_diff2_adf_week"]:::uptodate
-    xa81f3ac85c3ab6fc(["ts_diff2_week"]):::uptodate --> x2fa7893b9e204626["ts_diff2_adf_week"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x2fa7893b9e204626["ts_diff2_adf_week"]:::uptodate
     xd663dbf13bc7985e["plt_pacf_day"]:::uptodate --> x91895ac9fc912426["fig_pacf_day"]:::uptodate
     x0e2a1e9ee6890aa6>"saveFig"]:::uptodate --> x91895ac9fc912426["fig_pacf_day"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x91895ac9fc912426["fig_pacf_day"]:::uptodate
@@ -104,6 +100,9 @@ graph LR
     x685ff5739109ee80(["ts_diff_day"]):::uptodate --> x0d9b06f0646ca4fd["plt_acf_diff_day"]:::uptodate
     xfc9293f408401e5e>"vizAutocor"]:::uptodate --> x0d9b06f0646ca4fd["plt_acf_diff_day"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x0d9b06f0646ca4fd["plt_acf_diff_day"]:::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> xa74557e112499157["ts_diff_uroot_day"]:::uptodate
+    x685ff5739109ee80(["ts_diff_day"]):::uptodate --> xa74557e112499157["ts_diff_uroot_day"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xa74557e112499157["ts_diff_uroot_day"]:::uptodate
     x177fd622fb419be5(["decom_ts_month_1.year_classic_n_claim"]):::uptodate --> xa68da955dfe639e1(["plt_decom_ts_month_1.year_classic_n_claim"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> xa68da955dfe639e1(["plt_decom_ts_month_1.year_classic_n_claim"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> xa68da955dfe639e1(["plt_decom_ts_month_1.year_classic_n_claim"]):::uptodate
@@ -122,7 +121,13 @@ graph LR
     xcd136c75f6948bfd(["med_groups"]):::uptodate --> xb035523f702a18f0["plt_polar_eigen"]:::uptodate
     x6da2e542198a5d93(["ts_diff_month"]):::uptodate --> xb035523f702a18f0["plt_polar_eigen"]:::uptodate
     xb9f54242cee3597e>"vizPolar"]:::uptodate --> xb035523f702a18f0["plt_polar_eigen"]:::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> xf24ba0a5fa22e4ad["ts_uroot_day"]:::uptodate
+    x7ffe35eee48c2674(["ts_day"]):::uptodate --> xf24ba0a5fa22e4ad["ts_uroot_day"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xf24ba0a5fa22e4ad["ts_uroot_day"]:::uptodate
     x7e1814e57b0b1be4["mod_arima_n_claim"]:::uptodate --> xdec7d06ab7bbbc50["mod_arima_forecast_n_claim"]:::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> xb479751db3a76ada["ts_diff2_uroot_quarter"]:::uptodate
+    xdab756b7a7ba6359(["ts_diff2_quarter"]):::uptodate --> xb479751db3a76ada["ts_diff2_uroot_quarter"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xb479751db3a76ada["ts_diff2_uroot_quarter"]:::uptodate
     x6da2e542198a5d93(["ts_diff_month"]):::uptodate --> x8d4989d190572307["plt_pacf_diff_month"]:::uptodate
     xfc9293f408401e5e>"vizAutocor"]:::uptodate --> x8d4989d190572307["plt_pacf_diff_month"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x8d4989d190572307["plt_pacf_diff_month"]:::uptodate
@@ -131,18 +136,21 @@ graph LR
     x6c212354357aadc8>"mergeTS"]:::uptodate --> x14bcf0b7ef5959f1(["ts_month"]):::uptodate
     x9ca1aa7607080a7b>"mkGraph"]:::uptodate --> x278d817c06f60e98["iadb_graph"]:::uptodate
     xf7e9b577faef0a3a["tbl_iadb_split_atc"]:::uptodate --> x278d817c06f60e98["iadb_graph"]:::uptodate
-    xcd136c75f6948bfd(["med_groups"]):::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    x4f2d2e559519efe1["mod_arima_claim2patient"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    x79fa432b43dcafaf["mod_arima_eigen"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    x11abd7770785b634["mod_arima_eval_claim2patient"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    x91a77d5b4dfa50f4["mod_arima_eval_eigen"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    xa43e6b5b1b499bca["mod_arima_eval_n_claim"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    x7e1814e57b0b1be4["mod_arima_n_claim"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    x8ae03bd67401026c["plt_arima_forecast_claim2patient"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    x6eb2cd606ce0984c["plt_arima_forecast_eigen"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
-    x55a0e476a043137e["plt_arima_forecast_n_claim"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::errored
+    xcd136c75f6948bfd(["med_groups"]):::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    x4f2d2e559519efe1["mod_arima_claim2patient"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    x79fa432b43dcafaf["mod_arima_eigen"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    x11abd7770785b634["mod_arima_eval_claim2patient"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    x91a77d5b4dfa50f4["mod_arima_eval_eigen"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    xa43e6b5b1b499bca["mod_arima_eval_n_claim"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    x7e1814e57b0b1be4["mod_arima_n_claim"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    x8ae03bd67401026c["plt_arima_forecast_claim2patient"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    x6eb2cd606ce0984c["plt_arima_forecast_eigen"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
+    x55a0e476a043137e["plt_arima_forecast_n_claim"]:::uptodate --> x7dbb58def017efbe(["report_arima"]):::uptodate
     xc78421dd0f40e7eb>"timeDecomp"]:::uptodate --> x1ed9cd4bb202a9cd(["decom_ts_month_1.year_classic_eigen"]):::uptodate
     x14bcf0b7ef5959f1(["ts_month"]):::uptodate --> x1ed9cd4bb202a9cd(["decom_ts_month_1.year_classic_eigen"]):::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> x9abecde5a6409199["ts_diff2_uroot_month"]:::uptodate
+    x14741661dc71d34f(["ts_diff2_month"]):::uptodate --> x9abecde5a6409199["ts_diff2_uroot_month"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x9abecde5a6409199["ts_diff2_uroot_month"]:::uptodate
     x6c570eed1079677b>"fitModel"]:::uptodate --> x7e1814e57b0b1be4["mod_arima_n_claim"]:::uptodate
     xcd136c75f6948bfd(["med_groups"]):::uptodate --> x7e1814e57b0b1be4["mod_arima_n_claim"]:::uptodate
     x14bcf0b7ef5959f1(["ts_month"]):::uptodate --> x7e1814e57b0b1be4["mod_arima_n_claim"]:::uptodate
@@ -199,9 +207,9 @@ graph LR
     x203d559dcf99559c>"vizDot"]:::uptodate --> xc91cfe6f7292e4b4(["plt_decom_ts_day_1.week_classic_n_claim"]):::uptodate
     xc78421dd0f40e7eb>"timeDecomp"]:::uptodate --> x53f054da58185e0c(["decom_ts_month_1.year_loess_claim2patient"]):::uptodate
     x14bcf0b7ef5959f1(["ts_month"]):::uptodate --> x53f054da58185e0c(["decom_ts_month_1.year_loess_claim2patient"]):::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x2e1da972c7bafc5d["ts_adf_month"]:::uptodate
-    x14bcf0b7ef5959f1(["ts_month"]):::uptodate --> x2e1da972c7bafc5d["ts_adf_month"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x2e1da972c7bafc5d["ts_adf_month"]:::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> x93ad525b678e411b["ts_diff_uroot_week"]:::uptodate
+    x31faa9d48477f81b(["ts_diff_week"]):::uptodate --> x93ad525b678e411b["ts_diff_uroot_week"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x93ad525b678e411b["ts_diff_uroot_week"]:::uptodate
     xce13d34bbb5aa635(["decom_ts_month_1.year_loess_pagerank"]):::uptodate --> x5bcf6acba4a9ee87(["plt_decom_ts_month_1.year_loess_pagerank"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> x5bcf6acba4a9ee87(["plt_decom_ts_month_1.year_loess_pagerank"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x5bcf6acba4a9ee87(["plt_decom_ts_month_1.year_loess_pagerank"]):::uptodate
@@ -223,20 +231,17 @@ graph LR
     x31faa9d48477f81b(["ts_diff_week"]):::uptodate --> x9a2a3b9d04de4370["plt_acf_diff_week"]:::uptodate
     xfc9293f408401e5e>"vizAutocor"]:::uptodate --> x9a2a3b9d04de4370["plt_acf_diff_week"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x9a2a3b9d04de4370["plt_acf_diff_week"]:::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x7af695eda3d6ea1d["ts_diff_adf_week"]:::uptodate
-    x31faa9d48477f81b(["ts_diff_week"]):::uptodate --> x7af695eda3d6ea1d["ts_diff_adf_week"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x7af695eda3d6ea1d["ts_diff_adf_week"]:::uptodate
     xc78421dd0f40e7eb>"timeDecomp"]:::uptodate --> xcc3fd8f4d6a4b61b(["decom_ts_month_1.year_loess_n_claim"]):::uptodate
     x14bcf0b7ef5959f1(["ts_month"]):::uptodate --> xcc3fd8f4d6a4b61b(["decom_ts_month_1.year_loess_n_claim"]):::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x7440ed4ea9a60ac1["ts_diff_adf_month"]:::uptodate
-    x6da2e542198a5d93(["ts_diff_month"]):::uptodate --> x7440ed4ea9a60ac1["ts_diff_adf_month"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x7440ed4ea9a60ac1["ts_diff_adf_month"]:::uptodate
     x7ffe35eee48c2674(["ts_day"]):::uptodate --> xb3f8990b0bb8c5fa["plt_dot_day"]:::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> xb3f8990b0bb8c5fa["plt_dot_day"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xb3f8990b0bb8c5fa["plt_dot_day"]:::uptodate
     xc058910fe0c21157(["decom_ts_day_1.week_loess_eigen"]):::uptodate --> x8d5c69a2dec41c58(["plt_decom_ts_day_1.week_loess_eigen"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> x8d5c69a2dec41c58(["plt_decom_ts_day_1.week_loess_eigen"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x8d5c69a2dec41c58(["plt_decom_ts_day_1.week_loess_eigen"]):::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> xf58e1f08339fb674["ts_diff2_uroot_day"]:::uptodate
+    x9bfe90d7816277ce(["ts_diff2_day"]):::uptodate --> xf58e1f08339fb674["ts_diff2_uroot_day"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xf58e1f08339fb674["ts_diff2_uroot_day"]:::uptodate
     xd62f0e429a89e62d(["decom_ts_week_1.month_classic_claim2patient"]):::uptodate --> x0ea926d06006d949(["plt_decom_ts_week_1.month_classic_claim2patient"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> x0ea926d06006d949(["plt_decom_ts_week_1.month_classic_claim2patient"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x0ea926d06006d949(["plt_decom_ts_week_1.month_classic_claim2patient"]):::uptodate
@@ -255,6 +260,9 @@ graph LR
     xccc889a3af79aa2f["plt_acf_week"]:::uptodate --> xbde164b969460ca6["fig_acf_week"]:::uptodate
     x0e2a1e9ee6890aa6>"saveFig"]:::uptodate --> xbde164b969460ca6["fig_acf_week"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xbde164b969460ca6["fig_acf_week"]:::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> xd4fc6dffefb838f3["ts_diff2_uroot_week"]:::uptodate
+    xa81f3ac85c3ab6fc(["ts_diff2_week"]):::uptodate --> xd4fc6dffefb838f3["ts_diff2_uroot_week"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xd4fc6dffefb838f3["ts_diff2_uroot_week"]:::uptodate
     x07ac0b71f920f889>"combineMetrics"]:::uptodate --> xf2831b13ede46eac(["iadb_metrics"]):::uptodate
     x3902bbed135b0ec7>"getMetrics"]:::uptodate --> xf2831b13ede46eac(["iadb_metrics"]):::uptodate
     x278d817c06f60e98["iadb_graph"]:::uptodate --> xf2831b13ede46eac(["iadb_metrics"]):::uptodate
@@ -294,8 +302,6 @@ graph LR
     x84aa03deac41b190["mod_arima_forecast_claim2patient"]:::uptodate --> x8ae03bd67401026c["plt_arima_forecast_claim2patient"]:::uptodate
     xab29c0af1a4e1af0>"vizArima"]:::uptodate --> x8ae03bd67401026c["plt_arima_forecast_claim2patient"]:::uptodate
     xc585414cb0a04329["plt_acf_diff_month"]:::uptodate --> xb85d303ab56a5a47(["report_seasonality"]):::uptodate
-    xb97e67c2f6d8ad03["plt_dot_diff_day"]:::uptodate --> xb85d303ab56a5a47(["report_seasonality"]):::uptodate
-    x594417459f28b9f7["plt_dot_diff_month"]:::uptodate --> xb85d303ab56a5a47(["report_seasonality"]):::uptodate
     x9a9424cd5083d745["plt_dot_diff_week"]:::uptodate --> xb85d303ab56a5a47(["report_seasonality"]):::uptodate
     x8d4989d190572307["plt_pacf_diff_month"]:::uptodate --> xb85d303ab56a5a47(["report_seasonality"]):::uptodate
     xb94732c2937f4162["plt_polar_claim2patient"]:::uptodate --> xb85d303ab56a5a47(["report_seasonality"]):::uptodate
@@ -330,29 +336,23 @@ graph LR
     xd9701f9522b636a9(["decom_ts_day_1.week_classic_claim2patient"]):::uptodate --> x4dc0972a469a3335(["plt_decom_ts_day_1.week_classic_claim2patient"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> x4dc0972a469a3335(["plt_decom_ts_day_1.week_classic_claim2patient"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x4dc0972a469a3335(["plt_decom_ts_day_1.week_classic_claim2patient"]):::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> xf8de1527c97aa46e["ts_adf_day"]:::uptodate
-    x7ffe35eee48c2674(["ts_day"]):::uptodate --> xf8de1527c97aa46e["ts_adf_day"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xf8de1527c97aa46e["ts_adf_day"]:::uptodate
     x75194963d4e125a5(["decom_ts_week_1.month_loess_pagerank"]):::uptodate --> xb174918e42cc98f8(["plt_decom_ts_week_1.month_loess_pagerank"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> xb174918e42cc98f8(["plt_decom_ts_week_1.month_loess_pagerank"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> xb174918e42cc98f8(["plt_decom_ts_week_1.month_loess_pagerank"]):::uptodate
     x15823228216e9e2e["plt_dot_week"]:::uptodate --> x710d593c64216c80["fig_dot_week"]:::uptodate
     x0e2a1e9ee6890aa6>"saveFig"]:::uptodate --> x710d593c64216c80["fig_dot_week"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x710d593c64216c80["fig_dot_week"]:::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> xf7cbcd4257e4eaeb["ts_diff2_adf_month"]:::uptodate
-    x14741661dc71d34f(["ts_diff2_month"]):::uptodate --> xf7cbcd4257e4eaeb["ts_diff2_adf_month"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xf7cbcd4257e4eaeb["ts_diff2_adf_month"]:::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x4d82858c988b3064["ts_adf_quarter"]:::uptodate
-    x161c318befd047bc(["ts_quarter"]):::uptodate --> x4d82858c988b3064["ts_adf_quarter"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x4d82858c988b3064["ts_adf_quarter"]:::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> xe9d057717b7c09db["ts_uroot_week"]:::uptodate
+    xe654ad4c04f23a28(["ts_week"]):::uptodate --> xe9d057717b7c09db["ts_uroot_week"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xe9d057717b7c09db["ts_uroot_week"]:::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> x117e2dedb4be160a["ts_diff_uroot_month"]:::uptodate
+    x6da2e542198a5d93(["ts_diff_month"]):::uptodate --> x117e2dedb4be160a["ts_diff_uroot_month"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x117e2dedb4be160a["ts_diff_uroot_month"]:::uptodate
     x31faa9d48477f81b(["ts_diff_week"]):::uptodate --> x9a9424cd5083d745["plt_dot_diff_week"]:::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x9a9424cd5083d745["plt_dot_diff_week"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x9a9424cd5083d745["plt_dot_diff_week"]:::uptodate
     xc78421dd0f40e7eb>"timeDecomp"]:::uptodate --> x87f485f2ede7231a(["decom_ts_day_1.week_classic_eigen"]):::uptodate
     x7ffe35eee48c2674(["ts_day"]):::uptodate --> x87f485f2ede7231a(["decom_ts_day_1.week_classic_eigen"]):::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x19527b92b9df1dc8["ts_diff2_adf_quarter"]:::uptodate
-    xdab756b7a7ba6359(["ts_diff2_quarter"]):::uptodate --> x19527b92b9df1dc8["ts_diff2_adf_quarter"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x19527b92b9df1dc8["ts_diff2_adf_quarter"]:::uptodate
     x981e6dcac7842e2f(["decom_ts_day_1.week_loess_pagerank"]):::uptodate --> x756eeecfd7eacab8(["plt_decom_ts_day_1.week_loess_pagerank"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> x756eeecfd7eacab8(["plt_decom_ts_day_1.week_loess_pagerank"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x756eeecfd7eacab8(["plt_decom_ts_day_1.week_loess_pagerank"]):::uptodate
@@ -392,8 +392,14 @@ graph LR
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x1e581e1515b0bc41["fig_acf_month"]:::uptodate
     x484af6f82192f2e9>"timeDiff"]:::uptodate --> x9bfe90d7816277ce(["ts_diff2_day"]):::uptodate
     x7ffe35eee48c2674(["ts_day"]):::uptodate --> x9bfe90d7816277ce(["ts_diff2_day"]):::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> x9508b6eed23401d4["ts_uroot_quarter"]:::uptodate
+    x161c318befd047bc(["ts_quarter"]):::uptodate --> x9508b6eed23401d4["ts_uroot_quarter"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x9508b6eed23401d4["ts_uroot_quarter"]:::uptodate
     x484af6f82192f2e9>"timeDiff"]:::uptodate --> xdab756b7a7ba6359(["ts_diff2_quarter"]):::uptodate
     x161c318befd047bc(["ts_quarter"]):::uptodate --> xdab756b7a7ba6359(["ts_diff2_quarter"]):::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> x19fe87242b66e3be["ts_diff_uroot_quarter"]:::uptodate
+    x26d978ef372a4baa(["ts_diff_quarter"]):::uptodate --> x19fe87242b66e3be["ts_diff_uroot_quarter"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x19fe87242b66e3be["ts_diff_uroot_quarter"]:::uptodate
     x3455a1c44fd0ba64(["decom_ts_month_1.year_loess_eigen"]):::uptodate --> x4801de0cb1b805de(["plt_decom_ts_month_1.year_loess_eigen"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> x4801de0cb1b805de(["plt_decom_ts_month_1.year_loess_eigen"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x4801de0cb1b805de(["plt_decom_ts_month_1.year_loess_eigen"]):::uptodate
@@ -430,15 +436,6 @@ graph LR
     x0e604d354415ef78(["decom_ts_week_1.month_loess_claim2patient"]):::uptodate --> x3a08a75e6c4bebfd(["plt_decom_ts_week_1.month_loess_claim2patient"]):::uptodate
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> x3a08a75e6c4bebfd(["plt_decom_ts_week_1.month_loess_claim2patient"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x3a08a75e6c4bebfd(["plt_decom_ts_week_1.month_loess_claim2patient"]):::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x05615356a2a9aaae["ts_adf_week"]:::uptodate
-    xe654ad4c04f23a28(["ts_week"]):::uptodate --> x05615356a2a9aaae["ts_adf_week"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x05615356a2a9aaae["ts_adf_week"]:::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x8620ba0b6c1dade6["ts_diff_adf_day"]:::uptodate
-    x685ff5739109ee80(["ts_diff_day"]):::uptodate --> x8620ba0b6c1dade6["ts_diff_adf_day"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x8620ba0b6c1dade6["ts_diff_adf_day"]:::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> xdc4595467eafe4a6["ts_diff_adf_quarter"]:::uptodate
-    x26d978ef372a4baa(["ts_diff_quarter"]):::uptodate --> xdc4595467eafe4a6["ts_diff_adf_quarter"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xdc4595467eafe4a6["ts_diff_adf_quarter"]:::uptodate
     xc78421dd0f40e7eb>"timeDecomp"]:::uptodate --> x0e604d354415ef78(["decom_ts_week_1.month_loess_claim2patient"]):::uptodate
     xe654ad4c04f23a28(["ts_week"]):::uptodate --> x0e604d354415ef78(["decom_ts_week_1.month_loess_claim2patient"]):::uptodate
     x4a5693aa168fe170{{"iadb"}}:::uptodate --> xf220e84da6d0ff6f(["tbl_iadb"]):::uptodate
@@ -447,12 +444,12 @@ graph LR
     x82e62d618bc88e7e>"getLabel"]:::uptodate --> x3bf481d8364be564(["plt_decom_ts_month_1.year_loess_claim2patient"]):::uptodate
     x203d559dcf99559c>"vizDot"]:::uptodate --> x3bf481d8364be564(["plt_decom_ts_month_1.year_loess_claim2patient"]):::uptodate
     x161c318befd047bc(["ts_quarter"]):::uptodate --> xcd136c75f6948bfd(["med_groups"]):::uptodate
-    xa04cca11444ac31d>"getADF"]:::uptodate --> x659cc62608118b5e["ts_diff2_adf_day"]:::uptodate
-    x9bfe90d7816277ce(["ts_diff2_day"]):::uptodate --> x659cc62608118b5e["ts_diff2_adf_day"]:::uptodate
-    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x659cc62608118b5e["ts_diff2_adf_day"]:::uptodate
     x14bcf0b7ef5959f1(["ts_month"]):::uptodate --> x2141e3016fa1f53c["plt_pacf_month"]:::uptodate
     xfc9293f408401e5e>"vizAutocor"]:::uptodate --> x2141e3016fa1f53c["plt_pacf_month"]:::uptodate
     x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> x2141e3016fa1f53c["plt_pacf_month"]:::uptodate
+    x3e87573bd30d006b>"evalUnitRoot"]:::uptodate --> xc751146609196dc6["ts_uroot_month"]:::uptodate
+    x14bcf0b7ef5959f1(["ts_month"]):::uptodate --> xc751146609196dc6["ts_uroot_month"]:::uptodate
+    x9544603ba0a3eba6(["vizDotParams"]):::uptodate --> xc751146609196dc6["ts_uroot_month"]:::uptodate
     xc78421dd0f40e7eb>"timeDecomp"]:::uptodate --> xce13d34bbb5aa635(["decom_ts_month_1.year_loess_pagerank"]):::uptodate
     x14bcf0b7ef5959f1(["ts_month"]):::uptodate --> xce13d34bbb5aa635(["decom_ts_month_1.year_loess_pagerank"]):::uptodate
     x2141e3016fa1f53c["plt_pacf_month"]:::uptodate --> x88834797050fcde2["fig_pacf_month"]:::uptodate
@@ -482,19 +479,17 @@ graph LR
   end
   classDef uptodate stroke:#000000,color:#ffffff,fill:#354823;
   classDef started stroke:#000000,color:#000000,fill:#DC863B;
-  classDef errored stroke:#000000,color:#ffffff,fill:#C93312;
   classDef none stroke:#000000,color:#000000,fill:#94a4ac;
   linkStyle 0 stroke-width:0px;
   linkStyle 1 stroke-width:0px;
   linkStyle 2 stroke-width:0px;
   linkStyle 3 stroke-width:0px;
   linkStyle 4 stroke-width:0px;
-  linkStyle 5 stroke-width:0px;
+  linkStyle 408 stroke-width:0px;
+  linkStyle 409 stroke-width:0px;
+  linkStyle 410 stroke-width:0px;
   linkStyle 411 stroke-width:0px;
   linkStyle 412 stroke-width:0px;
   linkStyle 413 stroke-width:0px;
   linkStyle 414 stroke-width:0px;
-  linkStyle 415 stroke-width:0px;
-  linkStyle 416 stroke-width:0px;
-  linkStyle 417 stroke-width:0px;
 ```

@@ -137,6 +137,8 @@ aggregateTS <- function(ts, type = "week", ...) {
       "date"          = min(date),
       "eigen"         = mean(eigen, na.rm = TRUE),
       "pagerank"      = mean(pagerank, na.rm = TRUE),
+      "degree"        = sum(degree, na.rm = TRUE),
+      "strength"      = sum(strength, na.rm = TRUE),
       "n_claim"       = sum(n_claim, na.rm = TRUE),
       "n_patient"     = sum(n_patient, na.rm = TRUE),
       "claim2patient" = sum(n_claim, na.rm = TRUE) / sum(n_patient, na.rm = TRUE),
