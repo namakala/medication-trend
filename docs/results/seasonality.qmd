@@ -5,6 +5,7 @@ knitr:
     fig.height: 6
 ---
 
+{{< pagebreak >}}
 \KOMAoptions{paper=landscape,pagesize}
 \recalctypearea
 
@@ -23,7 +24,7 @@ options(digits = 2)
 
 ### Time-series on a weekly interval
 
-```{r, fig.width = 14}
+```{r, fig.width = 14, fig.height = 8}
 
 tar_read(plt_dot_diff_week)[[1]]
 tar_read(plt_dot_diff_week)[[2]]
@@ -64,7 +65,6 @@ tar_read(plt_pacf_diff_month)[[4]]
 ```
 
 {{< pagebreak >}}
-
 \KOMAoptions{paper=portrait,pagesize}
 \recalctypearea
 

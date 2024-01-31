@@ -80,6 +80,8 @@ tar_read(mod_arima_eval_n_claim) %>% reportLB()
 
 ```
 
+{{< pagebreak >}}
+
 ### Claim-to-patient ratio
 
 #### Model fit
@@ -98,6 +100,8 @@ tar_read(mod_arima_eval_claim2patient) %>% reportLB()
 
 ```
 
+{{< pagebreak >}}
+
 ### Eigenvector centrality
 
 #### Model fit
@@ -115,7 +119,6 @@ tar_read(mod_arima_eigen) %>% reportMod()
 tar_read(mod_arima_eval_eigen) %>% reportLB()
 
 ```
-
 
 {{< pagebreak >}}
 \KOMAoptions{paper=landscape,pagesize}

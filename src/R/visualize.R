@@ -201,7 +201,7 @@ vizPair <- function(ts, groupname) {
   require("ggplot2")
 
   sub_ts <- ts %>%
-    subset(.$group == groupname, select = c(eigen:claim2patient, event))
+    subset(.$group == groupname, select = c(eigen, strength:claim2patient, event))
 
   plt <- GGally::ggpairs(sub_ts, aes(color = event, alpha = 0.6)) +
     labs(title = groupname)
