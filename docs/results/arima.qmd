@@ -12,11 +12,28 @@ pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 
 options(digits = 2)
 
+getArimaParam <- function(mod) {
+  orders <- mod$arma %>% {c(
+    "p" = .[1],
+    "q" = .[2],
+    "P" = .[3],
+    "Q" = .[4],
+    "d" = .[6],
+    "D" = .[7]
+  )}
+  res <- sprintf(
+    "(%s) (%s)",
+    paste(orders[c("p", "d", "q")], collapse = ", "),
+    paste(orders[c("P", "D", "Q")], collapse = ", ")
+  )
+  return(res)
+}
+
 reportMod <- function(mods) {
   require("kableExtra")
   tar_load(med_groups)
-  spec  <- lapply(mods, forecast::arimaorder) %>% sapply(paste, collapse = ", ")
-  label <- sprintf("%s (%s)", med_groups, spec)
+  spec  <- lapply(mods, getArimaParam)
+  label <- sprintf("%s %s", med_groups, spec)
   res   <- mods %>%
     set_names(label) %>%
     lapply(function(mod) {
