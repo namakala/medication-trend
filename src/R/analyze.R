@@ -69,6 +69,8 @@ timeDiff <- function(ts, n = 1, ...) {
   #' @param n Order of differences
   #' @inheritDotParams base::diff
   #' @return A tidy time-series data frame
+  require("tsibble")
+
   if (is.vector(ts)) {
     pad     <- rep(NA, n)
     ts_diff <- c(pad, diff(ts, differences = n, ...))
@@ -78,6 +80,8 @@ timeDiff <- function(ts, n = 1, ...) {
       dplyr::mutate(
         eigen         = timeDiff(eigen, n = n, ...),
         pagerank      = timeDiff(pagerank, n = n, ...),
+        degree        = timeDiff(degree, n = n, ...),
+        strength      = timeDiff(strength, n = n, ...),
         n_claim       = timeDiff(n_claim, n = n, ...),
         n_patient     = timeDiff(n_patient, n = n, ...),
         claim2patient = timeDiff(claim2patient, n = n, ...)

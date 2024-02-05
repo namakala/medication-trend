@@ -255,9 +255,9 @@ list(
   ),
 
   # Generate documentation
-  tar_quarto(report_descriptive, "docs", profile = "descriptive"),
-  tar_quarto(report_arima, "docs", profile = "arima"),
-  tar_quarto(report_seasonality, "docs", profile = "seasonality"),
+  tar_quarto(report_descriptive, "docs", profile = "descriptive", priority = 0),
+  tar_quarto(report_arima, "docs", profile = "arima", priority = 0),
+  tar_quarto(report_seasonality, "docs", profile = "seasonality", priority = 0),
   tar_quarto(readme, "README.qmd", priority = 0)
 
 )
