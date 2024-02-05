@@ -87,7 +87,7 @@ vizDot <- function(tbl, y, groupname = NULL, ...) {
   #' @param groupname A character object specifying the medication group name.
   #' If not provided (`null` by default), all groups are shown as a faceted
   #' plot.
-  #' @inheritDotParams ggplot2::facet_wrap
+  #' @inheritDotParams ggh4x::facet_wrap2
   #' @return A GGPlot object
   require("ggplot2")
   require("tsibble")
@@ -224,6 +224,75 @@ vizArima <- function(mod, y, groupname, ...) {
   plt <- forecast::autoplot(mod) +
     labs(y = getLabel(y), subtitle = groupname) +
     ggpubr::theme_pubclean()
+
+  return(plt)
+}
+
+vizPeriod <- function(ts, y, period = "month", groupname = NULL, ...) {
+  #' Visualize Periodic Patterns
+  #'
+  #' Visualize patterns of a time-series data using the period as the x axis
+  #'
+  #' @param ts A time-series data frame, usually `ts_month` or its derivatives
+  #' @param y A metric names of the time-series data
+  #' @param period A period of time to observe the periodicity, currently
+  #' supporting `day`, `week`, and `month`
+  #' @param groupname A character object specifying the medication group name.
+  #' If not provided (`null` by default), all groups are shown as a faceted
+  #' plot.
+  #' @inheritDotParams ggh4x::facet_wrap2
+  #' @return A GGplot2 object
+  require("ggplot2")
+  require("tsibble")
+
+  # Create labels for the plot
+  if (!is.null(groupname)) {
+    ts      %<>% subset(.$group == groupname)
+    plt_lab  <-  labs(title = groupname, x = "", y = getLabel(y))
+  } else {
+    plt_lab  <- labs(x = "", y = getLabel(y))
+  }
+
+  # Prepare the table for plotting
+  ts %<>%
+    aggregateTS(type = period) %>%
+    timeDiff(n = 1) %>% # Dynamically detrending the time series
+    dplyr::mutate(
+      "year"  = lubridate::year(date) %>% ordered(),
+      "xtick" = switch(
+        period,
+        "day"   = lubridate::wday(date, label = TRUE),
+        "week"  = lubridate::week(date) %>% as.ordered(),
+        "month" = lubridate::month(date, label = TRUE)
+      ),
+      "color" = switch(
+        period,
+        "day"   = tsibble::yearweek(date) %>% as.ordered(),
+        "week"  = lubridate::year(date),
+        "month" = lubridate::year(date)
+      ) %>% as.numeric()
+    )
+
+  # Generate plot to evaluate periodic pattern
+  plt <- ggplot(ts, aes(x = xtick, y = get(y), group = color, color = color)) +
+    geom_line(alpha = 0.4, linewidth = 1.5) +
+    plt_lab +
+    scale_color_gradient(guide = "none") +
+    ggpubr::theme_pubclean()
+
+  # Create a faceted plot when groupname is NULL
+  if (is.null(groupname)) {
+    strip_col <- setStripColor(unique(ts$group))
+    plt <- plt +
+      ggh4x::facet_wrap2(~group, strip = strip_col, ...) +
+      labs(
+        caption = "The green label signifies medications affecting the nervous system, coded under N01-N07 in WHOCC ATC"
+      ) +
+      theme(
+        strip.text = element_text(size = 10),
+        axis.text  = element_text(size = 8)
+      )
+  }
 
   return(plt)
 }

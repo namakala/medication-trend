@@ -1,8 +1,8 @@
 ---
 knitr:
   opts_chunk:
-    fig.width: 12
-    fig.height: 6
+    fig.width: 14
+    fig.height: 8
 ---
 
 {{< pagebreak >}}
@@ -22,9 +22,17 @@ options(digits = 2)
 
 ## Dot plots
 
-### Time-series on a weekly interval
+### Differenced time-series on a daily interval
 
-```{r, fig.width = 14, fig.height = 8}
+```{r}
+
+tar_read(plt_dot_diff_day)[-5]
+
+```
+
+### Differenced time-series on a weekly interval
+
+```{r}
 
 tar_read(plt_dot_diff_week)[[1]]
 tar_read(plt_dot_diff_week)[[2]]
@@ -33,16 +41,115 @@ tar_read(plt_dot_diff_week)[[4]]
 
 ```
 
+### Differenced time-series interval on a monthly interval
+
+```{r}
+
+tar_read(plt_dot_diff_month)[-5]
+
+```
+
 {{< pagebreak >}}
 
-## Autocorrelation plots
+## Autocorrelation periodic plots
+
+### Exploring seasonality within the number of medication claims (day) {#sec-nclaim-day}
+
+```{r}
+
+tar_read(plt_period_day)[[1]]
+tar_read(plt_acf_diff_day)[[1]]
+tar_read(plt_pacf_diff_day)[[1]]
+
+```
+
+### Exploring seasonality within the number of patients (day) {#sec-npat-day}
+
+```{r}
+
+tar_read(plt_period_day)[[2]]
+tar_read(plt_acf_diff_day)[[2]]
+tar_read(plt_pacf_diff_day)[[2]]
+
+```
+
+### Exploring seasonality within the claim-to-patient ratio (day) {#sec-ratio-day}
+
+```{r}
+
+tar_read(plt_period_day)[[3]]
+tar_read(plt_acf_diff_day)[[3]]
+tar_read(plt_pacf_diff_day)[[3]]
+
+```
+
+### Exploring seasonality within the eigenvector centrality (day) {#sec-eigen-day}
+
+```{r}
+
+tar_read(plt_period_day)[[4]]
+tar_read(plt_acf_diff_day)[[4]]
+tar_read(plt_pacf_diff_day)[[4]]
+
+```
+
+### Exploring seasonality within the number of medication claims (week) {#sec-nclaim-week}
+
+```{r}
+
+tar_read(plt_period_week)[[1]]
+tar_read(plt_acf_diff_week)[[1]]
+tar_read(plt_pacf_diff_week)[[1]]
+
+```
+
+### Exploring seasonality within the number of patients (week) {#sec-npat-week}
+
+```{r}
+
+tar_read(plt_period_week)[[2]]
+tar_read(plt_acf_diff_week)[[2]]
+tar_read(plt_pacf_diff_week)[[2]]
+
+```
+
+### Exploring seasonality within the claim-to-patient ratio (week) {#sec-ratio-week}
+
+```{r}
+
+tar_read(plt_period_week)[[3]]
+tar_read(plt_acf_diff_week)[[3]]
+tar_read(plt_pacf_diff_week)[[3]]
+
+```
+
+### Exploring seasonality within the eigenvector centrality (week) {#sec-eigen-week}
+
+```{r}
+
+tar_read(plt_period_week)[[4]]
+tar_read(plt_acf_diff_week)[[4]]
+tar_read(plt_pacf_diff_week)[[4]]
+
+```
 
 ### Exploring seasonality within the number of medication claims (month) {#sec-nclaim-month}
 
 ```{r}
 
+tar_read(plt_period_month)[[1]]
 tar_read(plt_acf_diff_month)[[1]]
 tar_read(plt_pacf_diff_month)[[1]]
+
+```
+
+### Exploring seasonality within the number of patients (month) {#sec-npat-month}
+
+```{r}
+
+tar_read(plt_period_month)[[2]]
+tar_read(plt_acf_diff_month)[[2]]
+tar_read(plt_pacf_diff_month)[[2]]
 
 ```
 
@@ -50,6 +157,7 @@ tar_read(plt_pacf_diff_month)[[1]]
 
 ```{r}
 
+tar_read(plt_period_month)[[3]]
 tar_read(plt_acf_diff_month)[[3]]
 tar_read(plt_pacf_diff_month)[[3]]
 
@@ -59,41 +167,9 @@ tar_read(plt_pacf_diff_month)[[3]]
 
 ```{r}
 
+tar_read(plt_period_month)[[4]]
 tar_read(plt_acf_diff_month)[[4]]
 tar_read(plt_pacf_diff_month)[[4]]
 
 ```
 
-{{< pagebreak >}}
-\KOMAoptions{paper=portrait,pagesize}
-\recalctypearea
-
-## Polar Plots
-
-### Number of claim
-
-```{r}
-
-tar_read(plt_polar_n_claim)
-
-```
-
-{{< pagebreak >}}
-
-### Claim-to-patient ratio
-
-```{r}
-
-tar_read(plt_polar_claim2patient)
-
-```
-
-{{< pagebreak >}}
-
-### Eigenvector centrality
-
-```{r}
-
-tar_read(plt_polar_eigen)
-
-```

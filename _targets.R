@@ -70,7 +70,7 @@ list(
   # Merge graph metrics and descriptive statistics as a time-series data
   tar_map(
     unlist = FALSE,
-    values = data.frame("type" = c("day", "week", "month", "quarter")),
+    values = data.frame("type" = c("day", "week", "month")),
 
     # Merge time-series and calculate the first-degree diff
     tar_target(ts, mergeTS(iadb_metrics, iadb_stats, type = type)),
@@ -126,6 +126,14 @@ list(
       iteration = "list"
     ),
 
+    # Visualize the periodic patterns
+    tar_target(
+      plt_period,
+      vizPeriod(ts, y = vizDotParams$metrics, period = type, nrow = 4, scales = "free"),
+      pattern = map(vizDotParams),
+      iteration = "list"
+    ),
+
     # Write generated plots into the specified dir
     tar_target(
       fig_dot,
@@ -168,7 +176,7 @@ list(
   ),
 
   # Set medication groups for iteration
-  tar_target(med_groups, unique(ts_quarter$group)),
+  tar_target(med_groups, unique(ts_month$group)),
 
   # Descriptive statistics on the time-series data
   tar_target(desc_ts, describe(ts_day, type = "mean")),
