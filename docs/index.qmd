@@ -1,7 +1,20 @@
 # Executive Summary {-}
 
-::: {.content-visible when-profile="seasonality"}
+::: {.content-visible when-profile="descriptive"}
 
-Exploration on seasonality is done on monthly data with a first-order difference
+{{< include exec-summary/descriptive.qmd >}}
 
 :::
+
+::: {.content-visible when-profile="arima"}
+
+{{< include exec-summary/arima.qmd >}}
+
+:::
+
+::: {.content-visible when-profile="seasonality"}
+
+{{< include exec-summary/seasonality.qmd >}}
+
+:::
+

@@ -1,0 +1,2 @@
+Exploration on seasonality is done on monthly data with a first-order difference.
+
