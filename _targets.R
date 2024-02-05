@@ -129,7 +129,7 @@ list(
     # Visualize the periodic patterns
     tar_target(
       plt_period,
-      vizPeriod(ts, y = vizDotParams$metrics, period = type, nrow = 4, scales = "free"),
+      vizPeriod(ts_diff, y = vizDotParams$metrics, period = type, nrow = 4, scales = "free"),
       pattern = map(vizDotParams),
       iteration = "list"
     ),

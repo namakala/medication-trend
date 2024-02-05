@@ -255,8 +255,6 @@ vizPeriod <- function(ts, y, period = "month", groupname = NULL, ...) {
 
   # Prepare the table for plotting
   ts %<>%
-    aggregateTS(type = period) %>%
-    timeDiff(n = 1) %>% # Dynamically detrending the time series
     dplyr::mutate(
       "year"  = lubridate::year(date) %>% ordered(),
       "xtick" = switch(
