@@ -21,7 +21,7 @@ fieldSummary <- function(tbl) {
   return(res)
 }
 
-timeDecomp <- function(ts, varname, period, method, ...) {
+timeDecom <- function(ts, varname, period, method, ...) {
   #' Time Series Decomposition
   #'
   #' An extended wrapper for `stats::decompose` and `stats::stl`, conveniently
@@ -41,7 +41,7 @@ timeDecomp <- function(ts, varname, period, method, ...) {
 
   if (method == "classic") {
 
-    decomp <- ts %>%
+    decom <- ts %>%
       fabletools::model(feasts::classical_decomposition(
         form, ...
       )) %>%
@@ -49,7 +49,7 @@ timeDecomp <- function(ts, varname, period, method, ...) {
 
   } else if (method == "loess") {
 
-    decomp <- ts %>%
+    decom <- ts %>%
       fabletools::model(feasts::STL(
         form, iteration = 10
       )) %>%
@@ -57,7 +57,7 @@ timeDecomp <- function(ts, varname, period, method, ...) {
 
   }
 
-  return(decomp)
+  return(decom)
 }
 
 timeDiff <- function(ts, n = 1, ...) {
@@ -126,21 +126,3 @@ evalUnitRoot <- function(ts, y, summarize = TRUE) {
   return(res)
 }
 
-fitModel <- function(ts, groupname, y, type = "arima", ...) {
-  #' Fit Time-Series Model
-  #'
-  #' Fit a model to explain or forecast time-series data frame
-  #'
-  #' @param ts A tidy time-series data frame
-  #' @param groupname The name of medication group to subset the data
-  #' @param y Metrics to evaluate
-  #' @param type The type of model to fit
-  #' @param ... Parameters to specify the model
-  #' @return A model object
-  sub_ts <- ts %>% subset(.$group == groupname, select = y)
-  if (type == "arima") {
-    mod <- sub_ts %>% forecast::auto.arima(...)
-  }
-
-  return(mod)
-}

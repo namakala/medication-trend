@@ -200,7 +200,7 @@ list(
         "ts_dat" = rlang::syms(paste("ts", c("day", "week", "month"), sep = "_")),
         "period" = paste(1, c("week", "month", "year"))
       ),
-      tar_target(decom, timeDecomp(ts_dat, varname = tvar, period = period, method = method)),
+      tar_target(decom, timeDecom(ts_dat, varname = tvar, period = period, method = method)),
       tar_target(
         plt_decom,
         vizDot(decom, y = "season_adjust", nrow = 4) + labs(y = getLabel(tvar))
@@ -208,7 +208,7 @@ list(
     )
   ),
 
-  # Set variables to fit in an ARIMA model
+  # Set variables to iterate
   tar_map(
     unlist = FALSE,
     values = list("y" = c("n_claim", "claim2patient", "eigen")),
@@ -224,7 +224,7 @@ list(
     # Fit ARIMA models
     tar_target(
       mod_arima,
-      fitModel(ts_month, groupname = med_groups, y = y, type = "arima", test = "pp"),
+      fitModel(ts_week, groupname = med_groups, y = y, FUN = fitArima, test = "pp"),
       pattern = map(med_groups),
       iteration = "list"
     ),
@@ -249,6 +249,14 @@ list(
       plt_arima_forecast,
       vizArima(mod_arima_forecast, y = y, groupname = med_groups),
       pattern = map(mod_arima_forecast, med_groups),
+      iteration = "list"
+    ),
+
+    # Fit SSA models
+    tar_target(
+      mod_ssa,
+      fitModel(ts_week, groupname = med_groups, y = y, FUN = fitSsa, kind = "1d-ssa"),
+      pattern = map(med_groups),
       iteration = "list"
     )
 

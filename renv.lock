@@ -249,6 +249,20 @@
       ],
       "Hash": "acb0a5bf38490f26ab8661b467f4f53a"
     },
+    "Rssa": {
+      "Package": "Rssa",
+      "Version": "1.0.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "forecast",
+        "lattice",
+        "methods",
+        "svd"
+      ],
+      "Hash": "43f4977b62242d0cd6ff59b967ce0fec"
+    },
     "SparseM": {
       "Package": "SparseM",
       "Version": "1.81",
@@ -2627,6 +2641,16 @@
         "utils"
       ],
       "Hash": "b8e943d262c3da0b0febd3e04517c197"
+    },
+    "svd": {
+      "Package": "svd",
+      "Version": "0.5.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "methods"
+      ],
+      "Hash": "362784ed45c28795d7dd80b099f877e3"
     },
     "svglite": {
       "Package": "svglite",
