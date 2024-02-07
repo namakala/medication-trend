@@ -740,12 +740,13 @@
     },
     "crew": {
       "Package": "crew",
-      "Version": "0.6.0",
+      "Version": "0.8.0",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "R",
         "R6",
+        "cli",
         "data.table",
         "getip",
         "mirai",
@@ -756,9 +757,10 @@
         "stats",
         "tibble",
         "tidyselect",
+        "tools",
         "utils"
       ],
-      "Hash": "a7dfba95c3019cfecc6c10bdebbe024a"
+      "Hash": "99e32e4ac6a41fa1769029900f6fa812"
     },
     "crosstalk": {
       "Package": "crosstalk",
@@ -1807,14 +1809,14 @@
     },
     "mirai": {
       "Package": "mirai",
-      "Version": "0.11.2",
+      "Version": "0.12.1",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "R",
         "nanonext"
       ],
-      "Hash": "bf4a5ecfef3fc61c1b5f88abf0c13f42"
+      "Hash": "bd1a289ee0b2a824e6715b996bf949eb"
     },
     "munsell": {
       "Package": "munsell",
@@ -1829,13 +1831,13 @@
     },
     "nanonext": {
       "Package": "nanonext",
-      "Version": "0.10.4",
+      "Version": "0.12.0",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "R"
       ],
-      "Hash": "27657c7f163a8527858a94850e3e2c94"
+      "Hash": "c25d11b44b63ef24f3955aad82aef60c"
     },
     "nlme": {
       "Package": "nlme",
