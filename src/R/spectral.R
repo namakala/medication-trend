@@ -1,6 +1,6 @@
 # Functions to perform spectral analysis, especially manipulate objects from `Rssa`
 
-reconSsa <- function(ssa, naive = TRUE, type = "cor", as_tibble = TRUE, ...) {
+reconSsa <- function(ssa, naive = TRUE, type = "wcor", as_tibble = TRUE, ...) {
   #' Reconstruct SSA Decomposition
   #'
   #' Reconstruct the SSA model to obtain its constituting functions
@@ -29,6 +29,18 @@ reconSsa <- function(ssa, naive = TRUE, type = "cor", as_tibble = TRUE, ...) {
   attributes(recon)$date   <- attr(ssa, "date")
   attributes(recon)$metric <- attr(ssa, "metric")
 
+  # Inserting trend from a sequential model
+  trend  <- attr(ssa, "trend")
+  series <- attr(ssa, "series")
+
+  if (!is.null(trend)) {
+    attributes(recon)$trend <- trend
+  }
+
+  if (!is.null(series)) {
+    attributes(recon)$series <- series
+  }
+
   # Return either tibble or the original reconstructed time-series
   if (as_tibble) {
     recon %<>% tidyReconSsa()
@@ -45,7 +57,6 @@ tidyReconSsa <- function(recon) {
   #'
   #' @param recon
   #' @return A tidy reconstructed time-series
-  require("tsibble")
 
   # Get the total length of the recon object
   n_col <- length(recon)
@@ -54,6 +65,7 @@ tidyReconSsa <- function(recon) {
   ssa_group  <- attr(recon, "group")
   ssa_date   <- attr(recon, "date")
   ssa_metric <- attr(recon, "metric")
+  trend      <- attr(recon, "trend")
 
   # Create a tidy data frame
   tbl <- recon %>% unlist() %>%
@@ -62,23 +74,55 @@ tidyReconSsa <- function(recon) {
     tibble::tibble() %>%
     dplyr::rename_with(~ gsub("X", "F", .x)) %>%
     tibble::add_column("Original"  = attr(recon, "series"), .before = 1) %>%
-    tibble::add_column("Residuals" = attr(recon, "residuals"), .after = 1) %>%
-    tibble::add_column("group"     = ssa_group, .before = 1) %>%
-    tibble::add_column("date"      = as.Date(ssa_date), .after  = 1) %>%
-    tibble::add_column("metric"    = ssa_metric, .after = 2)
+    tibble::add_column("Residuals" = attr(recon, "residuals"), .after = 1)
+
+  # Insert the previously fitted trend; only available with sequential method
+  if (!is.null(trend)) {
+    tbl %<>% tibble::add_column("Trend" = trend, .after = 1)
+  }
 
   # Clean up the data frame as tsibble
-  tidy_recon <- tbl %>%
-    tidyr::pivot_longer(c(Original, Residuals, dplyr::starts_with("F")), names_to = "component") %>%
+  if (!{is.null(ssa_group) | is.null(ssa_date) | is.null(ssa_metric)}) {
+    tidy_recon <- tbl %>%
+      tibble::add_column("group"  = ssa_group, .before = 1) %>%
+      tibble::add_column("date"   = as.Date(ssa_date), .before = 1) %>%
+      tibble::add_column("metric" = ssa_metric, .before = 1) %>%
+      tsReconSsa(n_col)
+  } else {
+    tidy_recon <- tbl
+  }
+
+  return(tidy_recon)
+}
+
+tsReconSsa <- function(tidy_recon, n_col) {
+  #' Tidy Reconstructed Time Series
+  #'
+  #' Create a tidy time series from a reconstructed SSA model
+  #'
+  #' @param tidy_recon A tidy data frame containing reconstructed components
+  #' @param n_col The number of reconstructed time series
+  #' @return A tsibble of tidy reconstructed time series
+  require("tsibble")
+
+  if ("Trend" %in% colnames(tidy_recon)) {
+    tbl_long <- tidy_recon %>%
+      tidyr::pivot_longer(c(Original, Trend, Residuals, dplyr::starts_with("F")), names_to = "component")
+  } else {
+    tbl_long <- tidy_recon %>%
+      tidyr::pivot_longer(c(Original, Residuals, dplyr::starts_with("F")), names_to = "component")
+  }
+
+  ts <- tbl_long %>%
     dplyr::mutate(
       component = factor(
         component,
-        levels = c("Original", paste0("F", 1:n_col), "Residuals")
+        levels = c("Original", "Trend", paste0("F", 1:n_col), "Residuals")
       )
     ) %>%
     tsibble::as_tsibble(index = date, key = c(group, metric, component))
 
-  return(tidy_recon)
+  return(ts)
 }
 
 getSsaGroup <- function(ssa, type = "cor", ...) {
@@ -118,3 +162,25 @@ getSsaGroup <- function(ssa, type = "cor", ...) {
   return(groups)
 }
 
+bindReconSsa <- function(ts_list) {
+  #' Bind Reconstructed Time Series
+  #'
+  #' Bind a list of reconstructed time series into one tsibble
+  #'
+  #' @param ts_list A list of reconstructed time series, usually the output of
+  #' `tsReconSsa`
+  #' @return A tidy data frame
+  require("tsibble")
+
+  recurse <- "list" %in% lapply(ts_list, class)
+
+  if (recurse) {
+    tbl <- lapply(ts_list, bindReconSsa) %>% bindReconSsa()
+    return(tbl)
+  }
+
+  tbl <- ts_list %>%
+    {do.call(dplyr::bind_rows, .)}
+    
+  return(tbl)
+}

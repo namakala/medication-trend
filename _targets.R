@@ -255,7 +255,7 @@ list(
     # Fit SSA models to decompose the time series based on singular spectrum analysis
     tar_target(
       mod_ssa,
-      fitModel(ts_week, groupname = med_groups, y = y, FUN = fitSsa, kind = "1d-ssa"),
+      fitModel(ts_week, groupname = med_groups, y = y, FUN = fitSsa, method = "sequential", kind = "1d-ssa", L = 52),
       pattern = map(med_groups),
       iteration = "list"
     ),
@@ -263,18 +263,30 @@ list(
     # Reconstruct decomposed time-series obtained from the SSA models
     tar_target(
       mod_ssa_recon,
-      reconSsa(mod_ssa, naive = FALSE, type = "wcor"),
+      reconSsa(mod_ssa, naive = FALSE, type = "wcor", nclust = 2),
       pattern = map(mod_ssa),
       iteration = "list"
     ),
 
     tar_target(
       plt_ssa_recon,
-      vizReconSsa(mod_ssa_recon),
+      vizReconSsa(mod_ssa_recon, ncol = 1),
       pattern = map(mod_ssa_recon),
       iteration = "list"
     )
 
+  ),
+
+  # Combine SSA-based decomposition
+  tar_target(
+    decom_ssa,
+    bindReconSsa(
+      list(
+        mod_ssa_recon_n_claim,
+        mod_ssa_recon_claim2patient,
+        mod_ssa_recon_eigen
+      )
+    )
   ),
 
   # Generate documentation

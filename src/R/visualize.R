@@ -368,11 +368,12 @@ vizReconSsa <- function(tidy_recon, ...) {
   med <- unique(tidy_recon$group)
   lab <- unique(tidy_recon$metric) %>% getLabel()
 
-  strip_col <- setStripColor(unique(tidy_recon$component), ref = c("Original", "Residuals"))
+  strip_col <- setStripColor(unique(tidy_recon$component), ref = c("Original", "Trend"))
   
   plt <- ggplot(tidy_recon, aes(x = date, y = value)) +
-    geom_line(alpha = 0.8) +
-    ggh4x::facet_wrap2(~component, scales = "free", strip = strip_col, ...) +
+    geom_point(alpha = 0.4, color = "grey40", size = 2) +
+    geom_line(alpha = 0.2, color = "grey40", linewidth = 1.5) +
+    ggh4x::facet_wrap2(~component, scales = "free_y", strip = strip_col, ...) +
     labs(title = med, y = lab, x = "") +
     ggpubr::theme_pubclean()
 

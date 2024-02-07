@@ -38,18 +38,48 @@ fitArima <- function(ts, ...) {
   return(mod)
 }
 
-fitSsa <- function(ts, ...) {
+fitSsa <- function(ts, method = NULL, ...) {
   #' Fit Singular-Spectrum Model
   #'
   #' Fit a singular-spectrum analysis model using the `Rssa` package
   #'
   #' @param ts A tidy time-series data frame, should be a subset of a metric as
   #' specified by `fitModel`
+  #' @param method Further method for fitting the model, currently supporting
+  #' sequential SSA modelling
   #' @inheritDotParams Rssa::ssa
   #' @return A model object
   require("Rssa")
 
   mod <- ts %>% extract2(1) %>% Rssa::ssa(...)
 
+  if (is.null(method)) { # Quick termination when method is NULL
+    return(mod)
+  }
+
+  # Continue model fitting based on the chosen method
+  if (method == "sequential") {
+
+    # Extract the reconstructed trend and residuals
+    recon <- reconSsa(mod, naive = TRUE, as_tibble = FALSE, groups = 1)
+    trend <- recon[[1]]
+    resid <- residuals(recon)
+
+    # Reconstruct other series from the residuals
+    mod_orig <- mod
+    mod      <- Rssa::ssa(resid)
+
+    # Insert attributes to the new model
+    attributes(mod)$trend  <- trend
+    attributes(mod)$series <- attr(recon, "series")
+
+  } else {
+
+    message("Method is not supported, returning the model")
+    return(mod)
+
+  }
+
   return(mod)
+
 }
