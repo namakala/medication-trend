@@ -40,20 +40,25 @@ getLabel <- function(metric) {
   return(labelname)
 }
 
-setStripColor <- function(group) {
+setStripColor <- function(group, ref = NULL) {
   #' Set Strip Color
   #'
   #' Set strip color in a faceted GGPlot2 object
   #'
   #' @param group A character vector of medication group, usually containing 25
   #' groups enlisted in the `setGroupFactor` function
+  #' @param ref A reference group to use a different color
   #' @return Themed strip as a `ggh4x` object
   require("ggh4x")
+
+  if (is.null(ref)) {
+    ref <- getNeuroMeds()
+  }
 
   colors    <- genColor()
   strip_col <- ggh4x::strip_themed(
     background_x = ggh4x::elem_list_rect(
-      fill = ifelse(unique(group) %in% getNeuroMeds(), colors$green, "grey90")
+      fill = ifelse(unique(group) %in% ref, colors$green, "grey90")
     )
   )
 
@@ -362,10 +367,12 @@ vizReconSsa <- function(tidy_recon, ...) {
   
   med <- unique(tidy_recon$group)
   lab <- unique(tidy_recon$metric) %>% getLabel()
+
+  strip_col <- setStripColor(unique(tidy_recon$component), ref = c("Original", "Residuals"))
   
   plt <- ggplot(tidy_recon, aes(x = date, y = value)) +
     geom_line(alpha = 0.8) +
-    facet_wrap(~ component, scales = "free", ...) +
+    ggh4x::facet_wrap2(~component, scales = "free", strip = strip_col, ...) +
     labs(title = med, y = lab, x = "") +
     ggpubr::theme_pubclean()
 
