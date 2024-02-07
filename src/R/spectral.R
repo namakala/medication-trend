@@ -1,6 +1,6 @@
 # Functions to perform spectral analysis, especially manipulate objects from `Rssa`
 
-reconSsa <- function(ssa, naive = TRUE, type = "cor", ...) {
+reconSsa <- function(ssa, naive = TRUE, type = "cor", as_tibble = TRUE, ...) {
   #' Reconstruct SSA Decomposition
   #'
   #' Reconstruct the SSA model to obtain its constituting functions
@@ -11,25 +11,74 @@ reconSsa <- function(ssa, naive = TRUE, type = "cor", ...) {
   #' @param type Type of SSA group to extract, support either `pgram`, `wcor`,
   #' or `cor`. This argument is passed on to `getSsaGroup` when `naive` is
   #' `FALSE`.
+  #' @param as_tibble A boolean to indicate return as a tibble
   #' @inheritDotParams Rssa::reconstruct
+  #' @return A reconstructed time-series data
   require("Rssa")
 
-  args <- list(...)
-
+  # Reconstruct the time-series
   if (naive) {
-    recon  <- Rssa::reconstruct(ssa, ...)
-  } else {
-    groups <- getSsaGroup(ssa, type = type)
+    recon  <- Rssa::reconstruct(ssa, ...) # Without groupings
+  } else { # With automatic groupings
+    groups <- getSsaGroup(ssa, type = type, ...)
     recon  <- Rssa::reconstruct(ssa, groups = groups, ...)
   }
 
-  ssa_attr <- base::attr(ssa, "group")
+  # Insert custom attributes
+  attributes(recon)$group  <- attr(ssa, "group")
+  attributes(recon)$date   <- attr(ssa, "date")
+  attributes(recon)$metric <- attr(ssa, "metric")
 
-  if (!is.null(ssa_attr)) {
-    base::attributes(recon)$group <- ssa_attr
+  # Return either tibble or the original reconstructed time-series
+  if (as_tibble) {
+    recon %<>% tidyReconSsa()
   }
 
   return(recon)
+}
+
+tidyReconSsa <- function(recon) {
+  #' Tidying Reconstructed Time-Series
+  #'
+  #' Create a tidy data frame for reconstructed time-series object obtained
+  #' from the SSA model
+  #'
+  #' @param recon
+  #' @return A tidy reconstructed time-series
+  require("tsibble")
+
+  # Get the total length of the recon object
+  n_col <- length(recon)
+
+  # Extract attributes
+  ssa_group  <- attr(recon, "group")
+  ssa_date   <- attr(recon, "date")
+  ssa_metric <- attr(recon, "metric")
+
+  # Create a tidy data frame
+  tbl <- recon %>% unlist() %>%
+    matrix(ncol = n_col) %>%
+    data.frame() %>%
+    tibble::tibble() %>%
+    dplyr::rename_with(~ gsub("X", "F", .x)) %>%
+    tibble::add_column("Original"  = attr(recon, "series"), .before = 1) %>%
+    tibble::add_column("Residuals" = attr(recon, "residuals"), .after = 1) %>%
+    tibble::add_column("group"     = ssa_group, .before = 1) %>%
+    tibble::add_column("date"      = as.Date(ssa_date), .after  = 1) %>%
+    tibble::add_column("metric"    = ssa_metric, .after = 2)
+
+  # Clean up the data frame as tsibble
+  tidy_recon <- tbl %>%
+    tidyr::pivot_longer(c(Original, Residuals, dplyr::starts_with("F")), names_to = "component") %>%
+    dplyr::mutate(
+      component = factor(
+        component,
+        levels = c("Original", paste0("F", 1:n_col), "Residuals")
+      )
+    ) %>%
+    tsibble::as_tsibble(index = date, key = c(group, metric, component))
+
+  return(tidy_recon)
 }
 
 getSsaGroup <- function(ssa, type = "cor", ...) {

@@ -12,11 +12,12 @@ fitModel <- function(ts, groupname, y, FUN, ...) {
   #' @param ... Parameters to specify the model
   #' @return A model object
 
-  sub_ts <- ts %>% subset(.$group == groupname, select = y)
-  mod    <- FUN(sub_ts, ...)
+  sub_ts <- ts %>% subset(.$group == groupname, select = c(y, "date"))
+  mod    <- FUN(sub_ts[y], ...)
   
   base::attributes(mod)$group  <- groupname
   base::attributes(mod)$metric <- y
+  base::attributes(mod)$date   <- sub_ts$date
 
   return(mod)
 }

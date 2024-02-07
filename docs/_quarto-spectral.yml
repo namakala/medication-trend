@@ -1,0 +1,9 @@
+project:
+  output-dir: _render/spectral
+
+book:
+  title: "Exploratory Singular Spectrum Analysis"
+  author: "Aly Lamuri"
+  chapters:
+    - index.qmd
+    - results/spectral.qmd

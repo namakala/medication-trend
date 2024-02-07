@@ -252,11 +252,26 @@ list(
       iteration = "list"
     ),
 
-    # Fit SSA models
+    # Fit SSA models to decompose the time series based on singular spectrum analysis
     tar_target(
       mod_ssa,
       fitModel(ts_week, groupname = med_groups, y = y, FUN = fitSsa, kind = "1d-ssa"),
       pattern = map(med_groups),
+      iteration = "list"
+    ),
+
+    # Reconstruct decomposed time-series obtained from the SSA models
+    tar_target(
+      mod_ssa_recon,
+      reconSsa(mod_ssa, naive = FALSE, type = "wcor"),
+      pattern = map(mod_ssa),
+      iteration = "list"
+    ),
+
+    tar_target(
+      plt_ssa_recon,
+      vizReconSsa(mod_ssa_recon),
+      pattern = map(mod_ssa_recon),
       iteration = "list"
     )
 
@@ -266,6 +281,7 @@ list(
   tar_quarto(report_descriptive, "docs", profile = "descriptive", priority = 0),
   tar_quarto(report_arima, "docs", profile = "arima", priority = 0),
   tar_quarto(report_seasonality, "docs", profile = "seasonality", priority = 0),
+  tar_quarto(report_spectral, "docs", profile = "spectral", priority = 0),
   tar_quarto(readme, "README.qmd", priority = 0)
 
 )

@@ -350,3 +350,24 @@ vizPolar <- function(...) {
 
   return(plt_polar)
 }
+
+vizReconSsa <- function(tidy_recon, ...) {
+  #' Visualize Reconstructed Time-Series
+  #'
+  #' Visualize the reconstructed series obtained from SSA model
+  #'
+  #' @param tidy_recon A tidy data frame obtained from `tidyReconSsa`
+  #' @return A GGPlot2 object
+  require("ggplot2")
+  
+  med <- unique(tidy_recon$group)
+  lab <- unique(tidy_recon$metric) %>% getLabel()
+  
+  plt <- ggplot(tidy_recon, aes(x = date, y = value)) +
+    geom_line(alpha = 0.8) +
+    facet_wrap(~ component, scales = "free", ...) +
+    labs(title = med, y = lab, x = "") +
+    ggpubr::theme_pubclean()
+
+  return(plt)
+}

@@ -110,7 +110,7 @@ evalUnitRoot <- function(ts, y, summarize = TRUE) {
       subset(.$group == med) %>%
       extract2(y) %>%
       na.omit() %>%
-      tseries::pp.test() %>% # Calculate the ADF test
+      tseries::pp.test() %>% # Calculate the Phillips-Perron test
       broom::tidy() %>%
       data.frame()
   }) %>%

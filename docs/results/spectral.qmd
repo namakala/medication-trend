@@ -1,0 +1,108 @@
+---
+knitr:
+  opts_chunk:
+    fig.width: 14
+    fig.height: 8
+---
+
+\KOMAoptions{paper=landscape,pagesize}
+\recalctypearea
+
+```{r init}
+
+pkgs <- c("magrittr", "targets")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+
+options(digits = 2)
+
+reportResid <- function(mod) {
+
+  group <- attr(mod, "group")
+  res   <- residuals(mod)
+
+  normality <- shapiro.test(res) %>%
+    broom::tidy()
+
+  tbl   <- res %>%
+    tseries::pp.test() %>%
+    broom::tidy() %>%
+    subset(select = c("statistic", "p.value", "method")) %>%
+    set_colnames(c("stat", "p", "method")) %>%
+    inset(c("stat2", "p2", "method2"), value = normality) %>%
+    tibble::add_column("group" = group, .before = 1) %>%
+    dplyr::mutate(
+      "mean"   = mean(res),
+      "median" = median(res),
+      "sd"     = sd(res),
+      "IQR"    = IQR(res)
+    )
+
+  return(tbl)
+}
+
+```
+
+# Results
+
+## Residuals analysis
+
+### Number of medication claims
+
+```{r}
+
+tar_read(mod_ssa_n_claim) %>%
+  lapply(reportResid) %>%
+  {do.call(rbind, .)} %>%
+  knitr::kable()
+
+```
+
+### Claim-to-patient ratio
+
+```{r}
+
+tar_read(mod_ssa_claim2patient) %>%
+  lapply(reportResid) %>%
+  {do.call(rbind, .)} %>%
+  knitr::kable()
+
+```
+
+### Eigenvector centrality
+
+```{r}
+
+tar_read(mod_ssa_eigen) %>%
+  lapply(reportResid) %>%
+  {do.call(rbind, .)} %>%
+  knitr::kable()
+
+```
+
+{{< pagebreak >}}
+
+## Reconstructed plots
+
+### Number of medication claim
+
+```{r}
+
+tar_read(plt_ssa_recon_n_claim)
+
+```
+
+### Medication claim to patient ratio
+
+```{r}
+
+tar_read(plt_ssa_recon_claim2patient)
+
+```
+
+### Eigenvector centrality
+
+```{r}
+
+tar_read(plt_ssa_recon_eigen)
+
+```
