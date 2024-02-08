@@ -263,17 +263,12 @@ list(
     # Reconstruct decomposed time-series obtained from the SSA models
     tar_target(
       mod_ssa_recon,
-      reconSsa(mod_ssa, naive = FALSE, type = "wcor", nclust = 2),
+      reconSsa(mod_ssa, naive = FALSE, type = "wcor"),
       pattern = map(mod_ssa),
       iteration = "list"
     ),
 
-    tar_target(
-      plt_ssa_recon,
-      vizReconSsa(mod_ssa_recon, ncol = 1),
-      pattern = map(mod_ssa_recon),
-      iteration = "list"
-    )
+    tar_target(plt_ssa_recon, vizReconSsa(mod_ssa_recon), pattern = map(mod_ssa_recon), iteration = "list")
 
   ),
 

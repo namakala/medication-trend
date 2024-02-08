@@ -365,17 +365,75 @@ vizReconSsa <- function(tidy_recon, ...) {
   #' @return A GGPlot2 object
   require("ggplot2")
   
+  # Separate oscillating functions + noise from the rest
+  id      <- grepl(x = tidy_recon$component, "^F")
+  tbl_fun <- subset(tidy_recon, id)
+  resid   <- tidy_recon %>% subset(.$component == "Residuals")
+  tbl     <- tidy_recon %>%
+    subset(!{id | .$component == "Residuals"}) %>%
+    tidyr::pivot_wider(names_from = component, values_from = value)
+
+  # Set labels and colors
   med <- unique(tidy_recon$group)
   lab <- unique(tidy_recon$metric) %>% getLabel()
+  colors <- genColor()
+  plt_title <- sprintf("%s of %s", lab, med)
 
-  strip_col <- setStripColor(unique(tidy_recon$component), ref = c("Original", "Trend"))
-  
-  plt <- ggplot(tidy_recon, aes(x = date, y = value)) +
-    geom_point(alpha = 0.4, color = "grey40", size = 2) +
-    geom_line(alpha = 0.2, color = "grey40", linewidth = 1.5) +
-    ggh4x::facet_wrap2(~component, scales = "free_y", strip = strip_col, ...) +
-    labs(title = med, y = lab, x = "") +
-    ggpubr::theme_pubclean()
+  # Scale the date (x) axis
+  scale_date <- scale_x_date(
+    date_breaks = "1 month", date_labels = "%b %Y", expand = expansion(add = c(10, 30))
+  )
+
+  # Plot for original and trend
+  plt1 <- ggplot(tbl, aes(x = date)) +
+    geom_point(aes(y = Original, color = "Data"), alpha = 0.4, size = 2, shape = 18) +
+    geom_line(aes(y = Original, color = "Data"), alpha  = 0.2, linewidth = 1.2) +
+    geom_line(aes(y = Trend, color = "Trend"), alpha  = 0.8, linewidth = 2) +
+    labs(title = plt_title, x = "", y = "") +
+    scale_date +
+    scale_color_manual(
+      name = "",
+      values = c("Data" = colors$black, "Trend" = colors$green),
+      guide = guide_legend(override.aes = aes(fill = NA))
+    ) +
+    ggpubr::theme_pubclean() +
+    theme(
+      axis.ticks.y = element_blank(),
+      axis.text.x = element_text(angle = 45, vjust = 0.8, hjust = 1),
+      legend.position = c(0.05, 0.9)
+    )
+
+  # Plot for the residuals
+  plt2 <- ggplot(resid, aes(x = date, y = value)) +
+    geom_point(alpha = 0.3, size = 1.5, color = colors$black) +
+    geom_line(alpha  = 0.3, size = 0.8, color = colors$black) +
+    labs(subtitle = "Residuals", x = "", y = "") +
+    scale_date +
+    theme_minimal() +
+    theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.text.y = element_text(size = 8),
+      axis.text.x = element_blank()
+    )
+
+  # Plot for oscillating functions
+  plt3 <- ggplot(tbl_fun, aes(x = date, y = value)) +
+    geom_point(alpha = 0.3, color = colors$black, size = 0.8) +
+    geom_line(alpha =  0.3, color = colors$black, linewidth = 0.8) +
+    facet_wrap(~component, scales = "free_y", ...) +
+    labs(subtitle = "Oscillating functions contributing to the periodicity", x = "", y = "") +
+    scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    theme_minimal() +
+    theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.text.x = element_text(size = 8),
+      axis.text.y = element_text(size = 6)
+    )
+
+  # Combine the plots
+  plt <- ggpubr::ggarrange(plt1, plt2, plt3, ncol = 1, heights = c(5, 1, 3))
 
   return(plt)
 }

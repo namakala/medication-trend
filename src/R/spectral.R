@@ -57,6 +57,7 @@ tidyReconSsa <- function(recon) {
   #'
   #' @param recon
   #' @return A tidy reconstructed time-series
+  require("tsibble")
 
   # Get the total length of the recon object
   n_col <- length(recon)

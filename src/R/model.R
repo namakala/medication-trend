@@ -53,21 +53,20 @@ fitSsa <- function(ts, method = NULL, ...) {
 
   mod <- ts %>% extract2(1) %>% Rssa::ssa(...)
 
-  if (is.null(method)) { # Quick termination when method is NULL
-    return(mod)
-  }
+  # Extract the reconstructed trend and residuals
+  recon <- reconSsa(mod, naive = TRUE, as_tibble = FALSE, groups = 1)
+  trend <- recon[[1]]
+  resid <- residuals(recon)
+
+  # Insert attributes to the new model
+  attributes(mod)$trend  <- trend
+  attributes(mod)$series <- attr(recon, "series")
 
   # Continue model fitting based on the chosen method
   if (method == "sequential") {
 
-    # Extract the reconstructed trend and residuals
-    recon <- reconSsa(mod, naive = TRUE, as_tibble = FALSE, groups = 1)
-    trend <- recon[[1]]
-    resid <- residuals(recon)
-
     # Reconstruct other series from the residuals
-    mod_orig <- mod
-    mod      <- Rssa::ssa(resid)
+    mod <- Rssa::ssa(resid)
 
     # Insert attributes to the new model
     attributes(mod)$trend  <- trend
@@ -76,7 +75,6 @@ fitSsa <- function(ts, method = NULL, ...) {
   } else {
 
     message("Method is not supported, returning the model")
-    return(mod)
 
   }
 
