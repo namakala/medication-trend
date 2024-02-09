@@ -1,0 +1,99 @@
+## Abstract
+
+**Objectives:**
+Mental health disorders are prevalent comorbidities affecting nearly two billion people worldwide. People with chronic diseases are at a higher risk of having mental health issues, which in turn potentially worsen their overall well-being. This investigation highlights the interrelatedness of mental health problems with other diagnoses, reflected as a relative importance score of psychopharmaca in a medication claim registry.
+
+**Methods:**
+Exploratory time-series analysis was performed using University of Groningen prescription database, IADB.nl. Data of patients with at least one prescription of psychopharmaca from 2018 to 2022 was extracted. A medication-claim network was constructed as an undirected graph to capture weighted co-prescription. Eigenvector centrality was computed as a measure of relative nodal importance. The number of medication claims, number of patients, claim-to-patient ratio, and eigenvector centrality were then extracted as a time-series data. Singular spectrum analysis was performed to decompose the data into its constituting trend, periodicity, and white noises.
+
+**Results:**
+Antidepressants (WHO/ATCC `N06A`), antipsychotics (`N05A`), anxiolytics (`N05B`), and hypnotics (`N05C`) are psychopharmaca with high relative importances. These classes of medication are likely to be co-prescribed alongside other medications, including medications for alimentary and metabolism (`A01-A16`), cardiovascular (`C01-C10`), analgesics (`N02`), and respiratory (`R01-R07`). From four important psychopharmaca, only antidepressants and hypnotics have a positive trend for both importance and actual number of claims.
+
+**Discussion:**
+The data presented with complex periodicity and many underlying oscillating functions, which makes it challenging to extract the trend. Positive trends in both importance and claims suggest that increasing uses of antidepressants and hypnotics are related to co-prescription or its combination with other medications from the same class. Constructing a medication claim network enriches the exploratory analysis procedure on the population level. A thorough data cleaning procedure is paramount to ensure adequate separation between trend, periodicity, and noises.
+
+{{< pagebreak >}}
+
+## Highlighted findings
+
+- @tbl-mean-diff and @sec-pair-plot describe difference in several measures before and during the COVID-19 pandemic
+  - Further analysis is necessary and will be planned for later investigation
+  - Interrupted time-series analysis should be conducted by considering:
+    1. Counterfactual data using trend before COVID-19
+    1. Counterfactual data using trend during COVID-19 given policy changes
+    1. Calculate the mean percentage changes between counterfactual and actual data
+- @sec-decom-classic-stl displays the data after classical and STL seasonal decomposition
+  - The data still presents with other patterns, implying that seasonality does not completely explains the variance
+  - Eigenvector centrality on daily, weekly, and monthly series suggests high importance of several psychopharmaca, including:
+    1. Antidepressants
+    1. Antipsychotics
+    1. Anxiolytics
+    1. Hypnotic and sedatives
+  - Other medications considered important by eigenvector centrality:
+    1. Alimentary and metabolism
+    1. Cardiovascular
+    1. Analgesics
+    1. Respiratory
+  - High eigenvector centrality implies that these eight medications are often co-prescribed
+- @sec-seasonality demonstrates two repeating patterns in medication claims:
+  - Increasing claims on Monday and decreasing claims on Saturday in the daily data, implying day-to-day differences
+  - Increasing claims in March and December in the monthly data, this pattern is persistent for weekly data as well
+  - Weekly data better captures repeating patterns and should be use for further analysis
+- Model evaluation tables in @sec-arima consistently show high value of intercept
+  - All models for medication claims have a relatively low effect size for AR, MA, or drift term
+  - No model has fitted with a (P, D, Q) term, implying no detected seasonality for models maximizing AICc
+  - Seasonality might be undetected due to the presence of noise and other underlying periodicity
+- @tbl-trend shows differences between the actual and decomposed data
+  - Trend is more visible in the decomposed data due to being free from noises and periodicity
+  - The magnitude of detected trend is naturally larger, and still implies the same monotonicity with the original data
+  - The number of claims in 11 medication classes are declining overtime
+  - The relative importance in 14 medication classes are declining overtime
+  - Changes in claim represents the actual change of the expected number of medication claim in the population. Changes in importance represents changes of how likely a medication being prescribed together. Differences between relative importance and number of medication claims are observed in:
+    1. Genitourinary: decreasing claim, increasing importance
+    1. Systemic hormonal: increasing claim, decreasing importance
+    1. Antiparkinson: increasing claim, decreasing importance
+    1. Antipsychotics: increasing claim, decreasing importance
+    1. Antidementia: increasing claim, decreasing importance
+    1. Other nervous system drugs: decreasing claim, increasing importance
+    1. Antiparasitics: increasing claim, decreasing importance
+- @tbl-resid-n-claim and @tbl-resid-eigen shows the residuals analysis of the decomposition model using singular spectrum analysis
+  - All residuals are stationary, i.e. having a constant mean and variance
+  - All residuals follow the normal distribution (see especially Shapiro-Wilk statistics, mean, and standard deviation)
+  - These findings imply that the residuals of decomposition models are likely to be evenly and randomly distributed
+- @sec-recon depicts complex periodicity within each time series
+  - These go in line with findings from @sec-seasonality
+  - Despite visible patterns of weekly and yearly seasonality, these patterns are obscured with other oscillating functions
+  - The oscillating functions were ordered based on their contribution in explaining the variance in the data, e.g. `F1` has a higher contribution than `F2`, and so on
+
+{{< pagebreak >}}
+
+## Analytical procedures
+
+### Source of data
+
+The University of Groningen IADB.nl pharmacy prescription database is a growing database that contains prescription data for 31 years from 1994 till 2024 from approximately 120 community pharmacies and covers an estimated population of 1,120,000 patients. Registration in the database is irrespective of health care insurance and age, gender and prescription rates among the database population have been found to be representative of the Netherlands as a whole, and the database has been widely used for research. Each person is individually tracked throughout the database period and prescription records contain information on the date of dispensing, the quantity dispensed, the dose regimen, the number of days the prescription is valid, the prescribing physician and the Anatomical Therapeutic Chemical code (ATC code). Each patient has a unique anonymous identifier; date of birth and gender are known. Due to the high patient-pharmacy commitment in the Netherlands, the medication records for each patient are virtually complete, except for over the counter (OTC) drugs and medication dispensed during hospitalization.
+
+#### Inclusion criteria
+
+- Adult aged 18-65 years old at time of dispensing anxiolytic and/or antidepressant
+- Prescribed for anxiolytics (`N05B`) or antidepressant (`N06A`) at any time in the time span from 2018 to 2022
+
+#### Exclusion criteria
+
+- (None)
+
+### Data pre-processing
+
+Daily medication claims can be represented as a square matrix, with rows and columns representing medication entities. N number of medications will then form an adjacency matrix describing the concurrent use of enlisted drugs. Therefore, the matrix diagonal represents using only one medication over the observation period. The matrix follows a knowledge graph construct with a subject-predicate-object (s, p, o) triples, i.e. `Medication1-PrescribedAlongside-Medication2`. The graph object is constructed from recorded prescription claims on a daily epoch. The edge (predicate) in this graph represents the number of concurrency, which will differ from one epoch to another depending on the number of patients claiming the prescription. To regularize the number of daily claims, it is essential to adjust the weight of the edge by dividing it by the defined daily dose (DDD). Regularization will allow direct comparison of one drug to another when calculating the graph metrics. Regularization based on DDD essentially transforms the dosage into a unit-free scale, which will be assigned as a weighted edge in the graph object.
+
+### Measuring relative importance
+
+The choice of graph metrics to use would be node centrality, which can be interpreted as node importance in a graph object. In our case, each node represents a single medication being claimed on that particular day. From various selection of centrality measures, we will focus on using eigenvector centrality, i.e. a prestige score. By calculating eigenvector centrality, each node will have a relative score. A high-scoring node implies that the node is highly connected with other high-scoring nodes. In a way, this shall reflect the score of importance when one drug is used alongside other drugs. Nodes with high eigenvector centrality can be further interpreted as strongly-connected nodes.
+
+{{< include exec-summary/descriptive.qmd >}}
+
+{{< include exec-summary/arima.qmd >}}
+
+{{< include exec-summary/seasonality.qmd >}}
+
+{{< include exec-summary/spectral.qmd >}}

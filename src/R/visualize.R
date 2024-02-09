@@ -377,7 +377,7 @@ vizReconSsa <- function(tidy_recon, ...) {
   med <- unique(tidy_recon$group)
   lab <- unique(tidy_recon$metric) %>% getLabel()
   colors <- genColor()
-  plt_title <- sprintf("%s of %s", lab, med)
+  plt_title <- sprintf("%s of %s", lab, stringr::str_to_lower(med))
 
   # Scale the date (x) axis
   scale_date <- scale_x_date(
@@ -386,7 +386,7 @@ vizReconSsa <- function(tidy_recon, ...) {
 
   # Plot for original and trend
   plt1 <- ggplot(tbl, aes(x = date)) +
-    geom_point(aes(y = Original, color = "Data"), alpha = 0.4, size = 2, shape = 18) +
+    geom_point(aes(y = Original), color = colors$black, alpha = 0.4, size = 2, shape = 18) +
     geom_line(aes(y = Original, color = "Data"), alpha  = 0.2, linewidth = 1.2) +
     geom_line(aes(y = Trend, color = "Trend"), alpha  = 0.8, linewidth = 2) +
     labs(title = plt_title, x = "", y = "") +

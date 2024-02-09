@@ -5,20 +5,20 @@ knitr:
     fig.height: 8
 ---
 
-{{< pagebreak >}}
-\KOMAoptions{paper=landscape,pagesize}
-\recalctypearea
-
 ```{r init}
 
 pkgs <- c("magrittr", "targets")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 
-options(digits = 2)
+options(digits = 2, scipen = 999)
 
 ```
 
-# Results
+\uselandscape
+
+# Results on seasonality analysis {#sec-seasonality}
+
+::: {.content-visible when-profile="seasonality"}
 
 ## Dot plots
 
@@ -51,7 +51,9 @@ tar_read(plt_dot_diff_month)[-5]
 
 {{< pagebreak >}}
 
-## Autocorrelation periodic plots
+## Autocorrelation and periodic plots
+
+:::
 
 ### Exploring seasonality within the number of medication claims (day) {#sec-nclaim-day}
 
@@ -62,6 +64,8 @@ tar_read(plt_acf_diff_day)[[1]]
 tar_read(plt_pacf_diff_day)[[1]]
 
 ```
+
+::: {.content-visible when-profile="seasonality"}
 
 ### Exploring seasonality within the number of patients (day) {#sec-npat-day}
 
@@ -83,6 +87,8 @@ tar_read(plt_pacf_diff_day)[[3]]
 
 ```
 
+:::
+
 ### Exploring seasonality within the eigenvector centrality (day) {#sec-eigen-day}
 
 ```{r}
@@ -102,6 +108,8 @@ tar_read(plt_acf_diff_week)[[1]]
 tar_read(plt_pacf_diff_week)[[1]]
 
 ```
+
+::: {.content-visible when-profile="seasonality"}
 
 ### Exploring seasonality within the number of patients (week) {#sec-npat-week}
 
@@ -123,6 +131,8 @@ tar_read(plt_pacf_diff_week)[[3]]
 
 ```
 
+:::
+
 ### Exploring seasonality within the eigenvector centrality (week) {#sec-eigen-week}
 
 ```{r}
@@ -142,6 +152,8 @@ tar_read(plt_acf_diff_month)[[1]]
 tar_read(plt_pacf_diff_month)[[1]]
 
 ```
+
+::: {.content-visible when-profile="seasonality"}
 
 ### Exploring seasonality within the number of patients (month) {#sec-npat-month}
 
@@ -163,6 +175,8 @@ tar_read(plt_pacf_diff_month)[[3]]
 
 ```
 
+:::
+
 ### Exploring seasonality within the eigenvector centrality (month) {#sec-eigen-month}
 
 ```{r}
@@ -173,3 +187,4 @@ tar_read(plt_pacf_diff_month)[[4]]
 
 ```
 
+\normalpapersize

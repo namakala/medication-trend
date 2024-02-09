@@ -7,3 +7,11 @@ book:
   chapters:
     - index.qmd
     - results/spectral.qmd
+
+format:
+  pdf:
+    geometry:
+      - top=10mm
+      - bottom=10mm
+      - left=10mm
+      - right=10mm

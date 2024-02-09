@@ -1,19 +1,20 @@
 ---
 knitr:
   opts_chunk:
-    fig.width: 20
-    fig.height: 14
+    fig.width: 18
+    fig.height: 12
 ---
-
-\KOMAoptions{paper=landscape,pagesize}
-\recalctypearea
 
 ```{r init}
 
-pkgs <- c("magrittr", "targets")
+pkgs <- c("magrittr", "targets", "kableExtra")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 
-options(digits = 2)
+options(digits = 2, scipen = 999)
+
+prettyRound <- function(x, ...) {
+  x %<>% round(...) %>% {ifelse(. == 0, "<0.001", as.character(.))}
+}
 
 reportResid <- function(mod) {
 
@@ -23,7 +24,7 @@ reportResid <- function(mod) {
   normality <- shapiro.test(res) %>%
     broom::tidy()
 
-  tbl   <- res %>%
+  tbl <- res %>%
     tseries::pp.test() %>%
     broom::tidy() %>%
     subset(select = c("statistic", "p.value", "method")) %>%
@@ -31,57 +32,87 @@ reportResid <- function(mod) {
     inset(c("stat2", "p2", "method2"), value = normality) %>%
     tibble::add_column("group" = group, .before = 1) %>%
     dplyr::mutate(
-      "mean"   = mean(res),
-      "median" = median(res),
-      "sd"     = sd(res),
+      "Unit Root" = sprintf("%s (p %s)", round(stat, 2), prettyRound(p, 3)),
+      "Normality" = sprintf("%s (p %s)", round(stat2, 2), prettyRound(p2, 3)),
+      "Mean"   = mean(res),
+      "SD"     = sd(res),
+      "Median" = median(res),
       "IQR"    = IQR(res)
-    )
+    ) %>%
+    subset(select = -c(stat:method2)) %>%
+    dplyr::rename("ATCC Group" = group)
 
   return(tbl)
 }
 
 ```
 
-# Results
+\normalpapersize
+
+# Results on singular spectrum analysis {#sec-spectral}
+
+## Trend evaluation
+
+```{r tbl-trend}
+#| tbl-cap: Trend of medication uses alongside its measure of relative importance
+
+fnote <- "The statistics were obtained from Mann-Kendall trend test, where positive result signifies a positive slope"
+
+tar_read(decom_ssa) %>%
+  subset(.$component %in% c("Original", "Trend") & .$metric != "claim2patient") %>%
+  tibble::tibble() %>%
+  dplyr::group_by(metric, group, component) %>%
+  dplyr::group_modify(~trend::mk.test(.x$value) %>% broom::tidy()) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    "Mann-Kendall" = sprintf(
+      "%s (p %s)", prettyRound(statistic, 2), prettyRound(p.value, 3)
+    )
+  ) %>%
+  subset(select = -c(statistic:alternative)) %>%
+  tidyr::pivot_wider(names_from = metric, values_from = `Mann-Kendall`) %>%
+  tidyr::pivot_wider(names_from = component, values_from = eigen:n_claim) %>%
+  set_colnames(c("ATCC Group", rep(c("Original", "Trend"), 2))) %>%
+  knitr::kable(longtable = TRUE, booktabs = TRUE) %>%
+  kableExtra::kable_styling(latex_options = "repeat_header") %>%
+  kableExtra::add_header_above(c(" " = 1, "Eigenvector Centrality" = 2, "Medication Claims" = 2)) %>%
+  kableExtra::add_footnote(fnote, notation = "none")
+
+```
+
+\uselandscape
 
 ## Residuals analysis
 
 ### Number of medication claims
 
-```{r}
+```{r tbl-resid-n-claim}
+#| tbl-cap: Residuals analysis for unit-root and normality test for the decomposition model of number of claims
 
 tar_read(mod_ssa_n_claim) %>%
   lapply(reportResid) %>%
   {do.call(rbind, .)} %>%
-  knitr::kable()
-
-```
-
-### Claim-to-patient ratio
-
-```{r}
-
-tar_read(mod_ssa_claim2patient) %>%
-  lapply(reportResid) %>%
-  {do.call(rbind, .)} %>%
-  knitr::kable()
+  knitr::kable(longtable = TRUE, booktabs = TRUE) %>%
+  kableExtra::kable_styling(latex_options = "repeat_header", font_size = 8)
 
 ```
 
 ### Eigenvector centrality
 
-```{r}
+```{r tbl-resid-eigen}
+#| tbl-cap: Residuals analysis for unit-root and normality test for the decomposition model of relative importance
 
 tar_read(mod_ssa_eigen) %>%
   lapply(reportResid) %>%
   {do.call(rbind, .)} %>%
-  knitr::kable()
+  knitr::kable(longtable = TRUE, booktabs = TRUE) %>%
+  kableExtra::kable_styling(latex_options = "repeat_header", font_size = 8)
 
 ```
 
 {{< pagebreak >}}
 
-## Reconstructed plots
+## Reconstructed plots {#sec-recon}
 
 ### Number of medication claim
 
@@ -91,13 +122,17 @@ tar_read(plt_ssa_recon_n_claim)
 
 ```
 
-### Medication claim to patient ratio
+::: {.content-visible when-profile="spectral"}
+
+### Claim-to-patient ratio
 
 ```{r}
 
 tar_read(plt_ssa_recon_claim2patient)
 
 ```
+
+:::
 
 ### Eigenvector centrality
 

@@ -1,20 +1,38 @@
 # Executive Summary {-}
 
+```{r init}
+
+options(scipen = 999)
+
+```
+
+::: {.content-visible when-meta="in.report"}
+{{< include exec-summary/report.qmd >}}
+:::
+
 ::: {.content-visible when-profile="descriptive"}
-
 {{< include exec-summary/descriptive.qmd >}}
-
 :::
 
 ::: {.content-visible when-profile="arima"}
-
 {{< include exec-summary/arima.qmd >}}
-
 :::
 
 ::: {.content-visible when-profile="seasonality"}
-
 {{< include exec-summary/seasonality.qmd >}}
-
 :::
 
+::: {.content-visible when-profile="spectral"}
+{{< include exec-summary/spectral.qmd >}}
+:::
+
+::: {.content-visible when-meta="in.report"}
+
+## Contents
+
+- @sec-descriptive contains a descriptive explanation of the dataset
+- @sec-seasonality reports exploration of seasonality on detrended data
+- @sec-arima showcases results obtained from ARIMA models
+- @sec-spectral outlines the decomposed time series using singular-spectrum analysis
+
+:::

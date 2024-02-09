@@ -1,0 +1,16 @@
+project:
+  output-dir: _render/report
+
+book:
+  title: "The Use of Psychopharmaca In Relation with Other Medications"
+  subtitle: "Report on Time Series Analysis"
+  author: "Aly Lamuri"
+  chapters:
+    - index.qmd
+    - results/descriptive.qmd
+    - results/seasonality.qmd
+    - results/arima.qmd
+    - results/spectral.qmd
+
+in:
+  report: true

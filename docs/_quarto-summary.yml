@@ -1,0 +1,12 @@
+project:
+  output-dir: _render/summary
+
+book:
+  title: "Summary: The Use of Psychopharmaca In Relation with Other Medications"
+  subtitle: "Report on Time Series Analysis"
+  author: "Aly Lamuri"
+  chapters:
+    - index.qmd
+
+in:
+  report: true

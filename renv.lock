@@ -901,6 +901,17 @@
       ],
       "Hash": "daf4a1246be12c1fa8c7705a0935c1a0"
     },
+    "extraDistr": {
+      "Package": "extraDistr",
+      "Version": "1.10.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "Rcpp"
+      ],
+      "Hash": "49235792aad38657fffef40802f614c5"
+    },
     "fable": {
       "Package": "fable",
       "Version": "0.3.3",
@@ -2854,6 +2865,17 @@
         "xfun"
       ],
       "Hash": "5ac22900ae0f386e54f1c307eca7d843"
+    },
+    "trend": {
+      "Package": "trend",
+      "Version": "1.1.6",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "extraDistr"
+      ],
+      "Hash": "0a27351b603a59f590401bc1c3938da1"
     },
     "tseries": {
       "Package": "tseries",

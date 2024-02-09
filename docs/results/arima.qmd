@@ -10,7 +10,7 @@ knitr:
 pkgs <- c("targets", "magrittr")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 
-options(digits = 2)
+options(digits = 2, scipen = 999)
 
 getArimaParam <- function(mod) {
   orders <- mod$arma %>% {c(
@@ -75,7 +75,9 @@ reportLB <- function(mod_evals) {
 
 ```
 
-# Results
+\normalpapersize
+
+# Results on ARIMA modelling {#sec-arima}
 
 ## Model evaluation
 
@@ -97,7 +99,7 @@ tar_read(mod_arima_eval_n_claim) %>% reportLB()
 
 ```
 
-{{< pagebreak >}}
+::: {.content-visible when-profile="arima"}
 
 ### Claim-to-patient ratio
 
@@ -117,7 +119,7 @@ tar_read(mod_arima_eval_claim2patient) %>% reportLB()
 
 ```
 
-{{< pagebreak >}}
+:::
 
 ### Eigenvector centrality
 
@@ -137,9 +139,9 @@ tar_read(mod_arima_eval_eigen) %>% reportLB()
 
 ```
 
-{{< pagebreak >}}
-\KOMAoptions{paper=landscape,pagesize}
-\recalctypearea
+::: {.content-visible when-profile="arima"}
+
+\uselandscape
 
 ## Forecast evaluation
 
@@ -170,3 +172,7 @@ tar_read(plt_arima_forecast_claim2patient)
 tar_read(plt_arima_forecast_eigen)
 
 ```
+
+:::
+
+\normalpapersize

@@ -22,6 +22,11 @@ execute:
 
 format:
   pdf:
+    geometry:
+      - top=2cm
+      - bottom=2cm
+      - left=2cm
+      - right=2cm
     include-in-header:
       text: |
         \usepackage{longtable}
@@ -32,3 +37,13 @@ format:
         \usepackage{typearea}
         \floatplacement{figure}{htbp}
         \floatplacement{table}{htbp}
+        \AtBeginDocument{%
+          \storeareas\normalpapersize
+        }
+        \BeforeRestoreareas{\cleardoublepage}
+        \newcommand*\uselandscape{%
+          \cleardoublepage
+          \KOMAoptions{paper=landscape}%
+          \recalctypearea
+          \areaset{1.2\textwidth}{1.2\textheight}%
+        }

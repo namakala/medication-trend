@@ -285,6 +285,8 @@ list(
   ),
 
   # Generate documentation
+  tar_quarto(report, "docs", profile = "report", priority = 0),
+  tar_quarto(summary, "docs", profile = "summary", priority = 0),
   tar_quarto(report_descriptive, "docs", profile = "descriptive", priority = 0),
   tar_quarto(report_arima, "docs", profile = "arima", priority = 0),
   tar_quarto(report_seasonality, "docs", profile = "seasonality", priority = 0),

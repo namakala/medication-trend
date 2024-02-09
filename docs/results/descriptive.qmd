@@ -10,29 +10,26 @@ knitr:
 pkgs <- c("targets", "magrittr")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 
-options(digits = 2)
+options(digits = 2, scipen = 999)
 
 ```
 
-# Results
+# Results on descriptive statistics {#sec-descriptive}
 
 ## Descriptive analysis of the raw data
 
-In this section,
-
-```{r}
+```{r tbl-mean-diff}
 #| tbl-cap: Mean difference of all metrics before and during COVID-19
 
 tar_read(desc_ts) %>% knitr::kable()
 
 ```
 
-{{< pagebreak >}}
+\uselandscape
 
-\KOMAoptions{paper=landscape,pagesize}
-\recalctypearea
+:::: {.content-hidden when-meta="in.report"}
 
-### Paired plot of all metrics for each medication group
+### Paired plot of all metrics for each medication group {#sec-pair-plot}
 
 ```{r}
 
@@ -88,6 +85,8 @@ tar_read(plt_pacf_day)[[1]]
 
 ```
 
+::: {.content-visible when-profile="descriptive"}
+
 ### Exploring seasonality within the number of patients (day) {#sec-npat-day}
 
 ```{r}
@@ -105,6 +104,8 @@ tar_read(plt_acf_day)[[3]]
 tar_read(plt_pacf_day)[[3]]
 
 ```
+
+:::
 
 ### Exploring seasonality within the eigenvector centrality (day) {#sec-eigen-day}
 
@@ -124,6 +125,8 @@ tar_read(plt_pacf_week)[[1]]
 
 ```
 
+::: {.content-visible when-profile="descriptive"}
+
 ### Exploring seasonality within the number of patients (week) {#sec-npat-week}
 
 ```{r}
@@ -141,6 +144,8 @@ tar_read(plt_acf_week)[[3]]
 tar_read(plt_pacf_week)[[3]]
 
 ```
+
+:::
 
 ### Exploring seasonality within the eigenvector centrality (week) {#sec-eigen-week}
 
@@ -160,6 +165,8 @@ tar_read(plt_pacf_month)[[1]]
 
 ```
 
+::: {.content-visible when-profile="descriptive"}
+
 ### Exploring seasonality within the number of patients (month) {#sec-npat-month}
 
 ```{r}
@@ -178,6 +185,8 @@ tar_read(plt_pacf_month)[[3]]
 
 ```
 
+:::
+
 ### Exploring seasonality within the eigenvector centrality (month) {#sec-eigen-month}
 
 ```{r}
@@ -187,35 +196,35 @@ tar_read(plt_pacf_month)[[4]]
 
 ```
 
-## Descriptive analysis of the deseasonalized data
+::::
 
-### Time-series on a daily interval
+## Descriptive analysis of the decomposed data {#sec-decom-classic-stl}
+
+### Decomposed time-series on a daily interval
 
 ```{r}
 
 tar_read(plt_decom_ts_day_1.week_classic_n_claim)
-tar_read(plt_decom_ts_day_1.week_classic_claim2patient)
 tar_read(plt_decom_ts_day_1.week_classic_eigen)
 
 ```
 
-### Time-series on a weekly interval
+### Decomposed time-series on a weekly interval
 
 ```{r}
 
 tar_read(plt_decom_ts_week_1.month_classic_n_claim)
-tar_read(plt_decom_ts_week_1.month_classic_claim2patient)
 tar_read(plt_decom_ts_week_1.month_classic_eigen)
 
 ```
 
-### Time-series on a monthly interval
+### Decomposed time-series on a monthly interval
 
 ```{r}
 
 tar_read(plt_decom_ts_month_1.year_classic_n_claim)
-tar_read(plt_decom_ts_month_1.year_classic_claim2patient)
 tar_read(plt_decom_ts_month_1.year_classic_eigen)
 
 ```
 
+\normalpapersize
