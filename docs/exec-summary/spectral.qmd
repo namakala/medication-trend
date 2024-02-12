@@ -1,1 +1,19 @@
 ### Decomposition with singular spectrum analysis
+
+Classical and STL-based decomposition technique may not sufficiently capture complex periodic patterns in a time-series. Singular spectrum analysis (SSA) is a powerful non-parametric technique by leveraging Hankel matrix as a higher-dimensional embedding of the time-series. The resulting Hankel matrix $X$ has the size of $L \times K$, where $L$ represents the lag term, i.e. a window length to perform embedding For a weekly data with a hypothesized yearly seasonality, the $L$ is set as 52. In theory, the number of $L$ should be between the range of $2 \leq L \leq \frac{N}{2}$, where $N$ is the total length of the time-series.
+
+$$
+X =
+\stackrel{\textrm{Time-series embedding}}{
+  \begin{bmatrix}
+  x_1 & x_2 & \dots & x_{N - L + 1} \\
+  x_2 & x_3 & \dots & x_{N - L + 2} \\
+  \vdots & \vdots & \ddots & \vdots \\
+  x_L & x_{L + 1} & \dots & x_{N} \\
+  \end{bmatrix}
+}
+$$ {#eq-hankel-mtx}
+
+The embedded time-series $X$ is then decomposed using a singular value decomposition (SVD). With a matrix $S = X \cdot X^T$, we can extract an eigenvalue $\lambda \ni \{\lambda_1 \geq \dots \geq \lambda_L\}$, where each $\lambda_i$ is a non-negative integer. Similarly, we can define $U$ as the eigenvectors of matrix $S$ corresponding to eigenvalues $\lambda$. Afterwards, we can extract factor vectors $V$ where the corresponding $V_i = X^T \frac{U_i}{\sqrt{\lambda_i}}$. Finally, the eigentriple of $\{\sqrt{\lambda_i}, U_i, V_i^T\}$ is formulated as a row-wise decomposition of matrix $X$ [@Golyandina2020]. The resulting eigentriple is then used to reconstruct the time-series by eigentriple grouping and diagonal averaging.
+
+In case of complex periodic patterns, sequential SSA is preferred to separate trend from seasonal components [@Golyandina2018]. A sequential SSA model is performed by first fitting a basic SSA model to reconstruct the first eigentriple, *viz.* the eigentriple that explain most of the variance in the data. Then, the residual of the first model is extracted to fit the second SSA model. The first SSA model is defined with the lowest possible $L$, which in our case $L = 52$. The second SSA model is defined with the largest possible $L$ to capture all patterns, which is conveniently defined as $L = \frac{N}{2}$. The decomposed series and its corresponding original data is then extracted from the model alongside all of the oscillating functions which contributes to complex seasonality. The original data, trend, residuals, and oscillating functions are plotted for further inspection. The original data and trend is further evaluated using Mann-Kendall trend test.
