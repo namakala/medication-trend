@@ -1,3 +1,10 @@
+---
+knitr:
+  opts_chunk:
+    fig.width: 18
+    fig.height: 12
+---
+
 # Executive Summary {-}
 
 ```{r init}
@@ -26,7 +33,7 @@ options(scipen = 999)
 {{< include exec-summary/spectral.qmd >}}
 :::
 
-::: {.content-visible when-meta="in.report"}
+:::: {.content-visible when-meta="in.report"}
 
 ## Contents
 
@@ -35,4 +42,9 @@ options(scipen = 999)
 - @sec-arima showcases results obtained from ARIMA models
 - @sec-spectral outlines the decomposed time series using singular-spectrum analysis
 
+## References
+
+::: {#refs}
 :::
+
+::::

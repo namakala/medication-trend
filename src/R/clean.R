@@ -56,6 +56,23 @@ getNeuroMeds <- function() {
   return(res)
 }
 
+isCovid <- function(x, covid_date = "2020-03-11") {
+  #' Annotate COVID-19 Date
+  #'
+  #' Annotate the date with COVID-19 event as announced by the WHO
+  #'
+  #' @param x A variable containing dates
+  #' @param covid_date A date reference of the time COVID-19 was announced as a
+  #' global pandemic
+  #' @return A factor of events
+  require("tsibble")
+  x %<>% as.Date()
+  res <- ifelse(x < covid_date, "Pre-COVID-19", "COVID-19") %>%
+    factor(levels = c("Pre-COVID-19", "COVID-19"))
+
+  return(res)
+}
+
 mergeTS <- function(tbl_metrics, tbl_stats, ...) {
   #' Merge Time Series Data
   #'
@@ -78,9 +95,10 @@ mergeTS <- function(tbl_metrics, tbl_stats, ...) {
   tbl_clean <- tbl %>%
     inset2("group", value = setGroupFactor(.$group)) %>% # Set factor
     inset2("neuro_med", value = .$group %in% getNeuroMeds()) %>% # Neuro meds
-    inset2("event", value = { # Pre/during COVID-19
-      ifelse(.$date < "2020-01-30", "Pre-COVID-19", "COVID-19")
-    }) %>%
+    inset2("event", value = isCovid(.$date)) %>%
+    #inset2("event", value = { # Pre/during COVID-19
+    #  ifelse(.$date < "2020-01-30", "Pre-COVID-19", "COVID-19")
+    #}) %>%
     inset( # Replace `NA` with 0
       c("n_claim", "claim2patient"),
       value = list(

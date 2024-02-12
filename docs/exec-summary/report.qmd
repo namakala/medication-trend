@@ -4,19 +4,63 @@
 Mental health disorders are prevalent comorbidities affecting nearly two billion people worldwide. People with chronic diseases are at a higher risk of having mental health issues, which in turn potentially worsen their overall well-being. This investigation highlights the interrelatedness of mental health problems with other diagnoses, reflected as a relative importance score of psychopharmaca in a medication claim registry.
 
 **Methods:**
-Exploratory time-series analysis was performed using University of Groningen prescription database, IADB.nl. Data of patients with at least one prescription of psychopharmaca from 2018 to 2022 was extracted. A medication-claim network was constructed as an undirected graph to capture weighted co-prescription. Eigenvector centrality was computed as a measure of relative nodal importance. The number of medication claims, number of patients, claim-to-patient ratio, and eigenvector centrality were then extracted as a time-series data. Singular spectrum analysis was performed to decompose the data into its constituting trend, periodicity, and white noises.
+Exploratory time-series analysis was performed using University of Groningen prescription database, IADB.nl. Data of patients with at least one prescription of psychopharmaca from 2018 to 2022 was extracted. Prescription was evaluated daily using anatomical therapeutic chemical (ATC) classification, where psychopharmaca is evaluated at ATC level 3, drugs for nervous system at ATC level 2, and other medications at ATC level 1, totalled to 24 classes of medication. A medication-claim network was constructed as an undirected graph to capture dose-adjusted co-prescription. Eigenvector centrality was computed as a measure of relative nodal importance, which reflects the degree of medication concurrence in a network. The number of medication claims, number of patients, claim-to-patient ratio, and eigenvector centrality were then extracted as a weekly-aggregated time-series data. Singular spectrum analysis was performed to decompose the data into its constituting trend, periodicity, and white noises.
 
 **Results:**
-Antidepressants (WHO/ATCC `N06A`), antipsychotics (`N05A`), anxiolytics (`N05B`), and hypnotics (`N05C`) are psychopharmaca with high relative importances. These classes of medication are likely to be co-prescribed alongside other medications, including medications for alimentary and metabolism (`A01-A16`), cardiovascular (`C01-C10`), analgesics (`N02`), and respiratory (`R01-R07`). From four important psychopharmaca, only antidepressants and hypnotics have a positive trend for both importance and actual number of claims.
+Antidepressants (ATC `N06A`), antipsychotics (`N05A`), anxiolytics (`N05B`), and hypnotics (`N05C`) are psychopharmaca with high eigenvector centrality. These classes of medication are likely to be co-prescribed alongside other medications, including medications for alimentary and metabolism (`A01-A16`), cardiovascular (`C01-C10`), analgesics (`N02`), and respiratory (`R01-R07`). Only antidepressants and hypnotics have a positive time trend for both eigenvector centrality and actual number of claims.
 
 **Discussion:**
-The data presented with complex periodicity and many underlying oscillating functions, which makes it challenging to extract the trend. Positive trends in both importance and claims suggest that increasing uses of antidepressants and hypnotics are related to co-prescription or its combination with other medications from the same class. Constructing a medication claim network enriches the exploratory analysis procedure on the population level. A thorough data cleaning procedure is paramount to ensure adequate separation between trend, periodicity, and noises.
+Eight medications, four of which are psychopharmaca, have a high eigenvector centrality, implying its concurrence on a population level. Positive time trends in both eigenvector centrality and claims suggest that increasing uses of antidepressants and hypnotics are related to co-prescription with other medication classes. Constructing a medication claim network enriches the exploratory analysis procedure on the population level.
 
 {{< pagebreak >}}
 
+## Analytical procedures
+
+### Source of data
+
+The University of Groningen IADB.nl pharmacy prescription database is a growing database that contains prescription data for 31 years from 1994 till 2024 from approximately 120 community pharmacies and covers an estimated population of 1,120,000 patients. Registration in the database is irrespective of health care insurance and age, gender and prescription rates among the database population have been found to be representative of the Netherlands as a whole, and the database has been widely used for research. Each person is individually tracked throughout the database period and prescription records contain information on the date of dispensing, the quantity dispensed, the dose regimen, the number of days the prescription is valid, the prescribing physician and the Anatomical Therapeutic Chemical code (ATC code). Each patient has a unique anonymous identifier; date of birth and gender are known. Due to the high patient-pharmacy commitment in the Netherlands, the medication records for each patient are virtually complete, except for over the counter (OTC) drugs and medication dispensed during hospitalization. This analysis include daily medication claims from a static cohort of adults aged 18-65 years old and prescribed for anxiolytics or antidepressants at least once in the time span from 2018 to 2022.
+
+### Data pre-processing
+
+Daily medication claims is a tabular data containing values from single medication entity for each patients in the cohort. Data transformation was performed to construct a square matrix of aggregate medication claim per day, with rows and columns representing groups of medication. Each element in the upper and lower triangle represents co-prescriptions, while the diagonal of the matrix represents single prescriptions. All elements in the matrix is a tally of drug combination/single prescription in a population level claimed on a daily basis. The matrix follows a knowledge graph construct with a subject-predicate-object (s, p, o) triples, i.e. `Medication1-PrescribedAlongside-Medication2`. The knowledge graph is a representation of medication-claim network, where the edge (predicate) is the number of concurrency. Weight was applied on the edges by dividing it by the defined daily dose (DDD). Weighting is necessary to regularize the matrix into a unit-free scale, which allow a direct comparison of one drug to another.
+
+$$
+\stackrel{\textrm{Unregularized}}{
+  \begin{bmatrix}
+  n_{1, 1} & \dots & n_{1, N} \\
+  \vdots & \ddots & \vdots \\
+  n_{N, 1} & \dots & n_{N, N} \\
+  \end{bmatrix}
+}
+\to
+\stackrel{\textrm{Regularized by } DDD}{
+  \begin{bmatrix}
+  \frac{1}{2} \cdot \left(\frac{n_1}{DDD_1} + \frac{n_1}{DDD_1} \right) & \dots & \frac{1}{2} \cdot \left(\frac{n_1}{DDD_1} + \frac{n_N}{DDD_N} \right) \\
+  \vdots & \ddots & \vdots \\
+  \frac{1}{2} \cdot \left(\frac{n_N}{DDD_N} + \frac{n_1}{DDD_1} \right) & \dots & \frac{1}{2} \cdot \left(\frac{n_N}{DDD_N} + \frac{n_N}{DDD_N} \right) \\
+  \end{bmatrix}
+}
+$$ {#eq-regularize-mtx}
+
+### Measuring relative importance
+
+As all medications are nodes in a claim network, we can measure the property of each medication using graph theory. One way to represent node property is by calculating node centrality, which can be measured as a number of incoming/outgoing edges (degree) or its connectedness to other nodes (importance). We measured importance using eigenvector centrality, which reflects medication co-occurrence with other important medications. Eigenvector centrality is a recursive measures of how well connected a certain node is to other nodes that is also well connected in the network [@Golbeck2013]. @eq-eigen-centrality outlines the calculation of eigenvector centrality; $\c_i$ and $\c_j$ are the centralities of node $i$ and $j$, respectively; $\lambda$ is the eigenvalue; $a_{j, i}$ is an element on row $j$ and column $i$ from an adjacency matrix $A$, representing the connection between node $a_i$ and $a_j$.
+
+$$
+\displaystyle c_i = \frac{1}{\lambda} \sum_{j \neq i} a_{j, i} \cdot c_j
+$$ {#eq-eigen-centrality}
+
+{{< include exec-summary/descriptive.qmd >}}
+
+{{< include exec-summary/seasonality.qmd >}}
+
+{{< include exec-summary/arima.qmd >}}
+
+{{< include exec-summary/spectral.qmd >}}
+
 ## Highlighted findings
 
-- @tbl-mean-diff and @sec-pair-plot describe difference in several measures before and during the COVID-19 pandemic
+- @tbl-mean-diff describes difference in several measures before and during the COVID-19 pandemic
   - Further analysis is necessary and will be planned for later investigation
   - Interrupted time-series analysis should be conducted by considering:
     1. Counterfactual data using trend before COVID-19
@@ -65,35 +109,71 @@ The data presented with complex periodicity and many underlying oscillating func
   - Despite visible patterns of weekly and yearly seasonality, these patterns are obscured with other oscillating functions
   - The oscillating functions were ordered based on their contribution in explaining the variance in the data, e.g. `F1` has a higher contribution than `F2`, and so on
 
-{{< pagebreak >}}
 
-## Analytical procedures
+::: {.content-visible when-profile="summary"}
 
-### Source of data
+\uselandscape
 
-The University of Groningen IADB.nl pharmacy prescription database is a growing database that contains prescription data for 31 years from 1994 till 2024 from approximately 120 community pharmacies and covers an estimated population of 1,120,000 patients. Registration in the database is irrespective of health care insurance and age, gender and prescription rates among the database population have been found to be representative of the Netherlands as a whole, and the database has been widely used for research. Each person is individually tracked throughout the database period and prescription records contain information on the date of dispensing, the quantity dispensed, the dose regimen, the number of days the prescription is valid, the prescribing physician and the Anatomical Therapeutic Chemical code (ATC code). Each patient has a unique anonymous identifier; date of birth and gender are known. Due to the high patient-pharmacy commitment in the Netherlands, the medication records for each patient are virtually complete, except for over the counter (OTC) drugs and medication dispensed during hospitalization.
+```{r}
 
-#### Inclusion criteria
+pkgs <- c("targets", "magrittr")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+options(digits = 2, scipen = 999)
 
-- Adult aged 18-65 years old at time of dispensing anxiolytic and/or antidepressant
-- Prescribed for anxiolytics (`N05B`) or antidepressant (`N06A`) at any time in the time span from 2018 to 2022
+```
 
-#### Exclusion criteria
+## Excerpt on findings
 
-- (None)
+### Pair plot
 
-### Data pre-processing
+```{r}
 
-Daily medication claims can be represented as a square matrix, with rows and columns representing medication entities. N number of medications will then form an adjacency matrix describing the concurrent use of enlisted drugs. Therefore, the matrix diagonal represents using only one medication over the observation period. The matrix follows a knowledge graph construct with a subject-predicate-object (s, p, o) triples, i.e. `Medication1-PrescribedAlongside-Medication2`. The graph object is constructed from recorded prescription claims on a daily epoch. The edge (predicate) in this graph represents the number of concurrency, which will differ from one epoch to another depending on the number of patients claiming the prescription. To regularize the number of daily claims, it is essential to adjust the weight of the edge by dividing it by the defined daily dose (DDD). Regularization will allow direct comparison of one drug to another when calculating the graph metrics. Regularization based on DDD essentially transforms the dosage into a unit-free scale, which will be assigned as a weighted edge in the graph object.
+tar_read(plt_pair)[[17]]
 
-### Measuring relative importance
+```
 
-The choice of graph metrics to use would be node centrality, which can be interpreted as node importance in a graph object. In our case, each node represents a single medication being claimed on that particular day. From various selection of centrality measures, we will focus on using eigenvector centrality, i.e. a prestige score. By calculating eigenvector centrality, each node will have a relative score. A high-scoring node implies that the node is highly connected with other high-scoring nodes. In a way, this shall reflect the score of importance when one drug is used alongside other drugs. Nodes with high eigenvector centrality can be further interpreted as strongly-connected nodes.
+### Dot plots on weekly time-series
 
-{{< include exec-summary/descriptive.qmd >}}
+```{r}
 
-{{< include exec-summary/arima.qmd >}}
+tar_read(plt_dot_week)[[1]]
 
-{{< include exec-summary/seasonality.qmd >}}
+```
 
-{{< include exec-summary/spectral.qmd >}}
+### Differenced time-series on a weekly interval
+
+```{r}
+
+tar_read(plt_dot_diff_week)[[1]]
+
+```
+
+### Exploring seasonality within the number of medication claims
+
+```{r}
+
+tar_read(plt_period_month)[[1]]
+tar_read(plt_acf_diff_month)[[1]]
+tar_read(plt_pacf_diff_month)[[1]]
+
+```
+
+### Exploring ARIMA model
+
+```{r}
+
+tar_read(plt_arima_forecast_n_claim)[[17]]
+
+```
+
+### Decomposed time-series with SSA
+
+```{r}
+
+tar_read(plt_ssa_recon_n_claim)[[17]]
+
+```
+
+\normalpapersize
+
+:::
