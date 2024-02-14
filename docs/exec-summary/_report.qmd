@@ -1,0 +1,97 @@
+```{r}
+
+pkgs <- c("targets", "magrittr")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+options(digits = 2, scipen = 999)
+
+```
+
+## Abstract
+
+{{< include abstract/_abstract.qmd >}}
+
+:::: {.content-visible when-meta="in.report"}
+
+{{< pagebreak >}}
+
+## Analytical procedures
+
+{{< include exec-summary/_source-data.qmd >}}
+
+{{< include exec-summary/_preprocessing.qmd >}}
+
+{{< include exec-summary/_measure-eigen.qmd >}}
+
+{{< include exec-summary/_descriptive.qmd >}}
+
+{{< include exec-summary/_seasonality.qmd >}}
+
+{{< include exec-summary/_arima.qmd >}}
+
+{{< include exec-summary/_spectral.qmd >}}
+
+## Highlighted findings
+
+{{< include exec-summary/_result-highlights.qmd >}}
+
+::: {.content-visible when-profile="summary"}
+
+\uselandscape
+
+## Excerpt on findings
+
+### Pair plot
+
+```{r}
+
+tar_read(plt_pair)[[17]]
+
+```
+
+### Dot plots on weekly time-series
+
+```{r}
+
+tar_read(plt_dot_week)[[1]]
+
+```
+
+### Differenced time-series on a weekly interval
+
+```{r}
+
+tar_read(plt_dot_diff_week)[[1]]
+
+```
+
+### Exploring seasonality within the number of medication claims
+
+```{r}
+
+tar_read(plt_period_month)[[1]]
+tar_read(plt_acf_diff_month)[[1]]
+tar_read(plt_pacf_diff_month)[[1]]
+
+```
+
+### Exploring ARIMA model
+
+```{r}
+
+tar_read(plt_arima_forecast_n_claim)[[17]]
+
+```
+
+### Decomposed time-series with SSA
+
+```{r}
+
+tar_read(plt_ssa_recon_n_claim)[[17]]
+
+```
+
+\normalpapersize
+
+:::
+
+::::

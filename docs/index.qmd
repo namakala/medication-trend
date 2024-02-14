@@ -5,32 +5,34 @@ knitr:
     fig.height: 12
 ---
 
-# Executive Summary {-}
+```{r}
 
-```{r init}
-
-options(scipen = 999)
+pkgs <- c("targets", "magrittr")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+options(digits = 2, scipen = 999)
 
 ```
 
+# Executive Summary {-}
+
 ::: {.content-visible when-meta="in.report"}
-{{< include exec-summary/report.qmd >}}
+{{< include exec-summary/_report.qmd >}}
 :::
 
 ::: {.content-visible when-profile="descriptive"}
-{{< include exec-summary/descriptive.qmd >}}
+{{< include exec-summary/_descriptive.qmd >}}
 :::
 
 ::: {.content-visible when-profile="arima"}
-{{< include exec-summary/arima.qmd >}}
+{{< include exec-summary/_arima.qmd >}}
 :::
 
 ::: {.content-visible when-profile="seasonality"}
-{{< include exec-summary/seasonality.qmd >}}
+{{< include exec-summary/_seasonality.qmd >}}
 :::
 
 ::: {.content-visible when-profile="spectral"}
-{{< include exec-summary/spectral.qmd >}}
+{{< include exec-summary/_spectral.qmd >}}
 :::
 
 :::: {.content-visible when-meta="in.report"}

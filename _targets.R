@@ -291,6 +291,7 @@ list(
   tar_target(ts_clust, setCluster(ts_recon, nclusts = 2:10)),
 
   # Generate documentation
+  tar_quarto(abstract, "docs/abstract/abstract.qmd"),
   tar_quarto(report, "docs", profile = "report", extra_files = "docs/exec-summary", priority = 0),
   tar_quarto(summary, "docs", profile = "summary", priority = 0),
   tar_quarto(report_descriptive, "docs", profile = "descriptive", priority = 0),

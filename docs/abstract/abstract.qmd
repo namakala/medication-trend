@@ -1,0 +1,21 @@
+---
+title: >
+  Eigenvector centrality as a metric of polypharmacy signifies antidepressants
+  as a central hub of the psychopharmaca co-prescription network
+format:
+  docx: default
+  pdf: default
+knitr:
+  opts_chunk:
+    echo: false
+    eval: true
+    error: false
+    message: false
+    warning: false
+    fig.width: 10
+    fig.height: 8
+    out.width: "100%"
+    comment: "|"
+---
+
+{{< include _abstract.qmd >}}

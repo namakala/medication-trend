@@ -1,0 +1,50 @@
+- @tbl-mean-diff describes difference in several measures before and during the COVID-19 pandemic
+  - Further analysis is necessary and will be planned for later investigation
+  - Interrupted time-series analysis should be conducted by considering:
+    1. Counterfactual data using trend before COVID-19
+    1. Counterfactual data using trend during COVID-19 given policy changes
+    1. Calculate the mean percentage changes between counterfactual and actual data
+- @sec-decom-classic-stl displays the data after classical and STL seasonal decomposition
+  - The data still presents with other patterns, implying that seasonality does not completely explains the variance
+  - Eigenvector centrality on daily, weekly, and monthly series suggests high importance of several psychopharmaca, including:
+    1. Antidepressants
+    1. Antipsychotics
+    1. Anxiolytics
+    1. Hypnotic and sedatives
+  - Other medications considered important by eigenvector centrality:
+    1. Alimentary and metabolism
+    1. Cardiovascular
+    1. Analgesics
+    1. Respiratory
+  - High eigenvector centrality implies that these eight medications are often co-prescribed
+- @sec-seasonality demonstrates two repeating patterns in medication claims:
+  - Increasing claims on Monday and decreasing claims on Saturday in the daily data, implying day-to-day differences
+  - Increasing claims in March and December in the monthly data, this pattern is persistent for weekly data as well
+  - Weekly data better captures repeating patterns and should be use for further analysis
+- Model evaluation tables in @sec-arima consistently show high value of intercept
+  - All models for medication claims have a relatively low effect size for AR, MA, or drift term
+  - No model has fitted with a (P, D, Q) term, implying no detected seasonality for models maximizing AICc
+  - Seasonality might be undetected due to the presence of noise and other underlying periodicity
+- @tbl-trend shows differences between the actual and decomposed data
+  - Trend is more visible in the decomposed data due to being free from noises and periodicity
+  - The magnitude of detected trend is naturally larger, and still implies the same monotonicity with the original data
+  - The number of claims in 11 medication classes are declining overtime
+  - The relative importance in 14 medication classes are declining overtime
+  - Changes in claim represents the actual change of the expected number of medication claim in the population. Changes in importance represents changes of how likely a medication being prescribed together. Differences between relative importance and number of medication claims are observed in:
+    1. Genitourinary: decreasing claim, increasing importance
+    1. Systemic hormonal: increasing claim, decreasing importance
+    1. Antiparkinson: increasing claim, decreasing importance
+    1. Antipsychotics: increasing claim, decreasing importance
+    1. Antidementia: increasing claim, decreasing importance
+    1. Other nervous system drugs: decreasing claim, increasing importance
+    1. Antiparasitics: increasing claim, decreasing importance
+- @tbl-resid-n-claim and @tbl-resid-eigen shows the residuals analysis of the decomposition model using singular spectrum analysis
+  - All residuals are stationary, i.e. having a constant mean and variance
+  - All residuals follow the normal distribution (see especially Shapiro-Wilk statistics, mean, and standard deviation)
+  - These findings imply that the residuals of decomposition models are likely to be evenly and randomly distributed
+- @sec-recon depicts complex periodicity within each time series
+  - These go in line with findings from @sec-seasonality
+  - Despite visible patterns of weekly and yearly seasonality, these patterns are obscured with other oscillating functions
+  - The oscillating functions were ordered based on their contribution in explaining the variance in the data, e.g. `F1` has a higher contribution than `F2`, and so on
+
+
