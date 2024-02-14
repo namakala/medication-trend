@@ -185,3 +185,38 @@ bindReconSsa <- function(ts_list) {
     
   return(tbl)
 }
+
+genReconTs <- function(tbl, n = 2) {
+  #' Generate Reconstructed Time Series
+  #'
+  #' Generate a reconstructed time series based on trend and n number of
+  #' oscillating functions
+  #'
+  #' @param tbl The bound reconstructed time series, usually the output of
+  #' `bindReconSsa`
+  #' @param n The number of n oscillating functions to use. The more
+  #' oscillating functions to use, the close it gets to the original data.
+  #' Using all the oscillating functions will recreate the original data, which
+  #' means re-introducing the white noises. Keep the n number low, preferably n
+  #' = 2.
+  #' @return A tidy time series
+  require("tsibble")
+
+  if (n > 0) {
+    id <- tbl$component %in% c("Trend", paste0("F", 1:n))
+  } else {
+    id <- tbl$component == "Trend"
+  }
+
+  tbl %<>%
+    tsibble::as_tibble() %>%
+    subset(id) %>%
+    dplyr::group_by(metric, date, group) %>%
+    dplyr::summarize("value" = sum(value)) %>%
+    tidyr::pivot_wider(names_from = metric, values_from = value) %>%
+    dplyr::ungroup()
+
+  ts <- tbl %>% tsibble::as_tsibble(key = group, index = date)
+
+  return(ts)
+}
