@@ -284,6 +284,12 @@ list(
     )
   ),
 
+  # Generate reconstructed time series based on trend + 2 oscillating functions
+  tar_target(ts_recon, genReconTs(decom_ssa, n = 2)),
+
+  # Cluster the series based on eigenvector centrality
+  tar_target(ts_clust, setCluster(ts_recon, nclusts = 2:10)),
+
   # Generate documentation
   tar_quarto(report, "docs", profile = "report", extra_files = "docs/exec-summary", priority = 0),
   tar_quarto(summary, "docs", profile = "summary", priority = 0),

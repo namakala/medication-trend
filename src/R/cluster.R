@@ -62,3 +62,19 @@ findCluster <- function(arr, nclusts = 2:10, ...) {
 
   return(clust)
 }
+
+setCluster <- function(ts, nclusts = 2:10, ...) {
+  #' Set Cluster
+  #'
+  #' Assign cluster to a data frame
+  #'
+  #' @param ts A tidy time series, usually the output of `genReconTs`
+  #' @param nclusts An array of cluster parameter to fit
+  #' @return A tidy time seires with a clustering variable
+  require("tsibble")
+
+  aug_ts <- ts %>%
+    dplyr::mutate("cluster" = findCluster(eigen, nclusts = nclusts, ...))
+
+  return(aug_ts)
+}

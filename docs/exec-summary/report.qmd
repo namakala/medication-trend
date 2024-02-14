@@ -1,16 +1,43 @@
+```{r}
+
+pkgs <- c("targets", "magrittr")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+options(digits = 2, scipen = 999)
+
+getGroup <- function(tbl, groupname) {
+  sub_tbl <- tbl %>% subset(.$group == groupname, select = -group)
+  return(sub_tbl)
+}
+
+results <- tar_read(ts_clust) %>%
+  tibble::tibble() %>%
+  dplyr::group_by(group) %>%
+  dplyr::summarize(ce = mean(eigen), nc = mean(n_claim) %>% round() %>% scales::comma())
+
+N06A <- results %>% getGroup("Antidepressants")
+N05A <- results %>% getGroup("Antipsychotics")
+N05B <- results %>% getGroup("Anxiolytics")
+A0x  <- results %>% getGroup("Alimentary and metabolism")
+B0x  <- results %>% getGroup("Blood")
+C0x  <- results %>% getGroup("Cardiovascular")
+N02  <- results %>% getGroup("Analgesics")
+R0x  <- results %>% getGroup("Respiratory")
+
+```
+
 ## Abstract
 
 **Objectives:**
 Mental health disorders are prevalent comorbidities affecting nearly two billion people worldwide. People with chronic diseases are at a higher risk of having mental health issues, which in turn potentially worsen their overall well-being. This investigation highlights the interrelatedness of mental health problems with other diagnoses, reflected as a relative importance score of psychopharmaca in a medication claim registry.
 
 **Methods:**
-Exploratory time-series analysis was performed using University of Groningen prescription database, IADB.nl. Data of patients with at least one prescription of psychopharmaca from 2018 to 2022 was extracted. Prescription was evaluated daily using anatomical therapeutic chemical (ATC) classification, where psychopharmaca is evaluated at ATC level 3, drugs for nervous system at ATC level 2, and other medications at ATC level 1, totalled to 24 classes of medication. A medication-claim network was constructed as an undirected graph to capture dose-adjusted co-prescription. Eigenvector centrality was computed as a measure of relative nodal importance, which reflects the degree of medication concurrence in a network. The number of medication claims, number of patients, claim-to-patient ratio, and eigenvector centrality were then extracted as a weekly-aggregated time-series data. Singular spectrum analysis was performed to decompose the data into its constituting trend, periodicity, and white noises.
+Exploratory time-series analysis was performed using the University of Groningen prescription database, IADB.nl. Data from patients with at least one prescription of psychopharmaca from 2018 to 2022 was extracted. The prescription was evaluated daily using anatomical therapeutic chemical (ATC) classification, where psychopharmaca was evaluated at ATC level 3, drugs for the nervous system at ATC level 2, and other medications at ATC level 1, distinguished into a total of 24 medication classes. A medication-claim network was constructed as an undirected graph to capture dose-adjusted co-prescription. Eigenvector centrality ($c_e$) was computed as a measure of relative nodal importance, which reflects the degree of medication concurrence in a network. The number of medication claims ($n_c$), number of patients, claim-to-patient ratio, and eigenvector centrality were extracted as weekly-aggregated time-series data. Singular spectrum analysis was performed to decompose the data into its constituting trend, periodicity, and white noises.
 
 **Results:**
-Antidepressants (ATC `N06A`), antipsychotics (`N05A`), anxiolytics (`N05B`), and hypnotics (`N05C`) are psychopharmaca with high eigenvector centrality. These classes of medication are likely to be co-prescribed alongside other medications, including medications for alimentary and metabolism (`A01-A16`), cardiovascular (`C01-C10`), analgesics (`N02`), and respiratory (`R01-R07`). Only antidepressants and hypnotics have a positive time trend for both eigenvector centrality and actual number of claims.
+Antidepressants (ATC `N06A`, $c_e$ = `r N06A$ce`, $n_c$ = `r N06A$nc`), antipsychotics (`N05A`, $c_e$ = `r N05A$ce`, $n_c$ = `r N05A$nc`), and anxiolytics (`N05B`, $c_e$ = `r N05B$ce`, $n_c$ = `r N05B$nc`) are psychopharmaca with high eigenvector centrality. These classes of medication are likely to be co-prescribed alongside other medications. Further groups with high eigenvector centrality were medications for alimentary and metabolism (`A01-A16`, $c_e$ = `r A0x$ce`, $n_c$ = `r A0x$nc`), blood (`B01-B06`, $c_e$ = `r B0x$ce`, $n_c$ = `r B0x$nc`), cardiovascular (`C01-C10`, $c_e$ = `r C0x$ce`, $n_c$ = `r C0x$ne`), analgesics (`N02`, $c_e$ = `r N02$ce`, $n_c$ `r N02$nc`), and respiratory (`R01-R07`, $c_e$ = `r R0x$ce`, $n_c$ = `r R0x$nc`). High eigenvector centrality implies that these medications are likely to be co-prescribed with other medications. Only antidepressants had a positive time trend for both eigenvector centrality and actual number of claims.
 
 **Discussion:**
-Eight medications, four of which are psychopharmaca, have a high eigenvector centrality, implying its concurrence on a population level. Positive time trends in both eigenvector centrality and claims suggest that increasing uses of antidepressants and hypnotics are related to co-prescription with other medication classes. Constructing a medication claim network enriches the exploratory analysis procedure on the population level.
+Eight medications, three of which are psychopharmaca, have a high eigenvector centrality, implying its concurrence on a population level. Positive time trends in both eigenvector centrality and claims suggest that increasing uses of antidepressants are related to co-prescription with other medication classes. Constructing a medication claim network enriches the exploratory analysis of medication use at the population level.
 
 {{< pagebreak >}}
 
@@ -113,14 +140,6 @@ $$ {#eq-eigen-centrality}
 ::: {.content-visible when-profile="summary"}
 
 \uselandscape
-
-```{r}
-
-pkgs <- c("targets", "magrittr")
-pkgs_load <- sapply(pkgs, library, character.only = TRUE)
-options(digits = 2, scipen = 999)
-
-```
 
 ## Excerpt on findings
 
