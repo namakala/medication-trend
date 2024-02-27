@@ -106,6 +106,7 @@ vizDot <- function(tbl, y, groupname = NULL, ...) {
 
   plt <- ggplot(tbl, aes(x = as.Date(date), y = get(y))) +
     geom_point(alpha = 0.4, size = 0.6) +
+    geom_line(alpha = 0.2, linewidth = 0.4) +
     labs(x = "Year", y = labelname) +
     ggpubr::theme_pubclean()
 

@@ -186,7 +186,7 @@ bindReconSsa <- function(ts_list) {
   return(tbl)
 }
 
-genReconTs <- function(tbl, n = 2) {
+genReconTs <- function(tbl, n = 2, detrend = FALSE) {
   #' Generate Reconstructed Time Series
   #'
   #' Generate a reconstructed time series based on trend and n number of
@@ -199,13 +199,27 @@ genReconTs <- function(tbl, n = 2) {
   #' Using all the oscillating functions will recreate the original data, which
   #' means re-introducing the white noises. Keep the n number low, preferably n
   #' = 2.
+  #' @param detrend A boolean indicating whether to return a detrended series
+  #' or not
   #' @return A tidy time series
   require("tsibble")
 
+  # Generate id for subsetting the dataset
+  trend <- tbl$component == "Trend"
+
   if (n > 0) {
-    id <- tbl$component %in% c("Trend", paste0("F", 1:n))
+    com <- tbl$component %in% paste0("F", 1:n)
   } else {
-    id <- tbl$component == "Trend"
+    com <- rep(FALSE, times = length(trend))
+  }
+
+  if (detrend) {
+    if (n < 1) {
+      stop("The number of oscillating function (n) should be at least 1 to return detrended data")
+    }
+    id <- com
+  } else {
+    id <- trend | com
   }
 
   tbl %<>%
