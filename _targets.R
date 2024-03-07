@@ -62,7 +62,7 @@ list(
   ),
 
   # Set iteration parameters of metrics and scales for visualization
-  tar_target(vizDotParams, data.frame(
+  tar_target(vizdot_params, data.frame(
     "metrics" = c("n_claim", "n_patient", "claim2patient", "eigen", "strength"),
     "scales"  = c("free_y", "free_y", "fixed", "fixed", "fixed")
   )),
@@ -78,59 +78,59 @@ list(
     tar_target(ts_diff2, timeDiff(ts, n = 2)),
 
     # Assess stationarity using the Augmented Dickey-Fuller test
-    tar_target(ts_uroot, evalUnitRoot(ts, y = vizDotParams$metrics), pattern = map(vizDotParams)),
-    tar_target(ts_diff_uroot, evalUnitRoot(ts_diff, y = vizDotParams$metrics), pattern = map(vizDotParams)),
-    tar_target(ts_diff2_uroot, evalUnitRoot(ts_diff2, y = vizDotParams$metrics), pattern = map(vizDotParams)),
+    tar_target(ts_uroot, evalUnitRoot(ts, y = vizdot_params$metrics), pattern = map(vizdot_params)),
+    tar_target(ts_diff_uroot, evalUnitRoot(ts_diff, y = vizdot_params$metrics), pattern = map(vizdot_params)),
+    tar_target(ts_diff2_uroot, evalUnitRoot(ts_diff2, y = vizdot_params$metrics), pattern = map(vizdot_params)),
 
     # Visualize the dot plot
     tar_target(
       plt_dot,
-      vizDot(ts, y = vizDotParams$metrics, scales = vizDotParams$scales, nrow = 4),
-      pattern = map(vizDotParams),
+      vizDot(ts, y = vizdot_params$metrics, scales = vizdot_params$scales, nrow = 4),
+      pattern = map(vizdot_params),
       iteration = "list"
     ),
 
     tar_target(
       plt_dot_diff,
-      vizDot(ts_diff, y = vizDotParams$metrics, scales = vizDotParams$scales, nrow = 4),
-      pattern = map(vizDotParams),
+      vizDot(ts_diff, y = vizdot_params$metrics, scales = vizdot_params$scales, nrow = 4),
+      pattern = map(vizdot_params),
       iteration = "list"
     ),
 
     # Visualize the pair plot, ACF, and PACF
     tar_target(
       plt_acf,
-      vizAutocor(ts, y = vizDotParams$metrics, type = "ACF", lag_max = 52),
-      pattern = map(vizDotParams),
+      vizAutocor(ts, y = vizdot_params$metrics, type = "ACF", lag_max = 52),
+      pattern = map(vizdot_params),
       iteration = "list"
     ),
 
     tar_target(
       plt_acf_diff,
-      vizAutocor(ts_diff, y = vizDotParams$metrics, type = "ACF", lag_max = 52),
-      pattern = map(vizDotParams),
+      vizAutocor(ts_diff, y = vizdot_params$metrics, type = "ACF", lag_max = 52),
+      pattern = map(vizdot_params),
       iteration = "list"
     ),
 
     tar_target(
       plt_pacf,
-      vizAutocor(ts, y = vizDotParams$metrics, type = "PACF", lag_max = 52),
-      pattern = map(vizDotParams),
+      vizAutocor(ts, y = vizdot_params$metrics, type = "PACF", lag_max = 52),
+      pattern = map(vizdot_params),
       iteration = "list"
     ),
 
     tar_target(
       plt_pacf_diff,
-      vizAutocor(ts_diff, y = vizDotParams$metrics, type = "PACF", lag_max = 52),
-      pattern = map(vizDotParams),
+      vizAutocor(ts_diff, y = vizdot_params$metrics, type = "PACF", lag_max = 52),
+      pattern = map(vizdot_params),
       iteration = "list"
     ),
 
     # Visualize the periodic patterns
     tar_target(
       plt_period,
-      vizPeriod(ts_diff, y = vizDotParams$metrics, period = type, nrow = 4, scales = "free"),
-      pattern = map(vizDotParams),
+      vizPeriod(ts_diff, y = vizdot_params$metrics, period = type, nrow = 4, scales = "free"),
+      pattern = map(vizdot_params),
       iteration = "list"
     ),
 
@@ -140,11 +140,11 @@ list(
       saveFig(
         plt_dot,
         path   = "docs/_fig",
-        args   = c("plt_dot", type, vizDotParams$metrics),
+        args   = c("plt_dot", type, vizdot_params$metrics),
         width  = 14,
         height = 8
       ),
-      pattern = map(plt_dot, vizDotParams),
+      pattern = map(plt_dot, vizdot_params),
       format = "file"
     ),
 
@@ -153,11 +153,11 @@ list(
       saveFig(
         plt_acf,
         path   = "docs/_fig",
-        args   = c("plt_acf", type, vizDotParams$metrics),
+        args   = c("plt_acf", type, vizdot_params$metrics),
         width  = 12,
         height = 8
       ),
-      pattern = map(plt_acf, vizDotParams),
+      pattern = map(plt_acf, vizdot_params),
       format = "file"
     ),
 
@@ -166,11 +166,11 @@ list(
       saveFig(
         plt_pacf,
         path   = "docs/_fig",
-        args   = c("plt_pacf", type, vizDotParams$metrics),
+        args   = c("plt_pacf", type, vizdot_params$metrics),
         width  = 12,
         height = 8
       ),
-      pattern = map(plt_pacf, vizDotParams),
+      pattern = map(plt_pacf, vizdot_params),
       format = "file"
     )
   ),
@@ -202,7 +202,7 @@ list(
       ),
       tar_target(decom, timeDecom(ts_dat, varname = tvar, period = period, method = method)),
       tar_target(
-        plt_decom,
+        plt_dot_decom,
         vizDot(decom, y = "season_adjust", nrow = 4) + labs(y = getLabel(tvar))
       )
     )
@@ -286,6 +286,15 @@ list(
 
   # Generate reconstructed time series based on trend + 2 oscillating functions
   tar_target(ts_recon, genReconTs(decom_ssa, n = 2)),
+
+  # Plot the reconstructed time-series
+  tar_map(
+    unlist = TRUE,
+    values = tibble::tibble(
+      "varname" = c("n_claim", "eigen"), "scales" = c("free_y", "fixed")
+    ),
+    tar_target(plt_dot_recon, vizDot(ts_recon, y = varname, scales = scales, nrow = 4))
+  ),
 
   # Cluster the series based on eigenvector centrality
   tar_target(ts_clust, setCluster(ts_recon, nclusts = 2:10)),

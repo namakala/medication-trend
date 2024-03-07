@@ -72,7 +72,7 @@ tar_read(decom_ssa) %>%
   subset(select = -c(statistic:alternative)) %>%
   tidyr::pivot_wider(names_from = metric, values_from = `Mann-Kendall`) %>%
   tidyr::pivot_wider(names_from = component, values_from = eigen:n_claim) %>%
-  set_colnames(c("ATCC Group", rep(c("Original", "Trend"), 2))) %>%
+  set_colnames(c("ATC Group", rep(c("Original", "Trend"), 2))) %>%
   knitr::kable(longtable = TRUE, booktabs = TRUE) %>%
   kableExtra::kable_styling(latex_options = "repeat_header") %>%
   kableExtra::add_header_above(c(" " = 1, "Eigenvector Centrality" = 2, "Medication Claims" = 2)) %>%
@@ -81,6 +81,15 @@ tar_read(decom_ssa) %>%
 ```
 
 \uselandscape
+
+```{r}
+
+tar_read(plt_dot_recon_n_claim)
+tar_read(plt_dot_recon_eigen)
+
+```
+
+\useportrait
 
 ## Residuals analysis
 
@@ -110,7 +119,7 @@ tar_read(mod_ssa_eigen) %>%
 
 ```
 
-{{< pagebreak >}}
+\uselandscape
 
 ## Reconstructed plots {#sec-recon}
 

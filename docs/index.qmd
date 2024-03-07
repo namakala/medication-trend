@@ -35,6 +35,10 @@ options(digits = 2, scipen = 999)
 {{< include exec-summary/_spectral.qmd >}}
 :::
 
+::: {.content-visible when-profile="models"}
+{{< include exec-summary/_models.qmd >}}
+:::
+
 :::: {.content-visible when-meta="in.report"}
 
 ## Contents

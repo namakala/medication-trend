@@ -1,0 +1,9 @@
+project:
+  output-dir: _render/models
+
+book:
+  title: "Exploratory Model Comparison"
+  author: "Aly Lamuri"
+  chapters:
+    - index.qmd
+    - results/models.qmd

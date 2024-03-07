@@ -204,8 +204,8 @@ tar_read(plt_pacf_month)[[4]]
 
 ```{r}
 
-tar_read(plt_decom_ts_day_1.week_classic_n_claim)
-tar_read(plt_decom_ts_day_1.week_classic_eigen)
+tar_read(plt_dot_decom_ts_day_1.week_classic_n_claim)
+tar_read(plt_dot_decom_ts_day_1.week_classic_eigen)
 
 ```
 
@@ -213,8 +213,8 @@ tar_read(plt_decom_ts_day_1.week_classic_eigen)
 
 ```{r}
 
-tar_read(plt_decom_ts_week_1.month_classic_n_claim)
-tar_read(plt_decom_ts_week_1.month_classic_eigen)
+tar_read(plt_dot_decom_ts_week_1.month_classic_n_claim)
+tar_read(plt_dot_decom_ts_week_1.month_classic_eigen)
 
 ```
 
@@ -222,8 +222,8 @@ tar_read(plt_decom_ts_week_1.month_classic_eigen)
 
 ```{r}
 
-tar_read(plt_decom_ts_month_1.year_classic_n_claim)
-tar_read(plt_decom_ts_month_1.year_classic_eigen)
+tar_read(plt_dot_decom_ts_month_1.year_classic_n_claim)
+tar_read(plt_dot_decom_ts_month_1.year_classic_eigen)
 
 ```
 

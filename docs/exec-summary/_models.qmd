@@ -1,0 +1,11 @@
+### Exploratory Model Comparison
+
+#### Baseline models
+
+Simple methods are useful as a benchmark when evaluating and comparing multiple models. In a data with simple pattern and seasonality, baseline models are sufficiently effective in projecting forecasts. Methods incorporated in the baseline models are mean, naive, seasonal naive, and drift method. Mean method simply takes the mean value of all preceding time points to forecast the future, which may fit rather well in time-series data without a trend. Naive method takes the most recent value as a projection of the forecast, which could be reasonable in a series following a random-walk. Seasonal naive method is similar to the naive methods while taking into account the presence of seasonality, *viz.* by taking the most recent value in the last occurring season. Drift method is equivalent with the naive method while allowing the projection to drift in a positive or negative trend. In a way, drift method is akin to drawing a line between the first-point and the last-point of observation. While useful, these four methods are highly constrained by the data. The presence of complex periodic patterns or alternating trend may result in low accuracy.
+
+#### Time-series linear model
+
+#### Holt's exponential smoothing
+
+#### Automatic (S)ARIMA
