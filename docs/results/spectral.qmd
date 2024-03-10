@@ -84,12 +84,12 @@ tar_read(decom_ssa) %>%
 
 ```{r}
 
-tar_read(plt_dot_recon_n_claim)
-tar_read(plt_dot_recon_eigen)
+tar_read(plt_dot_recon_n_claim_free_y)
+tar_read(plt_dot_recon_eigen_fixed)
 
 ```
 
-\useportrait
+\normalpapersize
 
 ## Residuals analysis
 
