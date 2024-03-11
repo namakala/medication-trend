@@ -81,3 +81,40 @@ fitSsa <- function(ts, method = NULL, ...) {
   return(mod)
 
 }
+
+compareModel <- function(ts, y) {
+  #' Compare Models
+  #'
+  #' Fit Multiple Models for Comparison
+  #'
+  #' @param ts A time series data frame, will accept a `tsibble` object
+  #' @param y The variable to fit
+  #' @return A mable object (model table)
+  require("tsibble")
+
+  # Get variable name with englue
+  varname <- rlang::englue("{{ y }}")
+
+  # Generate formulas for specific models
+  forms <- list(
+    "snaive" = "%s ~ lag(52)",
+    "drift"  = "%s ~ drift()",
+    "tslm"   = "%s ~ trend()",
+    "ets"    = "%s ~ error('A') + trend('N') + season('N')"
+  ) %>%
+    lapply(\(form) sprintf(form, varname) %>% formula())
+
+  # Fit multiple models as a mable
+  model <- ts %>%
+    fabletools::model(
+      "mean"   = fable::MEAN({{ y }}),
+      "naive"  = fable::NAIVE({{ y }}),
+      "snaive" = fable::SNAIVE(forms$snaive),
+      "drift"  = fable::RW(forms$drift),
+      "tslm"   = fable::TSLM(forms$tslm),
+      "ets"    = fable::ETS(forms$ets),
+      "arima"  = fable::ARIMA({{ y }})
+    )
+
+  return(model)
+}
