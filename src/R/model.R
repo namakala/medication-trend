@@ -82,6 +82,30 @@ fitSsa <- function(ts, method = NULL, ...) {
 
 }
 
+splitTs <- function(ts, ratio = 0.2) {
+  #' Split Time-Series
+  #'
+  #' Split the time-series into training and testing dataset based on the ratio
+  #'
+  #' @param ts A time series dta frame, will accept a `tsibble` object
+  #' @param ratio The testing:training ratio, set to 0.2 by default
+  #' @return A list containing training and testing dataset
+
+  # Date of the most recent dataset
+  dates  <- ts$date %>% unique()
+  id     <- floor(ratio * length(dates))
+  recent <- dates %>% extract2(length(.) - id)
+
+  # Subset the dataset
+  sub_ts <- list(
+    "train" = ts %>% subset(.$date <= recent),
+    "test"  = ts %>% subset(.$date >  recent)
+  )
+
+  return(sub_ts)
+
+}
+
 compareModel <- function(ts, y) {
   #' Compare Models
   #'
