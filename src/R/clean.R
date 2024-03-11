@@ -96,9 +96,6 @@ mergeTS <- function(tbl_metrics, tbl_stats, ...) {
     inset2("group", value = setGroupFactor(.$group)) %>% # Set factor
     inset2("neuro_med", value = .$group %in% getNeuroMeds()) %>% # Neuro meds
     inset2("event", value = isCovid(.$date)) %>%
-    #inset2("event", value = { # Pre/during COVID-19
-    #  ifelse(.$date < "2020-01-30", "Pre-COVID-19", "COVID-19")
-    #}) %>%
     inset( # Replace `NA` with 0
       c("n_claim", "claim2patient"),
       value = list(

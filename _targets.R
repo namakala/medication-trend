@@ -296,6 +296,15 @@ list(
     tar_target(plt_dot_recon, vizDot(ts_recon, y = varname, scales = scales, nrow = 4))
   ),
 
+  # Compare time-series models and produce a mable
+  tar_map(
+    unlist = FALSE,
+    values = tibble::tibble("y" = rlang::syms(c("n_claim", "eigen"))),
+    tar_target(mod, compareModel(ts_recon, y, split = list("recent" = "2020-03-11"))),
+    tar_target(mod_cast, castModel(mod, len = 52)),
+    tar_target(mod_eval, evalModel(mod_cast, ts_recon))
+  ),
+
   # Cluster the series based on eigenvector centrality
   tar_target(ts_clust, setCluster(ts_recon, nclusts = 2:10)),
 

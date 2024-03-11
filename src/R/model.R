@@ -82,63 +82,142 @@ fitSsa <- function(ts, method = NULL, ...) {
 
 }
 
-splitTs <- function(ts, ratio = 0.2) {
+splitTs <- function(ts, ratio = 0.2, recent = NULL) {
   #' Split Time-Series
   #'
   #' Split the time-series into training and testing dataset based on the ratio
   #'
   #' @param ts A time series dta frame, will accept a `tsibble` object
+  #' @param recent A date for specifying the split
   #' @param ratio The testing:training ratio, set to 0.2 by default
   #' @return A list containing training and testing dataset
 
   # Date of the most recent dataset
-  dates  <- ts$date %>% unique()
-  id     <- floor(ratio * length(dates))
-  recent <- dates %>% extract2(length(.) - id)
+  if (is.null(recent)) {
+    dates  <- ts$date %>% unique()
+    loc    <- floor(ratio * length(dates))
+    recent <- dates %>% extract2(length(.) - loc)
+  }
 
   # Subset the dataset
   sub_ts <- list(
-    "train" = ts %>% subset(.$date <= recent),
-    "test"  = ts %>% subset(.$date >  recent)
+    "past"   = ts %>% subset(.$date <= recent),
+    "recent" = ts %>% subset(.$date >  recent)
   )
 
   return(sub_ts)
 
 }
 
-compareModel <- function(ts, y) {
+genModelForm <- function(varname) {
+  #' Generate Model Formulas
+  #'
+  #' Generate model formulas to use in `compareModel`
+  #'
+  #' @param varname A character vector of a variable name
+  #' @return A list of formulas
+
+  forms <- list(
+    "snaive"  = "%s ~ lag(52)",
+    "drift"   = "%s ~ drift()",
+    "tslm"    = "%s ~ trend() + fourier(period = 'year', K = 2)",
+    "ets"     = "%s ~ season(period = 24)", # Max supported period is 24
+    "sarima"  = "%s ~ PDQ(period = 52)",
+    "arimax"  = "%s ~ fourier(period = 'year', K = 2)",
+    "prophet" = "%s ~ season(period = 'year', order = 2)"
+  ) %>%
+    lapply(\(form) sprintf(form, varname) %>% formula())
+
+  return(forms)
+}
+
+compareModel <- function(ts, y, split = NULL, ...) {
   #' Compare Models
   #'
   #' Fit Multiple Models for Comparison
   #'
   #' @param ts A time series data frame, will accept a `tsibble` object
   #' @param y The variable to fit
+  #' @param split A list containing parameters to pass on to `splitTs`, support
+  #' either `recent` (date object) or `ratio` (0 $\leq$ ratio $\leq$ 1)
   #' @return A mable object (model table)
   require("tsibble")
 
-  # Get variable name with englue
+  # Get variable name with englue then generate model formulas
   varname <- rlang::englue("{{ y }}")
+  forms   <- genModelForm(varname)
 
-  # Generate formulas for specific models
-  forms <- list(
-    "snaive" = "%s ~ lag(52)",
-    "drift"  = "%s ~ drift()",
-    "tslm"   = "%s ~ trend()",
-    "ets"    = "%s ~ error('A') + trend('N') + season('N')"
-  ) %>%
-    lapply(\(form) sprintf(form, varname) %>% formula())
+  # Switcher to perform a rolling-window cross validation or data splitting
+  if (!is.null(split)) {
+    ratio   <-  split$ratio
+    recent  <-  split$recent
+    ts     %<>% splitTs(recent = recent, ratio = ratio) %>% extract2("past")
+  }
+
+  if (hasArg(.init) & hasArg(.step)) {
+    ts %<>% tsibble::stretch_tsibble(...)
+  }
 
   # Fit multiple models as a mable
   model <- ts %>%
     fabletools::model(
-      "mean"   = fable::MEAN({{ y }}),
-      "naive"  = fable::NAIVE({{ y }}),
-      "snaive" = fable::SNAIVE(forms$snaive),
-      "drift"  = fable::RW(forms$drift),
-      "tslm"   = fable::TSLM(forms$tslm),
-      "ets"    = fable::ETS(forms$ets),
-      "arima"  = fable::ARIMA({{ y }})
+      "mean"    = fable::MEAN({{ y }}),
+      "naive"   = fable::NAIVE({{ y }}),
+      "snaive"  = fable::SNAIVE(forms$snaive),
+      "drift"   = fable::RW(forms$drift),
+      "tslm"    = fable::TSLM(forms$tslm),
+      "ets"     = fable::ETS(forms$ets),
+      "arima"   = fable::ARIMA({{ y }}),
+      "sarima"  = fable::ARIMA(forms$sarima),
+      "arimax"  = fable::ARIMA(forms$arimax),
+      "prophet" = fable.prophet::prophet(forms$prophet)
     )
 
   return(model)
 }
+
+castModel <- function(mable, len = 52) {
+  #' Forecast models
+  #'
+  #' Create a forecast from models in a mable
+  #'
+  #' @param mable A model table, usually the outoput of `compareModel`
+  #' @param len The length of forecasted data points
+  #' @return A forecast table
+
+  mod_cast <- mable %>% fabletools::forecast(h = len)
+
+  return(mod_cast)
+}
+
+evalModel <- function(mod_cast, ts) {
+  #' Evaluate Comparative Models
+  #'
+  #' Evaluate comparative models provided by the `compareModel` function
+  #'
+  #' @param mod_cast A model forecast
+  #' @param ts A time-series data used to evaluate the model. To calculate MASE
+  #' and RMSSE, it is required to use the whole dataset (training + testing).
+  #' @return A table containing model goodness of fit
+  require("fabletools")
+
+  mod_eval <- mod_cast %>%
+    fabletools::accuracy(
+      ts,
+      list(
+        "MAE"  = fabletools::MAE,
+        "RMSE" = fabletools::RMSE,
+        "MAPE" = fabletools::MAPE,
+        "MASE" = fabletools::MASE,
+        "RMSSE" = fabletools::RMSSE,
+        "Winkler" = fabletools::winkler_score, 
+        "QS"      = fabletools::quantile_score,
+        "CRPS"    = fabletools::CRPS,
+        "Skill"   = fabletools::skill_score(CRPS)
+      )
+    ) %>%
+    dplyr::arrange(group)
+
+  return(mod_eval)
+}
+
