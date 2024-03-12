@@ -123,7 +123,7 @@ genModelForm <- function(varname) {
     "tslm"    = "%s ~ trend() + fourier(period = 'year', K = 2)",
     "ets"     = "%s ~ season(period = 24)", # Max supported period is 24
     "sarima"  = "%s ~ PDQ(period = 52)",
-    "arimax"  = "%s ~ fourier(period = 'year', K = 2)",
+    "arimax"  = "%s ~ PDQ(0, 0, 0) + fourier(period = 'year', K = 2)",
     "prophet" = "%s ~ season(period = 'year', order = 2)"
   ) %>%
     lapply(\(form) sprintf(form, varname) %>% formula())
@@ -151,7 +151,8 @@ compareModel <- function(ts, y, split = NULL, ...) {
   if (!is.null(split)) {
     ratio   <-  split$ratio
     recent  <-  split$recent
-    ts     %<>% splitTs(recent = recent, ratio = ratio) %>% extract2("past")
+    id      <-  split$id %>% {ifelse(is.null(.), "past", .)}
+    ts     %<>% splitTs(recent = recent, ratio = ratio) %>% extract2(id)
   }
 
   if (hasArg(.init) & hasArg(.step)) {
@@ -161,16 +162,16 @@ compareModel <- function(ts, y, split = NULL, ...) {
   # Fit multiple models as a mable
   model <- ts %>%
     fabletools::model(
-      "mean"    = fable::MEAN({{ y }}),
-      "naive"   = fable::NAIVE({{ y }}),
-      "snaive"  = fable::SNAIVE(forms$snaive),
-      "drift"   = fable::RW(forms$drift),
-      "tslm"    = fable::TSLM(forms$tslm),
-      "ets"     = fable::ETS(forms$ets),
-      "arima"   = fable::ARIMA({{ y }}),
-      "sarima"  = fable::ARIMA(forms$sarima),
-      "arimax"  = fable::ARIMA(forms$arimax),
-      "prophet" = fable.prophet::prophet(forms$prophet)
+      "Mean"    = fable::MEAN({{ y }}),
+      "Naive"   = fable::NAIVE({{ y }}),
+      "SNaive"  = fable::SNAIVE(forms$snaive),
+      "Drift"   = fable::RW(forms$drift),
+      "OLS"     = fable::TSLM(forms$tslm),
+      "ETS"     = fable::ETS(forms$ets),
+      "ARIMA"   = fable::ARIMA({{ y }}),
+      "SARIMA"  = fable::ARIMA(forms$sarima),
+      "ARIMAX"  = fable::ARIMA(forms$arimax),
+      "Prophet" = fable.prophet::prophet(forms$prophet)
     )
 
   return(model)

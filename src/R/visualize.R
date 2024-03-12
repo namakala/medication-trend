@@ -438,3 +438,21 @@ vizReconSsa <- function(tidy_recon, ...) {
 
   return(plt)
 }
+
+vizForecast <- function(mod_cast, ts) {
+  #' Plot Forecast Model
+  #'
+  #' Plot forecasted points alongside the actual data
+  #'
+  #' @param mod_cast The forecasted points acquired from models, currently
+  #' support a `fbl_ts`
+  #' @param ts A time series data frame
+  #' @return A GGplot2 object
+  require("ggplot2")
+  require("fabletools")
+
+  plt <- fabletools::autoplot(mod_cast, ts) +
+    facet_wrap(~group, nrow = 4, scales = "free_y")
+
+  return(plt)
+}

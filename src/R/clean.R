@@ -73,7 +73,7 @@ isCovid <- function(x, covid_date = "2020-03-11") {
   return(res)
 }
 
-mergeTS <- function(tbl_metrics, tbl_stats, ...) {
+mergeTS <- function(tbl_metrics, tbl_stats, covid_date = "2020-03-11", ...) {
   #' Merge Time Series Data
   #'
   #' Get the time-series data frame by combining graph-object centrality
@@ -85,9 +85,11 @@ mergeTS <- function(tbl_metrics, tbl_stats, ...) {
   #' @param tbl_metrics A data frame containing node names and its metrics
   #' @param tbl_stats An aggregate data frame summarizing the number of daily
   #' claims for each medication group
+  #' @param covid_date Announced date of COVID-19 as a global pandemic
   #' @param ... Parameters to pass on to `aggregateTS`
   #' @return A tidy time-series data frame combining graph's metrics and the
   #' field summary
+
   tbl <- merge(tbl_metrics, tbl_stats, all.x = TRUE) %>%
     tibble::tibble()
 
@@ -95,7 +97,7 @@ mergeTS <- function(tbl_metrics, tbl_stats, ...) {
   tbl_clean <- tbl %>%
     inset2("group", value = setGroupFactor(.$group)) %>% # Set factor
     inset2("neuro_med", value = .$group %in% getNeuroMeds()) %>% # Neuro meds
-    inset2("event", value = isCovid(.$date)) %>%
+    inset2("event", value = isCovid(.$date, covid_date = covid_date)) %>%
     inset( # Replace `NA` with 0
       c("n_claim", "claim2patient"),
       value = list(

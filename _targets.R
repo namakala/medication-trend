@@ -67,13 +67,16 @@ list(
     "scales"  = c("free_y", "free_y", "fixed", "fixed", "fixed")
   )),
 
+  # Set the date for COVID-19 pandemic
+  tar_target(covid_date, as.Date("2020-03-11")),
+
   # Merge graph metrics and descriptive statistics as a time-series data
   tar_map(
     unlist = FALSE,
     values = data.frame("type" = c("day", "week", "month")),
 
     # Merge time-series and calculate the first-degree diff
-    tar_target(ts, mergeTS(iadb_metrics, iadb_stats, type = type)),
+    tar_target(ts, mergeTS(iadb_metrics, iadb_stats, covid_date = covid_date, type = type)),
     tar_target(ts_diff, timeDiff(ts)),
     tar_target(ts_diff2, timeDiff(ts, n = 2)),
 
@@ -296,13 +299,19 @@ list(
     tar_target(plt_dot_recon, vizDot(ts_recon, y = varname, scales = scales, nrow = 4))
   ),
 
-  # Compare time-series models and produce a mable
+  # Compare time-series models and produce a model evaluation table
   tar_map(
     unlist = FALSE,
     values = tibble::tibble("y" = rlang::syms(c("n_claim", "eigen"))),
-    tar_target(mod, compareModel(ts_recon, y, split = list("recent" = "2020-03-11"))),
+
+    # Rolling-window cross validation and model evaluation
+    tar_target(mod, compareModel(ts_recon, y, split = list("ratio" = 0.2), .init = 52, .step = 13)),
     tar_target(mod_cast, castModel(mod, len = 52)),
-    tar_target(mod_eval, evalModel(mod_cast, ts_recon))
+    tar_target(mod_eval, evalModel(mod_cast, ts_recon)),
+
+    # Fit models for an interrupted time-series analysis
+    tar_target(mod_its, compareModel(ts_recon, y, split = list("recent" = covid_date))),
+    tar_target(mod_cast_its, castModel(mod_its, len = 52))
   ),
 
   # Cluster the series based on eigenvector centrality
