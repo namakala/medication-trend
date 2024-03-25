@@ -1,0 +1,35 @@
+author:
+  - name: Aly Lamuri
+    corresponding: true
+    email: a.l.m.lamuri.murdani@rug.nl
+    affiliations:
+      - ref: rug
+      - ref: ui
+    roles: [conceptualization, methodology, analysis, visualization, writing]
+  - name: Frederike Jorg
+    affiliations:
+      - ref: rug
+      - ref: umcg
+  - name: Eelko Hak 
+    affiliations:
+      - ref: rug
+  - name: Jens H. Bos
+    affiliations:
+      - ref: rug
+  - name: Talitha L. Feenstra
+    affiliations:
+      - ref: rug
+
+affiliations:
+  - id: rug
+    name: University of Groningen
+    city: Groningen
+    country: Netherlands
+  - id: ui
+    name: University of Indonesia
+    city: Depok
+    country: Indonesia
+  - id: umcg
+    name: University Medical Centre Groningen
+    city: Groningen
+    country: Netherlands

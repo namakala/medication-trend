@@ -1,4 +1,6 @@
+::: {.content-visible unless-meta="in.article"}
 ### Decomposition with singular spectrum analysis
+:::
 
 Classical and STL-based decomposition technique may not sufficiently capture complex periodic patterns in a time-series. Singular spectrum analysis (SSA) is a powerful non-parametric technique by leveraging Hankel matrix as a higher-dimensional embedding of the time-series. The resulting Hankel matrix $X$ has the size of $L \times K$, where $L$ represents the lag term, i.e. a window length to perform embedding For a weekly data with a hypothesized yearly seasonality, the $L$ is set as 52. In theory, the number of $L$ should be between the range of $2 \leq L \leq \frac{N}{2}$, where $N$ is the total length of the time-series.
 

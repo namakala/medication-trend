@@ -1,4 +1,6 @@
+::: {.content-visible unless-meta="in.article"}
 ### Measuring relative importance
+:::
 
 As all medications are nodes in a claim network, we can measure the property of each medication using graph theory. One way to represent node property is by calculating node centrality, which can be measured as a number of incoming/outgoing edges (degree) or its connectedness to other nodes (importance). We measured importance using eigenvector centrality, which reflects medication co-occurrence with other important medications. Eigenvector centrality is a recursive measures of how well connected a certain node is to other nodes that is also well connected in the network [@Golbeck2013]. @eq-eigen-centrality outlines the calculation of eigenvector centrality; $\c_i$ and $\c_j$ are the centralities of node $i$ and $j$, respectively; $\lambda$ is the eigenvalue; $a_{j, i}$ is an element on row $j$ and column $i$ from an adjacency matrix $A$, representing the connection between node $a_i$ and $a_j$.
 

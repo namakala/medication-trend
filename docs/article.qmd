@@ -1,0 +1,79 @@
+---
+title: >
+  Eigenvector centrality as a metric of polypharmacy signifies antidepressants
+  as a central hub of the psychopharmaca co-prescription network
+
+format:
+  elsevier-pdf:
+    latex-output-dir: _render
+    include-in-header:
+      file: _header.tex
+    journal:
+      formatting: review
+
+funding: "The author(s) received no specific funding for this work."
+keywords:
+  - Graph Theory
+  - Prescription Registry
+  - Polypharmacy
+  - Mental Health   
+  - Public Health Monitoring
+
+metadata-files:
+  - _author.yml
+  - _abstract.yml
+  - _knitr-bib.yml
+
+in:
+  article: true
+---
+
+```{r}
+
+pkgs <- c("targets", "magrittr")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+options(digits = 2, scipen = 999)
+
+```
+
+# Introduction
+
+- Mental health as a common co-morbidity
+- Polypharmacy in mental disorder
+- The need of a systematic public health monitoring
+
+# Methods
+
+## Source of data
+
+{{< include exec-summary/_source-data.qmd >}}
+
+## Data pre-processing
+
+{{< include exec-summary/_preprocessing.qmd >}}
+
+## Measuring relative importance
+
+{{< include exec-summary/_measure-eigen.qmd >}}
+
+## Exploratory descriptive analysis
+
+{{< include exec-summary/_descriptive.qmd >}}
+
+## Exploring seasonality in the dataset
+
+{{< include exec-summary/_seasonality.qmd >}}
+
+## Exploratory ARIMA modelling
+
+{{< include exec-summary/_arima.qmd >}}
+
+## Decomposition with singular spectrum analysis
+
+{{< include exec-summary/_spectral.qmd >}}
+
+# Results
+
+# Discussion
+
+# References
