@@ -1,3 +1,4 @@
 /.quarto/
 !*.yml
 !*.bib
+!_*.tex
