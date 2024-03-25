@@ -4,19 +4,6 @@ project:
 profile:
   default: report
 
-bibliography: ref.bib
-knitr:
-  opts_chunk:
-    echo: false
-    eval: true
-    error: false
-    message: false
-    warning: false
-    fig.width: 10
-    fig.height: 8
-    out.width: "100%"
-    comment: "|"
-
 execute:
   freeze: false
 
@@ -28,22 +15,8 @@ format:
       - left=2cm
       - right=2cm
     include-in-header:
-      text: |
-        \usepackage{longtable}
-        \usepackage{amsmath}
-        \usepackage{amssymb}
-        \usepackage{multicol}
-        \usepackage{float}
-        \usepackage{typearea}
-        \floatplacement{figure}{htbp}
-        \floatplacement{table}{htbp}
-        \AtBeginDocument{%
-          \storeareas\normalpapersize
-        }
-        \BeforeRestoreareas{\cleardoublepage}
-        \newcommand*\uselandscape{%
-          \cleardoublepage
-          \KOMAoptions{paper=landscape}%
-          \recalctypearea
-          \areaset{1.2\textwidth}{1.2\textheight}%
-        }
+      file: _header.tex
+
+metadata-files:
+  - _author.yml
+  - _knitr-bib.yml
