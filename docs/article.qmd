@@ -38,9 +38,33 @@ options(digits = 2, scipen = 999)
 
 # Introduction
 
+Mental disorders are a common comorbidity affecting nearly two billion people worldwide which prevalence remains relatively stable overtime [@Kessler2009; @Steel2014; @Richter2019]. Having a chronic mental disorder is one factor which may lead to polypharmacy, *viz.* the use of multiple medications in treating complex clinical conditions [@Halli2019]. Polypharmacy is a prominent issue in modern medicine with a prevalence of 37% [@Delara2022], mainly contributed by the presence of multiple long-term comorbidity, i.e. multimorbidity, in the population. In resolving multimorbidity, the general edict of the evidence-based medicine is to follow an established clinical guideline in treating a particular clinical condition. However, these guidelines are tailored for a single disease without considering multimorbidity, resulting in the use of one or more medications per condition, leading to polypharmacy prescribed for one patient with multiple conditions [@Molokhia2017]. Albeit clinical improvements offered by polypharmacy, risks of drug interaction and adverse effects also become more apparent, engendering a public health issue. Hitherto, no indicator of polypharmacy has been universally standardized [@Sirois2016], where the number of prescription is merely relied on as a crude metric [@Molokhia2017; @Delara2022].
+
+In psychiatry, polypharmacy is defined as a patient with at least two concurrent psychiatric medications [@Shrivastava2013]. With a prevalence between 13-90%, psychiatric polypharmacy manifests in five categories, namely same-class, multi-class, adjunctive, augmentation, and total polypharmacy. Same-class polypharmacy is the use of multiple medications from the same class. Multi-class polypharmacy is the use of multiple medications from different classes indicated for the same symptom cluster. Adjunctive polypharmacy is the use of additional medications to treat side effects due to other medications. Augmentation polypharmacy is the use of full-dose and sub-dose medications from a different class for the same symptom cluster. Finally, total polypharmacy is the total count of all medications used by a patient, both psychopharmaca and other classes alike.
+
 - Mental health as a common co-morbidity
 - Polypharmacy in mental disorder
 - The need of a systematic public health monitoring
+- Although polypharmacy is mostly researched in geriatric patients, younger population are also at risk of inappropriate multiple medication uses [@Menditto2019].
+
+@Sirois2016
+- No agreement on a quantitative indicator of polypharmacy
+- Problem of exposure: Polypharmacy can be defined as cumulative or simultaneous prescriptions
+
+@Delara2022
+- The prevalence of polypharmacy in all medication classes is 37% [95% CI: 31-43%]
+- Difference of prevalence measure is due to different numerical thresholds, study setting, and publication year
+
+@Cavallo2012
+- Create a co-prescription network
+- The weight is the number of time a pair of medications is prescribed together
+- Drugs are classified per ATC code using five different levels
+- The co-prescription network has a scale-free property, suggesting that the probability new links being formed is growing alongside the degree of the target node
+- The scale-free property of the network might be explained by the physician's prescribing habit: The physician tends to prescribe medications with known medications
+
+@Bazzoni2015
+- Drug-prescription network is highly dense and clustered at the global level
+- Drug-prescription network is organized into anatomically homogeneous modules at the local level
 
 # Methods
 
@@ -64,10 +88,6 @@ options(digits = 2, scipen = 999)
 
 {{< include exec-summary/_seasonality.qmd >}}
 
-## Exploratory ARIMA modelling
-
-{{< include exec-summary/_arima.qmd >}}
-
 ## Decomposition with singular spectrum analysis
 
 {{< include exec-summary/_spectral.qmd >}}
@@ -76,4 +96,25 @@ options(digits = 2, scipen = 999)
 
 # Discussion
 
+@Shrivastava2013
+- Among diagnoses, polypharmacy is often found in patients with schizophrenia, schizotypal, and delusional disorder
+- Multi-class polypharmacy is the most common (20.9%), usually the combination of SSRI and benzodiazepine or TCA and benzodiazepine
+- Five factors associated with psychiatric polypharmacy:
+  - Scientific: Emphasis on biogenic amines roles in depression and schizophrenia expanded the early clinical evidence of psychotropic medications
+  - Clinical: Standardization attempt resulted in overlapping diagnoses with limited validity; poly-nosology an polypharmacy go hand-in-hand
+  - Economic: Pharmaceutical company influenced the demand of psychopharmaca uses
+  - Political: US FDA imposes minimal guidelines for drug approval only for specific conditions
+  - Cultural: Large cultural appetite for pharmacological treatments
+
+@Stassen2021
+- Attending psychiatrist is the main determinant of polypharmaca prescription
+- Previous medical history and case severity at baseline only play a minor role in polypharmaca
+- Adverse drug reaction in polypharmaca is 2-3 times higher compared to monotherapy, and not attributed to particular drug or drug combination; it implies that any drug and its combination can virtually trigger the side effect
+- No advantage of polypharmacy over monotherapy, suggesting that polypharmacy regimens are not equally suited for every patient
+
+@Molokhia2017
+- The alternative measure is pre-defined criteria, e.g. BEERS, STOPP, and START
+- Each additional medication contributes to 16% increased risk of errors
+
 # References
+
