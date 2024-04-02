@@ -1,11 +1,10 @@
 ---
 title: >
   Eigenvector centrality as a metric of polypharmacy signifies antidepressants
-  as a central hub of the psychopharmaca co-prescription network
+  as a central hub of the drug prescription network
 
 format:
   elsevier-pdf:
-    latex-output-dir: _render
     include-in-header:
       file: _header.tex
     journal:
@@ -18,7 +17,7 @@ keywords:
   - Prescription Registry
   - Polypharmacy
   - Mental Health   
-  - Public Health Monitoring
+  - Public Health Surveillance
 
 metadata-files:
   - _author.yml
@@ -41,40 +40,15 @@ options(digits = 2, scipen = 999)
 
 Mental disorders are a common comorbidity affecting nearly two billion people worldwide with a prevalence that remains relatively stable overtime [@Kessler2009; @Steel2014; @Richter2019]. Having a chronic mental disorder is one factor which may lead to polypharmacy, *viz.* the use of multiple medications in treating complex clinical conditions [@Halli2019]. Polypharmacy is a prominent issue in modern medicine with a prevalence of 37% [@Delara2022], mainly attributed to the presence of multiple long-term comorbidity, i.e. multimorbidity, in the population. In resolving multimorbidity, the general edict of the evidence-based medicine is to follow an established clinical guideline to treat a particular clinical condition. However, these guidelines are tailored for a single disease without considering multimorbidity, resulting in the use of one or more medications per condition, leading to polypharmacy regimens for one patient with multiple conditions [@Molokhia2017]. Albeit clinical improvements offered by polypharmacy, risks of drug interaction and adverse effects also become more apparent, engendering a public health issue. Hitherto, no indicator of polypharmacy has been universally standardized [@Sirois2016], where the number of prescription is merely relied on as a crude metric [@Molokhia2017; @Delara2022].
 
-In psychiatry, polypharmacy is defined as a patient with at least two concurrent psychiatric medications [@Shrivastava2013]. With a prevalence between 13-90%, psychiatric polypharmacy manifests in five categories, namely same-class, multi-class, adjunctive, augmentation, and total polypharmacy. Same-class polypharmacy is the use of multiple medications from the same class. Multi-class polypharmacy is the use of multiple medications from different classes indicated for the same symptom cluster. Adjunctive polypharmacy is the use of additional medications to treat side effects due to other medications. Augmentation polypharmacy is the use of full-dose and sub-dose medications from a different class for the same symptom cluster. Finally, total polypharmacy is the total count of all medications used by a patient, both psychopharmaca and other classes alike.
+In psychiatry, polypharmacy is defined as a patient with at least two concurrent psychiatric medications [@Shrivastava2013]. With a prevalence between 13-90%, psychiatric polypharmacy manifests in five categories, namely same-class, multi-class, adjunctive, augmentation, and total polypharmacy. Same-class polypharmacy is the use of multiple medications from the same class. Multi-class polypharmacy is the use of multiple medications from different classes indicated for the same symptom cluster. Adjunctive polypharmacy is the use of additional medications to treat side effects due to other medications. Augmentation polypharmacy is the use of full-dose and sub-dose medications from a different class for the same symptom cluster. Finally, total polypharmacy is the total count of all medications used by a patient, both psychopharmaca and other classes alike [@Shrivastava2013]. For policymakers, differences in defining polypharmacy pose a challenge to design a surveillance system [@Sirois2016].
 
-Paragraph layout:
+Surveilling polypharmacy regimens requires a holistic approach since drug prescription highly depends on the physician's prescribing habits [@Stassen2021], patient-physician relationship, and pharmaceutical market, which all bear an interplay with the decision-making process [@Cavallo2012]. A holistic polypharmacy surveillance system needs to describe the importance of polypharmacy by incorporating both qualitative and quantitative measures [@Sirois2016]. Quantitatively attributing importance to each medication is challenging, accounting for polypharmacy as a complex and interlinked medication uses. To reduce the complexity, graph theory offers a complementary approach by analyzing polypharmacy as a drug prescription network (DPN). Transforming prescription registry into a DPN has been previously investigated, where DPN-based approach represented the general trend in co-prescription [@Cavallo2012; @Bazzoni2015].
 
-- Mental disorders as a common co-morbidity contributes to polypharmacy in general
-- Specific types of polypharmacy in mental disorders
-- Problem: The need of a systematic public health monitoring for polypharmacy
-- Definition and purpose of the study:
-  - Proposed solution: Drug prescription network and network analysis to evaluate polypharmacy
-  - Question: How do we implement network analysis approach to quantitatively identify polypharmacy?
-  - Objective: Use graph centrality measure as a quantitative indicator of polypharmacy to enable systematic public health monitoring
+A DPN is constructed as a matrix which rows to columns represent pairs of medication being taken by a patient in a day. Since there is no limit for the number of rows and columns, a DPN can contain virtually every possible combination of polypharmacy regimens. A DPN is generalizable as a population aggregate by coalescing all single-patient DPN through matrix addition [@Cavallo2012]. Constructing a DPN allows examining co-prescription dynamics in the population as graph measures, which is also attributable to each medication. One of such measures is graph centrality, where we calculate scores representing the number of co-medications, number of connecting paths, average distance, and relative importance [@Askar2021]. The relative importance score is of particular interest to address concerns raised by @Sirois2016 and @Delara2022 regarding standardized quantitative indicator of polypharmacy. Relative importance, most commonly measured by eigenvector centrality, represents the connection to vital medications. A high eigenvector centrality in a DPN indicates more prescriptions with highly-prescribed medications. Following up @Cavallo2012 and @Bazzoni2015, we hypothesize that eigenvector centrality as a measure of relative importance is attributable to indicate polypharmacy. Our investigation showcases eigenvector centrality as a quantitative indicator of polypharmacy to promote a systematic public health surveillance system.
 
-@Sirois2016
-
-- No agreement on a quantitative indicator of polypharmacy
-- Problem of exposure: Polypharmacy can be defined as cumulative or simultaneous prescriptions
-
-@Delara2022
-
-- The prevalence of polypharmacy in all medication classes is 37% [95% CI: 31-43%]
-- Difference of prevalence measure is due to different numerical thresholds, study setting, and publication year
-
-@Cavallo2012
-
-- Create a co-prescription network
-- The weight is the number of time a pair of medications is prescribed together
-- Drugs are classified per ATC code using five different levels
-- The co-prescription network has a scale-free property, suggesting that the probability new links being formed is growing alongside the degree of the target node
-- The scale-free property of the network might be explained by the physician's prescribing habit: The physician tends to prescribe medications with known medications
-
-@Bazzoni2015
-
-- Drug-prescription network is highly dense and clustered at the global level
-- Drug-prescription network is organized into anatomically homogeneous modules at the local level
+::: {.content-hidden}
+> **"How do we implement a network analysis approach to quantitatively attribute polypharmacy?"**
+:::
 
 # Methods
 
@@ -90,21 +64,34 @@ Paragraph layout:
 
 {{< include exec-summary/_measure-eigen.qmd >}}
 
-## Exploratory descriptive analysis
+## Data analysis
+
+### Exploratory descriptive analysis
 
 {{< include exec-summary/_descriptive.qmd >}}
 
-## Exploring seasonality in the dataset
+### Exploring seasonality in the dataset
 
 {{< include exec-summary/_seasonality.qmd >}}
 
-## Decomposition with singular spectrum analysis
+### Decomposition with singular spectrum analysis
 
 {{< include exec-summary/_spectral.qmd >}}
 
 # Results
 
 # Discussion
+
+@Delara2022
+
+- The prevalence of polypharmacy in all medication classes is 37% [95% CI: 31-43%]
+- Difference of prevalence measure is due to different numerical thresholds, study setting, and publication year
+
+@Sirois2016
+
+- Problem of exposure: Polypharmacy can be defined as cumulative or simultaneous prescriptions
+- Cut-off threshold of polypharmacy should be justified by the risk of deleterious health outcomes
+- An ideal surveillance system should describe the importance of polypharmacy
 
 @Menditto2019
 
@@ -132,6 +119,17 @@ Paragraph layout:
 
 - The alternative measure is pre-defined criteria, e.g. BEERS, STOPP, and START
 - Each additional medication contributes to 16% increased risk of errors
+
+@Cavallo2012
+
+- The weight is the number of time a pair of medications is prescribed together
+- The co-prescription network has a scale-free property, suggesting that the probability new links being formed is growing alongside the degree of the target node
+- The scale-free property of the network might be explained by the physician's prescribing habit: The physician tends to prescribe medications with known medications
+
+@Bazzoni2015
+
+- Drug-prescription network is highly dense and clustered at the global level
+- Drug-prescription network is organized into anatomically homogeneous modules at the local level
 
 # References
 

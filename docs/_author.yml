@@ -6,7 +6,7 @@ author:
       - ref: rug
       - ref: ui
     roles: [conceptualization, methodology, analysis, visualization, writing]
-  - name: Frederike Jorg
+  - name: Frederike Jörg
     affiliations:
       - ref: rug
       - ref: umcg
