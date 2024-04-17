@@ -10,6 +10,7 @@ format:
     journal:
       formatting: review
       cite-style: authoryear
+  docx: default
 
 funding: "The author(s) received no specific funding for this work."
 keywords:
