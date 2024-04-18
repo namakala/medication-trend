@@ -1,7 +1,5 @@
-# Eigenvector centrality as a metric of polypharmacy signifies
-antidepressants as a central hub of the psychopharmaca co-prescription
-network
-
+# Eigenvector centrality signifies antidepressants as a central hub of
+the co-medication network
 Aly Lamuri, Frederike Jörg, Eelko Hak, Jens H. Bos, Talitha L. Feenstra
 
 **Background:** Mental health disorders are prevalent comorbidities
@@ -14,7 +12,7 @@ a medication claim registry.
 **Methods:** Exploratory time-series analysis was performed in a static
 cohort from IADB.nl with at least one prescription of psychopharmaca
 from 2018 to 2022. The prescription was evaluated daily using anatomical
-therapeutic chemical (ATC) classification. A medication-claim network
+therapeutic chemical (ATC) classification. A drug prescription network
 was constructed to capture dose-adjusted co-prescription. Eigenvector
 centrality ($c_e$) was computed as a measure of relative nodal
 importance, which reflects the degree of medication concurrence in a

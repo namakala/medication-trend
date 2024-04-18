@@ -319,6 +319,8 @@ list(
 
   # Generate documentation
   tar_quarto(abstract, "docs/abstract/abstract.qmd"),
+  tar_quarto(abstract_eupha, "docs/abstract/eupha.qmd"),
+  tar_quarto(abstract_ispor, "docs/abstract/ispor.qmd"),
   tar_quarto(report, "docs", profile = "report", extra_files = "docs/exec-summary", priority = 0),
   tar_quarto(summary, "docs", profile = "summary", priority = 0),
   tar_quarto(report_descriptive, "docs", profile = "descriptive", priority = 0),

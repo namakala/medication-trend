@@ -13,7 +13,7 @@ metadata-files:
 
 in:
   abstract:
-    eupha: true
+    ispor: true
 ---
 
 {{< include _abstract.qmd >}}
