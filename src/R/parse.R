@@ -138,3 +138,26 @@ iterby <- function(tbl, varname, FUN, ...) {
 
   return(proc_group)
 }
+
+writeFiles <- function(tbls, ...) {
+  #' Write Files
+  #'
+  #' Write a list of data frames into the disk.
+  #'
+  #' @param tbls A list of data frame
+  #' @inheritDotParams readr::write_csv
+  #' @return Written csv files
+
+  ids <- names(tbls)
+
+  lapply(ids, function(id) {
+    tbl   <- tbls[[id]]
+    fpath <- sprintf("data/processed/%s.csv", id)
+    msg   <- sprintf("Writing %s into the disk", id)
+
+    message(msg)
+
+    readr::write_csv(tbl, file = fpath, ...)
+  })
+
+}

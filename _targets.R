@@ -38,6 +38,9 @@ list(
     iteration = "vector"
   ),
 
+  # Write daily entries as separate files
+  tar_target(dat_iadb_split_atc, writeFiles(tbl_iadb_split_atc)),
+
   # Generate graph objects from the split ATC data frame
   tar_target(
     iadb_graph,
