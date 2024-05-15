@@ -8,25 +8,8 @@ setGroupFactor <- function(group) {
   #' @param group The medication group variable, containing 25 levels as
   #' indicated by the `groupAtc` function
   #' @return A vector of factors describing the medication group
-  res <- factor(
-    group,
-    levels = c(
-      "Alimentary and metabolism",
-      "Blood",
-      "Cardiovascular",
-      "Dermatologicals",
-      "Genitourinary",
-      "Systemic hormonal",
-      "Systemic anti-infectives",
-      "Antineoplastics",
-      "Musculoskeletal",
-      getNeuroMeds(), # Insert medications for the nervous system
-      "Antiparasitics",
-      "Respiratory",
-      "Sensory",
-      "Others"
-    )
-  )
+
+  res <- factor(group, levels = genLabel())
 
   return(res)
 }
@@ -38,6 +21,7 @@ getNeuroMeds <- function() {
   #' medication, as indicated by code `N0x` by the WHOCC ATC code.
   #'
   #' @return A vector of nervous system medications, including psychopharmaca
+
   res <- c(
     "Anesthetic",
     "Analgesics",
@@ -54,6 +38,34 @@ getNeuroMeds <- function() {
   )
 
   return(res)
+}
+
+genLabel <- function() {
+  #' Generate Matrix Label
+  #'
+  #' Generate label for matrix dimension, the label is set to ATC group name by
+  #' default
+  #'
+  #' @return A vector of character object
+
+  label <- c(
+    "Alimentary and metabolism",
+    "Blood",
+    "Cardiovascular",
+    "Dermatologicals",
+    "Genitourinary",
+    "Systemic hormonal",
+    "Systemic anti-infectives",
+    "Antineoplastics",
+    "Musculoskeletal",
+    getNeuroMeds(), # Insert medications for the nervous system
+    "Antiparasitics",
+    "Respiratory",
+    "Sensory",
+    "Others"
+  )
+
+  return(label)
 }
 
 isCovid <- function(x, covid_date = "2020-03-11") {
