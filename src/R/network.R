@@ -1,44 +1,71 @@
 # Functions to prepare for a graph object
 
-genLabel <- function() {
-  #' Generate Matrix Label
+regularize <- function(x, type = "rescale") {
+  #' Min-Max Regularization
   #'
-  #' Generate label for matrix dimension, the label is set to ATC group name by
-  #' default
+  #' Perform a regularization to a given set of numbers
   #'
-  #' @return A vector of character object
-  label <- c(
-    "Alimentary and metabolism",
-    "Blood",
-    "Cardiovascular",
-    "Dermatologicals",
-    "Genitourinary",
-    "Systemic hormonal",
-    "Systemic anti-infectives",
-    "Antineoplastics",
-    "Musculoskeletal",
-    "Anesthetic",
-    "Analgesics",
-    "Antiepileptics",
-    "Antiparkinson",
-    "Antipsychotics",
-    "Anxiolytics",
-    "Hypnotics and sedatives",
-    "Antidepressants",
-    "Psychostimulants",
-    "Psycholeptics + psychoanaleptics",
-    "Antidementia",
-    "Other nervous system drugs",
-    "Antiparasitics",
-    "Respiratory",
-    "Sensory",
-    "Others"
+  #' @param x A numeric vector
+  #' @param type The type of regularization, support either `clean`, `minmax`,
+  #' or `rescale`
+  #' @return A regularized numeric vector
+
+  if (length(x) == 1) {
+    return(x)
+  }
+
+  clean_x <- ifelse(x == Inf, 0.11, x)
+  minval  <- min(clean_x, na.rm = TRUE)
+  maxval  <- max(clean_x, na.rm = TRUE)
+
+  res <- dplyr::case_when(
+    type == "clean"   ~ clean_x,
+    type == "minmax"  ~ {clean_x - minval} / {maxval - minval},
+    type == "rescale" ~ clean_x / maxval
   )
 
-  return(label)
+  return(res)
 }
 
-pairByRow <- function(atc_tbl, ..., weight = "weight") {
+weightEntry <- function(n, dose = NULL, method = "density") {
+  #' Weigh Entry
+  #'
+  #' Assign weight to the drug-prescription entry.
+  #'
+  #' @param n The number of claim for the entry in an `atc_tbl`
+  #' @param dose The dose of the entry in an `atc_tbl`
+  #' @param method The weighting method, support either `resultant`, `product`,
+  #' `quotient`, `log`, `inv_log`, and `density`
+  #' @return An array of weighted entry
+
+  # Return only `n` for the baseline weight
+  if (is.null(dose) | is.null(method) | method %in% c("none", "base")) {
+    return(n)
+  }
+
+  # Modify DDD = 0.1 to prevent Inf
+  mod_dose <- ifelse(dose == 0.1, 0.11, dose)
+
+  # Transform the weight as diff of log base 10
+  trans <- abs(n - abs(log(mod_dose, base = 10))) %>% regularize()
+
+  # Set special rules for inverted log weights to prevent Inf
+  inv_log <- {abs(n - trans) + n} %>% regularize(type = "clean")
+
+  # Set weighing methods
+  res <- dplyr::case_when(
+    method == "resultant" ~ (n + dose) / 2,
+    method == "product"   ~ n * dose,
+    method == "quotient"  ~ n / dose,
+    method == "log"       ~ trans,
+    method == "inv_log"   ~ inv_log,
+    method == "density"   ~ {n + dnorm(dose, mean = n, sd = n / 3)} %>% regularize()
+  )
+
+  return(res)
+}
+
+pairByRow <- function(atc_tbl, ..., method = "density", type = "additive") {
   #' Make Pairwise Row Combination
   #'
   #' Create a pairwise combination for each row of the input data frame.
@@ -48,13 +75,19 @@ pairByRow <- function(atc_tbl, ..., weight = "weight") {
   #' `igraph::graph.data.frame`).
   #'
   #' @param atc_tbl A data frame containing split ATC
-  #' @param weight Method to weight, either `n` or `weight`
+  #' @param method Method to weight to pass on to the `weightEntry` function
+  #' @param type Type of weighing, support either `additive` or
+  #' `multiplicative`
   #' @inheritDotParams base::aggregate
   #' @return A data frame for generating graph object, containing number of
   #' edges and its weight
 
   # Set weight
-  atc_tbl %<>% inset2("weight", value = ifelse(.$dose != 0, .$n / .$dose, .$n))
+  atc_tbl %<>%
+    inset2(
+      "weight",
+      value = ifelse(.$dose != 0, weightEntry(.$n, .$dose, method = method), .$n)
+    )
 
   # Get the combination index
   if (nrow(atc_tbl) > 1) {
@@ -69,24 +102,31 @@ pairByRow <- function(atc_tbl, ..., weight = "weight") {
   tbl_to   <- atc_tbl[to, ]   %>% set_names(paste(names(.), "to",   sep = "_"))
 
   # Combine the column based on the index
-  tbl_pair <- cbind(tbl_from, tbl_to) %>%
-    inset2("weight", value = {.$weight_from + .$weight_to} / 2)
+  if (type == "additive") {
+    dyad_weight <- {tbl_from$weight_from + tbl_to$weight_to} / 2
+  } else if (type == "multiplicative") {
+    dyad_weight <- tbl_from$weight_from * tbl_to$weight_to
+  }
+
+  tbl_pair <- cbind(tbl_from, tbl_to) %>% inset2("weight", value = dyad_weight)
 
   # Aggregate the metrics
-  form <- sprintf("%s ~ group_from + group_to", weight) %>% as.formula()
-  tbl_agg <- aggregate(form, data = tbl_pair, ...) %>%
+  tbl_agg <- aggregate(weight ~ group_from + group_to, data = tbl_pair, ...) %>%
     set_names(c("from", "to", "weight"))
   
   return(tbl_agg)
 }
 
-mkMatrix <- function(atc_tbl, ...) {
+mkMatrix <- function(atc_tbl, ..., method = "density", type = "additive") {
   #' Make Matrix
   #'
   #' Create an adjacency matrix from a split ATC data frame
   #'
   #' @param atc_tbl A data frame containing split ATC entries
   #' @param ... Parameter passed on to `pairByRow`
+  #' @param method Method to weight to pass on to the `weightEntry` function
+  #' @param type Type of weighing, support either `additive` or
+  #' `multiplicative`
   #' @return A sparse adjacency matrix
 
   # Generate parameters to create an empty matrix
@@ -104,7 +144,7 @@ mkMatrix <- function(atc_tbl, ...) {
   mtxs <- lapply(uids, function(uid) {
     sub_tbl <- atc_tbl %>% subset(.$id == uid)
     groups  <- sub_tbl$group
-    agg_tbl <- pairByRow(sub_tbl, ...)
+    agg_tbl <- pairByRow(sub_tbl, ..., method = method, type = type)
 
     # Generate an empty matrix as a placeholder, set locators for rows and cols
     mtx <- Matrix::Matrix(
@@ -126,17 +166,24 @@ mkMatrix <- function(atc_tbl, ...) {
   return(mtx)
 }
 
-mkGraph <- function(atc_tbl) {
+mkGraph <- function(atc_tbl, method = "density", type = "additive") {
   #' Generate Graph Object
   #'
   #' Create a graph object from a pairwise combination data frame
   #'
   #' @param atc_tbl A data frame containing split ATC entries
+  #' @param method Method to weight to pass on to the `weightEntry` function
+  #' @param type Type of weighing, support either `additive` or
+  #' `multiplicative`
   #' @return Medication graph from pairwises of ATC
 
+  # Discard entries which become the turning point with `method = "log"`
+  tbl <- atc_tbl %>% subset(.$dose >= 0.1 & .$dose < 10)
+
+  # Generate the graph
   graph <- tryCatch(
     {
-      mtx <- mkMatrix(atc_tbl, sum)
+      mtx <- mkMatrix(tbl, sum, method = method, type = type)
       igraph::graph_from_adjacency_matrix(
         mtx, weighted = TRUE, mode = "directed"
       ) %>%
