@@ -73,8 +73,20 @@ setCluster <- function(ts, nclusts = 2:10, ...) {
   #' @return A tidy time seires with a clustering variable
   require("tsibble")
 
-  aug_ts <- ts %>%
+  tbl <- tibble::as_tibble(ts)
+  tbl_clust <- tbl %>%
     dplyr::mutate("cluster" = findCluster(eigen, nclusts = nclusts, ...))
+
+  aug_tbl <- tbl_clust %>%
+    tidyr::nest(.by = group) %>%
+    dplyr::mutate(
+      "meandiff" = purrr::map(data, ~ t.test(.x$eigen, mu = 1/24) %>% broom::tidy())
+    ) %>%
+    tidyr::unnest(c(data, meandiff)) %>%
+    dplyr::mutate("hi_eigen" = statistic > 0)
+
+  aug_ts <- aug_tbl %>% tsibble::as_tsibble(key = group, index = date)
 
   return(aug_ts)
 }
+
