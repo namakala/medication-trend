@@ -15,9 +15,9 @@ $$
 \to
 \stackrel{\textrm{Regularized by } DDD}{
   \begin{bmatrix}
-  \frac{1}{2} \cdot \left(\frac{n_1}{DDD_1} + \frac{n_1}{DDD_1} \right) & \dots & \frac{1}{2} \cdot \left(\frac{n_1}{DDD_1} + \frac{n_N}{DDD_N} \right) \\
+  \frac{1}{2} \cdot \left(\omega_1 + \omega_1 \right) & \dots & \frac{1}{2} \cdot \left(\omega_1 + \omega_N \right) \\
   \vdots & \ddots & \vdots \\
-  \frac{1}{2} \cdot \left(\frac{n_N}{DDD_N} + \frac{n_1}{DDD_1} \right) & \dots & \frac{1}{2} \cdot \left(\frac{n_N}{DDD_N} + \frac{n_N}{DDD_N} \right) \\
+  \frac{1}{2} \cdot \left(\omega_N + \omega_1 \right) & \dots & \frac{1}{2} \cdot \left(\omega_N + \omega_N \right) \\
   \end{bmatrix}
 }
 $$ {#eq-regularize-mtx}

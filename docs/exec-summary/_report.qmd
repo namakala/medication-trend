@@ -6,13 +6,7 @@ options(digits = 2, scipen = 999)
 
 ```
 
-## Abstract
-
-{{< include abstract/_abstract.qmd >}}
-
 :::: {.content-visible when-meta="in.report"}
-
-{{< pagebreak >}}
 
 ## Analytical procedures
 

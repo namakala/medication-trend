@@ -79,7 +79,100 @@ A DPN is constructed as a matrix which rows to columns represent pairs of medica
 
 {{< include exec-summary/_spectral.qmd >}}
 
+### Determining relative importance
+
+Since the sum of all eigenvector centralities $c_i$ in equation [-@eq-eigen-centrality] is equal to one, a network with similarly connected nodes will have an eigenvector centrality $c_i$ = $\frac{1}{n}$ for each node, where $n$ is the number of nodes. The value of $c_i = \frac{1}{n}$ is the expected eigenvector centrality in a densely connected network where connection $\mathcal{V}_{i, j}$ from node $\mathcal{V}_i$ to node $\mathcal{V}_j$ has the same probability for every node. Per the central limit theorem, the value $\frac{1}{n}$ can be parameterized as a mean of a normal distribution, where all instances of eigenvector centrality will follow the distribution, $c_i \sim \mathcal{N}(\mu, \sigma)$. A one-sample Student's T-test was performed to assess how much each eigenvector centrality differs from the expected values. As such, eigenvector centrality greater than $\frac{1}{n}$ can be considered high, and the value below it can be considered low. The p-values was corrected for a type-I error using Bonferroni method.
+
 # Results
+
+```{r}
+
+tar_load(res_tbl_overview)
+
+n_patient <- prettyNum(res_tbl_overview$total, big.mark = ",", scientific = FALSE)
+hi_claim <- res_tbl_overview$overview |> dplyr::slice_max(mean_claim)
+lo_claim <- res_tbl_overview$overview |> dplyr::slice_min(mean_claim)
+
+hi_mean <- prettyNum(hi_claim$mean_claim, big.mark = ",")
+lo_mean <- prettyNum(lo_claim$mean_claim, big.mark = ",")
+
+```
+
+IADB recorded `r n_patient` patients having at least one prescription of antidepressants or anxiolytics within five years of data extraction. The highest average of prescription claim occurred on `r hi_claim$day`, with $\bar{x}$ = `r hi_mean` [`r hi_claim$sd_claim`]. Meanwhile, the lowest average of claim occurred on `r lo_claim$day`, with $\bar{x}$ = `r lo_mean` [`r lo_claim$sd_claim`]. A large margin of difference between the highest and lowest average number of claim implies daily variation and cyclicality, where it peaks on Monday, starts declining afterwards, and is at the lowest during weekends, as shown in figure [-@fig-period-day]. The cyclical patterns are further explained in our supplementary material. @tbl-desc shows the total number of claim for each medication class alongside the distribution of DDD and its weight.
+
+```{r tbl-desc}
+#| tbl-cap: Descriptive statistics of prescription data from 2018 to 2022, ordered by the number of claim
+
+tar_read(res_tbl_stat) %>%
+  dplyr::arrange(-n_claim) %>%
+  dplyr::mutate(
+    "mean_sd_dose"      = sprintf("%.2f [%.2f]", dose_mean, dose_sd),
+    "median_IQR_dose"   = sprintf("%.2f [%.2f]", dose_median, dose_IQR),
+    "mean_sd_weight"    = sprintf("%.2f [%.2f]", weight_mean, weight_sd),
+    "median_IQR_weight" = sprintf("%.2f [%.2f]", weight_median, weight_IQR),
+    "range_dose"        = sprintf("%.2f - %.2f", dose_min, dose_max),
+    "range_weight"      = sprintf("%.2f - %.2f", weight_min, weight_max)
+  ) %>%
+  subset(select = c(group, n_claim, mean_sd_dose, median_IQR_dose, range_dose, mean_sd_weight)) %>%
+  flextable::flextable() %>%
+  flextable::set_header_labels(
+    group           = "",
+    n_claim         = "Claim",
+    mean_sd_dose    = "Mean [SD]",
+    median_IQR_dose = "Median [IQR]",
+    range_dose      = "Range",
+    mean_sd_weight  = "Mean [SD]"
+  ) %>%
+  flextable::add_header_row(
+    values    = c("", "Defined Daily Dose", "Weight"),
+    colwidths = c(2, 3, 1),
+    top       = TRUE
+  ) %>%
+  flextable::align(align = "center", part = "all") %>%
+  flextable::align(j = 1, align = "left", part = "body") %>%
+  #flextable::font(fontname = "Times", part = "all") %>%
+  flextable::fontsize(size = 7, part = "all") %>%
+  flextable::line_spacing(space = 0.7, part = "all")
+
+```
+
+```{r fig-period-day}
+#| fig-width: 14
+#| fig-height: 5
+#| fig-cap: Daily cyclical pattern captured on a de-trended data
+
+tar_read(plt_period_day)[[1]]
+
+```
+
+## Time-series decomposition
+
+Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its oscillating functions, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and oscillating functions explain 10%. The first two oscillating functions, F1 and F2, captured most of the variability in a series compared to the rest of the functions.
+
+{{< pagebreak >}}
+
+```{r fig-ssa}
+#| fig-width: 16
+#| fig-height: 12
+#| fig-pos: H
+#| fig-cap: An example of time-series decomposition using singular spectrum analysis-based approach
+
+tar_read(plt_ssa_recon_n_claim)[[17]]
+
+```
+
+{{< pagebreak >}}
+
+## Relative importance score
+
+```{r fig-hi-eigen}
+#| fig-cap: Clusters of medication with a higher eigenvector centrality, implying a higher relative importance in polypharmacy regimens
+#| fig-width: 9
+#| fig-height: 10
+
+tar_read(plt_hi_eigen)
+
+```
 
 # Discussion
 
