@@ -58,3 +58,75 @@ describeMean <- function(ts) {
 
   return(res)
 }
+
+summarizeStat <- function(tbl_concat) {
+  #' Describe the Summary Statistics
+  #'
+  #' Calculate summary statistics from a given arrow dataset.
+  #'
+  #' @param tbl_concat An arrow dataset containing the whole IADB entries
+  #' @return A tidy summary statistics table
+
+  tbl <- tbl_concat %>% dplyr::filter(date >= "2018-01-01", date <= "2022-12-31")
+
+  res <- tbl %>%
+    dplyr::group_by(group) %>%
+    dplyr::summarize(
+      "n_claim"       = sum(n, na.rm = TRUE),
+      "dose_mean"     = mean(dose, na.rm = TRUE),
+      "dose_sd"       = sd(dose, na.rm = TRUE),
+      "dose_median"   = median(dose, na.rm = TRUE),
+      "dose_IQR"      = IQR(dose, na.rm = TRUE),
+      "dose_min"      = min(dose, na.rm = TRUE),
+      "dose_max"      = max(dose, na.rm = TRUE),
+      "weight_mean"   = mean(weight, na.rm = TRUE),
+      "weight_sd"     = sd(weight, na.rm = TRUE),
+      "weight_median" = median(weight, na.rm = TRUE),
+      "weight_IQR"    = IQR(weight, na.rm = TRUE),
+      "weight_min"    = min(weight, na.rm = TRUE),
+      "weight_max"    = max(weight, na.rm = TRUE)
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::collect()
+
+  return(res)
+}
+
+overviewData <- function(tbl_concat) {
+  #' Overview Data
+  #'
+  #' Create a descriptive overview of the data.
+  #'
+  #' @param tbl_concat An arrow dataset containing the whole IADB entries
+  #' @return A tidy descriptive overview table
+  require("tsibble")
+
+  tbl <- tbl_concat |>
+    dplyr::filter(date >= "2018-01-01", date <= "2022-12-31") |>
+    dplyr::mutate(
+      "date" = as.Date(date),
+      "day"  = weekdays(date),
+      "week" = tsibble::yearweek(date)
+    )
+
+  total <- tbl$id |> unique() |> length()
+
+  overview <- tbl |>
+    dplyr::group_by(week, day) |>
+    dplyr::summarize("n_claim" = unique(id) |> length()) |>
+    dplyr::group_by(day) |>
+    dplyr::summarize(
+      "mean_claim"   = mean(n_claim, na.rm = TRUE),
+      "sd_claim"     = sd(n_claim, na.rm = TRUE),
+      "median_claim" = median(n_claim, na.rm = TRUE),
+      "IQR_claim"    = IQR(n_claim, na.rm = TRUE),
+      "min_claim"    = min(n_claim, na.rm = TRUE),
+      "max_claim"    = max(n_claim, na.rm = TRUE)
+    ) |>
+    dplyr::ungroup()
+
+  res <- list("total" = total, "overview" = overview)
+
+  return(res)
+}
+

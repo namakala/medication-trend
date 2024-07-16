@@ -82,8 +82,12 @@ setCluster <- function(ts, nclusts = 2:10, ...) {
     dplyr::mutate(
       "meandiff" = purrr::map(data, ~ t.test(.x$eigen, mu = 1/24) %>% broom::tidy())
     ) %>%
-    tidyr::unnest(c(data, meandiff)) %>%
-    dplyr::mutate("hi_eigen" = statistic > 0)
+    tidyr::unnest(meandiff) %>%
+    dplyr::mutate( # Perform Bonferroni correction
+      "p_adjust" = p.adjust(p.value, method = "bonferroni"),
+      "hi_eigen" = statistic > 0
+    ) %>%
+    tidyr::unnest(data)
 
   aug_ts <- aug_tbl %>% tsibble::as_tsibble(key = group, index = date)
 

@@ -68,7 +68,7 @@ list(
 
   # Compute the descriptive statistical summary of the daily records
   tar_target(
-    iadb_stats, lapply(tbl_iadb_split_atc, fieldSummary) %>% combineMetrics()
+    iadb_stats, lapply(tbl_iadb_split_date, fieldSummary) %>% combineMetrics()
   ),
 
   # Set iteration parameters of metrics and scales for visualization
