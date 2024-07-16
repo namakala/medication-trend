@@ -16,6 +16,9 @@ author:
   - name: Jens H. Bos
     affiliations:
       - ref: rug
+  - name: Spyros Balafas
+    affiliations:
+      - ref: rug
   - name: Talitha L. Feenstra
     affiliations:
       - ref: rug
