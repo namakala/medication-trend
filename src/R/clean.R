@@ -180,3 +180,61 @@ aggregateTS <- function(ts, type = "week", ...) {
   return(ts_agg)
 }
 
+checkDose <- function(atc_tbl) {
+  #' Check Dose
+  #'
+  #' Check the dose to exclude entries with high DDD but low period of
+  #' prescription. For instance, the use of intrauterine device would span over
+  #' five years, but only prescribed for a day. This will result in an entry
+  #' with DDD = 1,800. This function checks whether the entry can be directly
+  #' analyze.
+  #' 
+  #' @param atc_tbl A data frame containing split ATC entries
+  #' @return A vector of boolean indicating which entry is eligible to analyze
+
+  startdat <- as.Date(atc_tbl$date)
+  stopdat  <- as.Date(atc_tbl$end)
+  dose     <- as.numeric(atc_tbl$dose)
+  eligible <- {dose / as.numeric(stopdat - startdat)} <= 1
+
+  return(eligible)
+}
+
+cleanDose <- function(atc_tbl, period = NULL) {
+  #' Clean Dose
+  #'
+  #' Clean the dose to regularie entries with DDD > 1.
+  #'
+  #' @param atc_tbl A data frame containing split ATC entries
+  #' @param period Period of use, usually `stopdat` - `startdat`
+  #' @return A split ATC data frame containing entries with cleaned doses
+
+  is_arr <- is.null(dim(atc_tbl)) # Check if array
+
+  if (is_arr) {
+
+    if (is.null(period)) {
+      stop("Period of use should be set using the `period` argument for an array object")
+    }
+
+    dose <- atc_tbl
+
+    res <- ifelse(dose <= 1, dose, dose / period)
+
+  } else {
+
+    startdat <- as.Date(atc_tbl$date)
+    stopdat  <- as.Date(atc_tbl$end)
+    period   <- as.numeric(stopdat - startdat)
+
+    res <- atc_tbl |>
+      dplyr::mutate(
+        ".dose" = dose,
+        "dose"  = cleanDose(atc_tbl$dose, period)
+      )
+
+  }
+
+  return(res)
+}
+

@@ -178,7 +178,11 @@ mkGraph <- function(atc_tbl, method = "density", type = "additive") {
   #' @return Medication graph from pairwises of ATC
 
   # Discard entries which become the turning point with `method = "log"`
-  tbl <- atc_tbl %>% subset(.$dose >= 0.1 & .$dose < 10)
+  regular_ddd <- checkDose(atc_tbl)
+
+  tbl <- atc_tbl %>%
+    cleanDose() %>%
+    subset(.$dose >= 0.1 & .$dose < 10 & regular_ddd)
 
   # Generate the graph
   graph <- tryCatch(
@@ -241,3 +245,4 @@ combineMetrics <- function(list_metrics) {
 
   return(tbl)
 }
+

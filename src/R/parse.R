@@ -96,6 +96,7 @@ splitAtc <- function(tbl, atcs) {
   atc_tbls <- apply(tbl, 1, function(entry) {
     anopat   <- entry[1]
     startdat <- entry[2]
+    stopdat  <- entry[3]
     atc      <- entry[4]
 
     atc   %<>% as.character() %>% strsplit(split = ",") %>% unlist()
@@ -105,7 +106,13 @@ splitAtc <- function(tbl, atcs) {
       as.numeric()
 
     tbl <- tibble::tibble(
-      label, dose, "n" = 1, "N" = N, "id" = anopat, "date" = startdat
+      "label" = label,
+      "dose"  = dose,
+      "n"     = 1,
+      "N"     = N,
+      "id"    = anopat,
+      "date"  = startdat,
+      "end"   = stopdat
     ) %>%
       groupAtc() %>%
       subset(.$label != "")
