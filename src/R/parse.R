@@ -146,12 +146,13 @@ iterby <- function(tbl, varname, FUN, ...) {
   return(proc_group)
 }
 
-writeFiles <- function(tbls, ...) {
+writeFiles <- function(tbls, dirname, ...) {
   #' Write Files
   #'
   #' Write a list of data frames into the disk.
   #'
   #' @param tbls A list of data frame
+  #' @param dirname Directory name to contain the output files
   #' @inheritDotParams readr::write_csv
   #' @return Written csv files
 
@@ -159,7 +160,7 @@ writeFiles <- function(tbls, ...) {
 
   lapply(ids, function(id) {
     tbl   <- tbls[[id]]
-    fpath <- sprintf("data/processed/%s.csv", id)
+    fpath <- sprintf("data/processed/%s/%s.csv", dirname, id)
     msg   <- sprintf("Writing %s into the disk", id)
 
     message(msg)
@@ -168,3 +169,26 @@ writeFiles <- function(tbls, ...) {
   })
 
 }
+
+catIADB <- function(fpath) {
+  #' Concatenate IADB Entries
+  #'
+  #' Concatenate all IADB entries stored as different csv files.
+  #'
+  #' @param fpath Path to csv files
+  #' @return an Arrow Table format
+
+  tbl <- arrow::open_dataset(fpath, format = "csv") %>%
+    arrow::as_arrow_table() %>%
+    dplyr::collect() %>%
+    cleanDose() %>%
+    dplyr::filter(
+      dose >= 0.1,
+      dose <  10,
+      {dose / as.numeric(as.Date(end) - as.Date(date))} <= 1
+    ) %>%
+    dplyr::mutate("weight" = weightEntry(n = 1, dose = dose, method = "density"))
+
+  return(tbl)
+}
+

@@ -32,20 +32,27 @@ list(
 
   # Split ATC in each grouped data frame
   tar_target(
-    tbl_iadb_split_atc,
+    tbl_iadb_split_date,
     iterby(tbl_iadb_by_date, "startdat", splitAtc, "atcs"),
     pattern   = map(tbl_iadb_by_date),
     iteration = "vector"
   ),
 
   # Write daily entries as separate files
-  tar_target(dat_iadb_split_atc, writeFiles(tbl_iadb_split_atc)),
+  tar_target(dat_iadb_split_date, writeFiles(tbl_iadb_split_date, "by-month-year")),
+
+  # Concatenate all split ATC data frame
+  tar_target(tbl_concat, catIADB("data/processed/by-month-year"), format = "parquet"),
+
+  # Describe the summary statistics
+  tar_target(res_tbl_overview, overviewData(tbl_concat)),
+  tar_target(res_tbl_stat, summarizeStat(tbl_concat)),
 
   # Generate graph objects from the split ATC data frame
   tar_target(
     iadb_graph,
-    lapply(tbl_iadb_split_atc, mkGraph),
-    pattern   = map(tbl_iadb_split_atc),
+    lapply(tbl_iadb_split_date, mkGraph),
+    pattern   = map(tbl_iadb_split_date),
     iteration = "list",
     priority  = 0
   ),
