@@ -456,3 +456,87 @@ vizForecast <- function(mod_cast, ts) {
 
   return(plt)
 }
+
+vizEigenCluster <- function(ts_clust, ...) {
+  #' Visualize Eigenvector Centrality Cluster
+  #'
+  #' Generate histogram + density plot of eigenvector centrality for each
+  #' medication group.
+  #'
+  #' @param ts_clust An augmented time-series containing cluster and one-sample
+  #' T-test
+  #' @return A GGPlot2 object
+  require("ggplot2")
+
+  tbl       <- ts_clust
+  ref       <- tbl %>% subset(.$hi_eigen) %>% extract2("group") %>% unique()
+  colors    <- genColor()
+  strip_col <- setStripColor(unique(tbl$group), ref = ref)
+
+  note <- tbl %>%
+    subset(select = c(group, estimate, conf.low, conf.high, hi_eigen)) %>%
+    unique() %>%
+    dplyr::mutate(
+      "xpos" = conf.high,
+      "note" = sprintf(
+        "c[e] == '%.3f [%.3f - %.3f]'", estimate, conf.low, conf.high
+      )
+    )
+
+  plt <- ggplot(tbl, aes(x = eigen, fill = hi_eigen, color = hi_eigen)) +
+    geom_density(alpha = 0.4) +
+    geom_histogram(bins = 50, aes(alpha = hi_eigen)) +
+    geom_vline(xintercept = 1/24, linetype = 2, color = "grey60") +
+    annotate("text", label = "Expected value", y = Inf, x = 1/24, hjust = -0.05, vjust = 1.5, color = "grey40") +
+    geom_label(
+      data = note,
+      aes(label = note, y = -Inf, x = -Inf),
+      size  = 3,
+      vjust = -1,
+      hjust = "inward",
+      alpha = 0.4,
+      parse = TRUE,
+      inherit.aes = FALSE
+    ) +
+    ggh4x::facet_wrap2(~group, strip = strip_col, ...) +
+    ggpubr::theme_pubclean() +
+    scale_color_manual(values = c("grey60", colors$green)) +
+    scale_fill_manual(values  = c("grey60", colors$green)) +
+    scale_alpha_manual(values = c(0.4, 0.8)) +
+    labs(x = "Eigenvector centrality", y = "Number of observation") +
+    theme(
+      legend.position = "none"
+    )
+
+  return(plt)
+}
+
+vizEigenBox <- function(ts_clust, ...) {
+  #' Visualize Eigenvector Centrality Box Plot
+  #'
+  #' Generate box plot of eigenvector centrality for each medication group.
+  #'
+  #' @param ts_clust An augmented time-series containing cluster and one-sample
+  #' T-test
+  #' @return A GGPlot2 object
+  require("ggplot2")
+
+  colors <- genColor()
+
+  tbl <- ts_clust |>
+    dplyr::mutate("group" = reorder(group, eigen, median, na.rm = TRUE))
+
+  plt <- ggplot(tbl, aes(x = eigen, y = group)) +
+    geom_vline(xintercept = 1/24, linetype = 2, color = "grey60") +
+    geom_boxplot(aes(fill = hi_eigen, color = hi_eigen, alpha = hi_eigen), show.legend = FALSE) +
+    ggpubr::theme_pubclean() +
+    labs(x = "", y = "") +
+    scale_x_continuous(expand = c(0, 0)) +
+    scale_fill_manual(values = c("grey60", colors$green)) +
+    scale_color_manual(values = c("grey60", colors$green)) +
+    scale_alpha_manual(values = c(0.5, 0.7)) +
+    theme(axis.ticks = element_blank())
+
+  return(plt)
+}
+

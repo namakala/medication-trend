@@ -320,6 +320,10 @@ list(
   # Cluster the series based on eigenvector centrality
   tar_target(ts_clust, setCluster(ts_recon, nclusts = 2:10)),
 
+  # Indicate medication groups with high eigenvector centrality
+  tar_target(plt_hi_eigen, vizEigenCluster(ts_clust, ncol = 3, scales = "free_y")),
+  tar_target(plt_hi_eigen_box, vizEigenBox(ts_clust)),
+
   # Generate documentation
   tar_quarto(abstract, "docs/abstract/abstract.qmd"),
   tar_quarto(abstract_eupha, "docs/abstract/eupha.qmd"),
