@@ -6,19 +6,19 @@ author:
       - ref: rug
       - ref: ui
     roles: [conceptualization, methodology, analysis, visualization, writing]
-  - name: Frederike Jörg
+  - name: Spyros Balafas
     affiliations:
       - ref: rug
-      - ref: umcg
   - name: Eelko Hak 
     affiliations:
       - ref: rug
   - name: Jens H. Bos
     affiliations:
       - ref: rug
-  - name: Spyros Balafas
+  - name: Frederike Jörg
     affiliations:
       - ref: rug
+      - ref: umcg
   - name: Talitha L. Feenstra
     affiliations:
       - ref: rug
