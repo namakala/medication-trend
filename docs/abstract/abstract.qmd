@@ -1,6 +1,6 @@
 ---
 title: >
-  Eigenvector centrality as a metric of polypharmacy: a network analysis to quantify psychopharmaca co-prescription networks around antidepressants
+  A temporal network analysis of drug co-prescription around antidepressants and anxiolytics uses
 
 format:
   docx: default
