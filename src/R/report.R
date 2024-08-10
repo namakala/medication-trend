@@ -101,11 +101,21 @@ overviewData <- function(tbl_concat) {
   #' @return A tidy descriptive overview table
   require("tsibble")
 
+  days <- c(
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+  )
+
   tbl <- tbl_concat |>
     dplyr::filter(date >= "2018-01-01", date <= "2022-12-31") |>
     dplyr::mutate(
       "date" = as.Date(date),
-      "day"  = weekdays(date),
+      "day"  = weekdays(date) |> factor(levels = days),
       "week" = tsibble::yearweek(date)
     )
 
@@ -148,7 +158,9 @@ mergeReconSummary <- function(ts_recon, res_tbl_stat) {
       "eigen_mean"   = mean(eigen),
       "eigen_sd"     = sd(eigen),
       "eigen_median" = median(eigen),
-      "eigen_IQR"    = IQR(eigen)
+      "eigen_IQR"    = IQR(eigen),
+      "eigen_lo"     = eigen_mean - 1.96 * eigen_sd / sqrt(dplyr::n()),
+      "eigen_hi"     = eigen_mean + 1.96 * eigen_sd / sqrt(dplyr::n())
     )
 
   tbl <- dplyr::inner_join(res_tbl_stat, ts_stat, by = "group")

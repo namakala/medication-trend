@@ -47,6 +47,7 @@ list(
   # Describe the summary statistics
   tar_target(res_tbl_overview, overviewData(tbl_concat)),
   tar_target(res_tbl_stat, summarizeStat(tbl_concat)),
+  tar_target(res_tbl_patient, readr::read_csv("data/processed/iadb-desc/patient.csv")),
 
   # Generate graph objects from the split ATC data frame
   tar_target(
