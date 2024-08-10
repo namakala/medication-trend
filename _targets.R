@@ -299,6 +299,7 @@ list(
 
   # Generate reconstructed time series based on trend + 2 oscillating functions
   tar_target(ts_recon, genReconTs(decom_ssa, n = 2)),
+  tar_target(res_recon_stat, mergeReconSummary(ts_recon, res_tbl_stat)),
 
   # Plot the reconstructed time-series
   tar_map(

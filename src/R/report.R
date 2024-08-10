@@ -130,3 +130,29 @@ overviewData <- function(tbl_concat) {
   return(res)
 }
 
+mergeReconSummary <- function(ts_recon, res_tbl_stat) {
+  #' Merge Reconstructed Data Summary
+  #'
+  #' Summarize the reconstructed time series, then merge it into
+  #' `res_tbl_stat`.
+  #'
+  #' @param ts_recon The reconstructed data frame
+  #' @param res_tbl_stat A summary of the dataset, containing number of unique
+  #' patients, dose, and weight
+  #' @return A tidy data frame
+
+  ts_stat <- ts_recon |>
+    tibble::tibble() |>
+    dplyr::group_by(group) |>
+    dplyr::summarize(
+      "eigen_mean"   = mean(eigen),
+      "eigen_sd"     = sd(eigen),
+      "eigen_median" = median(eigen),
+      "eigen_IQR"    = IQR(eigen)
+    )
+
+  tbl <- dplyr::inner_join(res_tbl_stat, ts_stat, by = "group")
+
+  return(tbl)
+}
+
