@@ -1,6 +1,6 @@
 ---
 title: >
-  A temporal network analysis of drug co-prescription around antidepressants and anxiolytics uses
+  A temporal network analysis of drug co-prescription around antidepressants and anxiolytics uses in the Netherlands 2018-2022
 
 format:
   elsevier-pdf:
@@ -10,7 +10,8 @@ format:
     journal:
       formatting: review
       cite-style: authoryear
-  docx: default
+  docx:
+    pandoc-options: ["--mathml"]
 
 funding: "The author(s) received no specific funding for this work."
 keywords:
@@ -104,7 +105,7 @@ lo_mean <- prettyNum(lo_claim$mean_claim, big.mark = ",")
 
 ```
 
-IADB recorded `r n_patient` patients having at least one prescription of antidepressants or anxiolytics within five years of data extraction. The highest average of prescription claim occurred on `r hi_claim$day`, with $\bar{x}$ = `r hi_mean` [`r hi_claim$sd_claim`]. Meanwhile, the lowest average of claim occurred on `r lo_claim$day`, with $\bar{x}$ = `r lo_mean` [`r lo_claim$sd_claim`]. A large margin of difference between the highest and lowest average number of claim implies daily variation and cyclicality, where it peaks on Monday, starts declining afterwards, and is at the lowest during weekends, as shown in figure [-@fig-period-day]. The cyclical patterns are further explained in our supplementary material. @tbl-desc shows the number of prescriptions for each medication class alongside the distribution of DDD and its weight.
+IADB recorded `r n_patient` patients having at least one prescription of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient depicts the dynamics of the population from 2018 to 2022. The ratio of male to female did not vary by a large margin, and the average age steadily increased over the year. These findings imply that the cohort stays relatively stable overtime without any indication of sudden demographic changes.
 
 ```{r tbl-overview-patient}
 #| tbl-cap: "Number of participating patients with at least one claim of antidepressants or anxiolytics from 2018 to 2022"
@@ -141,6 +142,8 @@ tar_read(res_tbl_patient) |>
 
 ```
 
+The highest average of prescription claim occurred on `r hi_claim$day`, with an average of `r hi_mean` [SD: `r hi_claim$sd_claim`] prescriptions. Meanwhile, the lowest average of claim occurred on `r lo_claim$day`, with an average of `r lo_mean` [SD: `r lo_claim$sd_claim`] prescriptions. A large margin of difference between the highest and lowest average number of claim implies daily variation and cyclicality, where it peaks on Monday, starts declining afterwards, and is at the lowest during weekends, as shown in table [-@tbl-overview-daily] and figure [-@fig-period-day]. The cyclical patterns are further explained in our supplementary material. @tbl-desc shows the number of prescriptions for each medication class alongside the distribution of DDD and its weight.
+
 ```{r tbl-overview-daily}
 #| tbl-cap: "Daily prescription from 2018 to 2022 among patients with at least one claim of antidepressants or anxiolytics"
 
@@ -171,7 +174,6 @@ res_tbl_overview$overview |>
 
 ```
 
-
 ```{r fig-period-day}
 #| fig-width: 14
 #| fig-height: 5
@@ -183,9 +185,7 @@ tar_read(plt_period_day)[[1]]
 
 ## Time-series decomposition
 
-Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its oscillating functions, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and oscillating functions explain 10%. The first two oscillating functions, F1 and F2, captured most of the variability in a series compared to the rest of the functions.
-
-{{< pagebreak >}}
+Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it.
 
 ```{r fig-ssa}
 #| fig-width: 16
@@ -197,14 +197,47 @@ tar_read(plt_ssa_recon_n_claim)[[17]]
 
 ```
 
-{{< pagebreak >}}
-
 ## Relative importance score
+
+```{r}
+
+tar_load(res_recon_stat)
+
+antidepressants <- res_recon_stat %>% subset(.$group == "Antidepressants")
+anxiolytics     <- res_recon_stat %>% subset(.$group == "Anxiolytics")
+
+respiratory <- res_recon_stat %>% subset(.$group == "Respiratory")
+analgesics  <- res_recon_stat %>% subset(.$group == "Analgesics")
+
+reportMedClaim <- function(med_obj) {
+  res <- with(med_obj, prettyNum(n_claim, big.mark = ","))
+
+  return(res)
+}
+
+reportMedEigen <- function(med_obj) {
+  res <- with(med_obj, sprintf("%.4f [SD: %.4f]", eigen_mean, eigen_sd))
+
+  return(res)
+}
+
+diffMed <- function(med_obj1, med_obj2, FUN) {
+  med_rep1 <- FUN(med_obj1)
+  med_rep2 <- FUN(med_obj2)
+
+  res <- sprintf("%s vs %s", med_rep1, med_rep2)
+
+  return(res)
+}
+
+```
+
+Seven medications had a high relative importance as suggested by figure [-@fig-hi-eigen] and table [-@tbl-desc]. It is notable that highly prescribed medications usually have a high eigenvector centrality as well, which is theoretically supported by equation [-@eq-eigen-centrality]. However, despite higher prescription numbers (`r diffMed(antidepressants, respiratory, reportMedClaim)`), antidepressants had lower eigenvector centrality than medications for the respiratory system (`r diffMed(antidepressants, respiratory, reportMedEigen)`). We confirmed similar findings with anxiolytics, which had higher prescription numbers (`r diffMed(anxiolytics, analgesics, reportMedClaim)`) but lower eigenvector centrality (`r diffMed(anxiolytics, analgesics, reportMedEigen)`) than analgesics. The difference of eigenvector centrality became more pronounced as the number of prescriptions decreased.
 
 ```{r tbl-desc}
 #| tbl-cap: Descriptive statistics of prescription data from 2018 to 2022, ordered by Eigenvector centrality as an indicator of nodal importance
 
-tar_read(res_recon_stat) |>
+res_recon_stat |>
   dplyr::arrange(-eigen_mean) |>
   dplyr::mutate(
     "mean_sd_eigen"     = sprintf("%.3f [%.3f]", eigen_mean, eigen_sd),
@@ -239,7 +272,6 @@ tar_read(res_recon_stat) |>
   flextable::line_spacing(space = 0.7, part = "all")
 
 ```
-
 
 ```{r fig-hi-eigen}
 #| fig-cap: Clusters of medication with a higher eigenvector centrality, implying a higher relative importance in polypharmacy regimens
