@@ -1,4 +1,5 @@
 /.quarto/
+*.sh
 !*.yml
 !*.bib
 !_*.tex
