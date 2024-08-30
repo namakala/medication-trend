@@ -246,3 +246,74 @@ combineMetrics <- function(list_metrics) {
   return(tbl)
 }
 
+getAdjMatrix <- function(iadb_graph) {
+  #' Get Adjacency Matrix
+  #'
+  #' Extract adjacency matrix from a nested list of graph objects.
+  #'
+  #' @param iadb_graph A list of IADB graph, usually the output of `mkGraph`
+  #' @return A nested list of adjacency matrices
+  require("igraph")
+
+  if (class(iadb_graph) == "list") {
+    mtx_list <- lapply(iadb_graph, getAdjMatrix)
+  } else {
+    mtx_list <- tryCatch(
+      igraph::as_adjacency_matrix(iadb_graph, names = TRUE),
+      error = \(e) return(NA)
+    )
+  }
+
+  return(mtx_list)
+}
+
+catAdjMatrix <- function(iadb_graph) {
+  #' Concatenate Adjacency Matrix
+  #'
+  #' Concatenate a nested list of graph objects into a single adjacency matrix.
+  #' All matrix elements in each graph object are subjected to element-wise
+  #' addition.
+  #'
+  #' @param iadb_graph A list of IADB graph, usually the output of `mkGraph`
+  #' @return A concatenated adjacency matrix
+  require("igraph")
+
+  adj_mtx <- getAdjMatrix(iadb_graph)
+
+  # Return data between 2018-01-01 and 2022-12-31
+  id <- lapply(adj_mtx, function(mtx_list) {
+    names(mtx_list) |>
+      as.Date() %>%
+      {. > "2018-01-01" & . < "2022-12-31"} |>
+      any()
+  }) |>
+    unlist()
+
+  # Concatenate the adjacency matrix
+  mtx <- adj_mtx |>
+    subset(id) |>
+    lapply(\(mtx_list) Reduce("+", mtx_list)) %>%
+    {Reduce("+", .)}
+
+  return(mtx)
+}
+
+catGraph <- function(iadb_graph) {
+  #' Concatenate Graphs
+  #'
+  #' Concatenate a nested list of graph objects into a single adjacency matrix,
+  #' then transform it back into a graph object. All matrix elements in each
+  #' graph object are subjected to element-wise addition.
+  #'
+  #' @param iadb_graph A list of IADB graph, usually the output of `mkGraph`
+  #' @return A concatenated graph object
+  require("igraph")
+
+  mtx <- catAdjMatrix(iadb_graph)
+
+  # Recreate the graph object
+  res <- mtx |>
+    igraph::graph_from_adjacency_matrix(mode = "undirected", weighted = TRUE)
+
+  return(res)
+}
