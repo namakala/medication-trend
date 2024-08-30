@@ -231,13 +231,34 @@ summarizePolypharmacy <- function(sub_tbl_iadb, ...) {
   #' @param ... Parameters being passed on to `detectPolypharmacy`
   #' @return A tidy data frame of the summary statistics
 
-  tbls <- with(
+  # Detect polypharmacy for each ATC entry
+  tbl <- with(
     sub_tbl_iadb,
     lapply(atcs, \(atc_entry) detectPolypharmacy(atc_entry, type = "all", ...))
   ) %>%
     {do.call(rbind, .)}
 
-  tbl_poly <- rbind(colSums(tbls), colMeans(tbls)) |> set_rownames(c("sum", "mean"))
+  # Iterate the summary statistics functions
+  FUNS  <- list(
+    "sum"    = sum,
+    "mean"   = mean,
+    "sd"     = sd,
+    "median" = median,
+    "IQR"    = IQR,
+    "min"    = min,
+    "max"    = max
+  )
 
-  return(tbl_poly)
+  stats <- lapply(FUNS, function(FUN) {
+    aggregate(cbind(same, multi, total) ~ 0, data = tbl, FUN = FUN) |> t()
+  })
+
+  # Generate the summary statistics
+  tbl_poly_stat <- do.call(cbind, stats) |>
+    set_colnames(names(FUNS)) |>
+    data.frame() %>%
+    tibble::add_column("type" = rownames(.), .before = 1) |>
+    tibble::tibble()
+
+  return(tbl_poly_stat)
 }
