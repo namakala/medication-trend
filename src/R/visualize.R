@@ -540,3 +540,31 @@ vizEigenBox <- function(ts_clust, ...) {
   return(plt)
 }
 
+vizConnectivity <- function(graph_concat) {
+  #' Visualize DPN Connectivity
+  #'
+  #' Visualize the connectivity in a concatenated graph. The concatenated
+  #' graph is a reduced list of daily drug prescription network, where the
+  #' edges represent number of connection throughout the years.
+  #'
+  #' @param graph_concat A concatenated graph object, usually the output of
+  #' `catGraph`
+  #' @return A GGPlot2 object
+  require("ggraph")
+
+  # Prepare the table for visualization
+  tbl <- graph_concat |>
+    tidygraph::as_tbl_graph() |>
+    tidygraph::activate(edges) |>
+    dplyr::mutate(
+      "width" = cut(weight, breaks = 3)
+    )
+
+  # Generate the plot
+  plt <- graph_concat |>
+    ggraph::ggraph() |>
+    ggraph::geom_edge_fan() |>
+    ggraph::geom_node_point()
+
+  return(plt)
+}

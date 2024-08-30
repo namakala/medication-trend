@@ -168,3 +168,76 @@ mergeReconSummary <- function(ts_recon, res_tbl_stat) {
   return(tbl)
 }
 
+detectPolypharmacy <- function(atc_entry, medication = "antidepressants", type = "all") {
+  #' Detect Polypharmacy
+  #'
+  #' Detect the presence of psychiatric polypharmacy as categorized by
+  #' @Shrivastava2013. Same-class polypharmacy is the use of multiple
+  #' medications from the same class. Multi-class polypharmacy is the use of
+  #' multiple medications from different classes indicated for the same symptom
+  #' cluster. Adjunctive polypharmacy is the use of additional medications to
+  #' treat side effects due to other medications. Augmentation polypharmacy is
+  #' the use of full-dose and sub-dose medications from a different class for
+  #' the same symptom cluster. Finally, total polypharmacy is the total count
+  #' of all medications used by a patient, both psychopharmaca and other
+  #' classes alike.
+  #'
+  #' @param atc_entry Single ATC entry from the raw IADB dataset
+  #' @param medication Medication group to use as a reference to detect
+  #' polypharmacy
+  #' @param type The type of polypharmacy
+  #' @return A data frame enumerating same-class, multi-class, and total polypharmacy
+
+  # Clean and list all the ATC codes
+  atc_list <- strsplit(atc_entry, split = ",") |>
+    lapply(\(atc) gsub(x = atc, ";.*", "")) |>
+    unlist()
+
+  # Create a regex reference to categorize polypharmacy
+  ref <- switch(
+    stringr::str_to_lower(medication),
+    "antidepressants" = "^N06A",
+    "anxiolytics" = "^N05B"
+  )
+
+  same_class  <- grepl(x = atc_list, ref)
+  multi_class <- {!same_class} & grepl(x = atc_list, "^N")
+
+  # Detect and categorize polypharmacy
+  polypharmacy <- data.frame(
+    "same"  = sum(same_class)  %>% {ifelse(. > 0, . - 1, .)},
+    "multi" = sum(multi_class) %>% {ifelse(. > 0, . - 1, .)},
+    "total" = length(atc_list)
+  )
+
+  res <- switch(
+    type,
+    "same"  = polypharmacy$same,
+    "multi" = polypharmacy$multi,
+    "total" = polypharmacy$total,
+    "all"   = polypharmacy
+  )
+
+  return(res)
+}
+
+summarizePolypharmacy <- function(sub_tbl_iadb, ...) {
+  #' Summarize Polypharmacy
+  #'
+  #' Generate a summary statistics of detected polypharmacy.
+  #'
+  #' @param sub_tbl_iadb A subset of IADB table containing only entries listing
+  #' anxiolytics or antidepressants
+  #' @param ... Parameters being passed on to `detectPolypharmacy`
+  #' @return A tidy data frame of the summary statistics
+
+  tbls <- with(
+    sub_tbl_iadb,
+    lapply(atcs, \(atc_entry) detectPolypharmacy(atc_entry, type = "all", ...))
+  ) %>%
+    {do.call(rbind, .)}
+
+  tbl_poly <- rbind(colSums(tbls), colMeans(tbls)) |> set_rownames(c("sum", "mean"))
+
+  return(tbl_poly)
+}

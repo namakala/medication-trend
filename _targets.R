@@ -44,6 +44,22 @@ list(
   # Concatenate all split ATC data frame
   tar_target(tbl_concat, catIADB("data/processed/by-month-year"), format = "parquet"),
 
+  # Subset the dataset to return only antidepressants and anxiolytics
+  tar_target(sub_tbl_iadb, subsetIADB(tbl_iadb)),
+  tar_group_select(sub_tbl_iadb_by_date, sub_tbl_iadb, by = c("year")),
+
+  # Generate summary statistics for polypharmacy
+  tar_map(
+    unlist = "FALSE",
+    values = data.frame("medication" = c("anxiolytics", "antidepressants")),
+    tar_target(
+      res_tbl_poly,
+      summarizePolypharmacy(sub_tbl_iadb_by_date, medication = medication),
+      pattern = map(sub_tbl_iadb_by_date),
+      iteration = "vector"
+    )
+  ),
+
   # Describe the summary statistics
   tar_target(res_tbl_overview, overviewData(tbl_concat)),
   tar_target(res_tbl_stat, summarizeStat(tbl_concat)),
@@ -57,6 +73,9 @@ list(
     iteration = "list",
     priority  = 0
   ),
+
+  # Concatenate graph objects between 2018-01-01 and 2022-12-31
+  tar_target(graph_concat, catGraph(iadb_graph)),
 
   # Calculate metrics for the graph objects
   tar_target(

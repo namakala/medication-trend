@@ -31,6 +31,25 @@ readIADB <- function(filepath, ...) {
   return(tbl)
 }
 
+subsetIADB <- function(tbl_iadb) {
+  #' Subset IADB Dataset
+  #'
+  #' Subset the IADB dataset and return entries that contains any type of
+  #' antidepressants or anxiolytics.
+  #'
+  #' @param tbl_iadb A tidy data frame containing the raw IADB dataset
+  #' @return A tidy data frame, subset of the original data
+
+  sub_tbl <- tbl_iadb %>%
+    subset(
+      grepl(x = .$atcs, "N0(6A|5B)") &
+        .$startdat >= "2018-01-01" &
+        .$startdat <= "2022-12-31"
+    )
+
+  return(sub_tbl)
+}
+
 groupAtc <- function(atc_list) {
   #' Categorize ATC Code
   #'
