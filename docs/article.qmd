@@ -138,7 +138,57 @@ tar_read(res_tbl_patient) |>
   #flextable::font(fontname = "Times", part = "all") |>
   flextable::fontsize(size = 7, part = "all") |>
   flextable::autofit(add_w = 0, add_h = 0) |>
-  flextable::line_spacing(space = 0.7, part = "all")
+  flextable::set_table_properties(opts_pdf = list("arraystretch" = 1, "tabcolsep" = 0))
+
+```
+
+```{r tbl-res-poly}
+#| tbl-cap: Summary statistics of different psychiatric polypharmacy categories
+
+tar_read(res_tbl_poly) |>
+  dplyr::mutate(
+    "year" = as.character(year),
+    "mean_sd" = sprintf("%.2f [%.2f]", mean, sd),
+    "median_iqr" = sprintf("%.2f (%.2f)", median, IQR)
+  ) |>
+  dplyr::select(type:medication, sum, mean_sd) |>
+  tidyr::pivot_wider(names_from = type, values_from = c(sum, mean_sd)) |>
+  dplyr::select(year, medication, sum_same, sum_multi, mean_sd_same, mean_sd_multi, dplyr::contains("total")) |>
+  flextable::flextable() |>
+  flextable::set_header_labels(
+    year = "Year",
+    medication = "Medication",
+    sum_same = "Same-class",
+    sum_multi = "Multi-class",
+    mean_sd_same = "Same-class",
+    mean_sd_multi = "Multi-class",
+    sum_total = "N",
+    mean_sd_total = "Mean [SD]"
+  ) |>
+  flextable::add_header_row(
+    values    = c("", "Population Level (N)", "Per Person (Mean [SD])", "Total Polypharmacy"),
+    colwidths = c(2, 2, 2, 2),
+    top       = TRUE
+  ) |>
+  flextable::footnote(
+    i = 1,
+    j = c(3, 5),
+    ref_symbols = c("1", "2"),
+    part = "header",
+    value = flextable::as_paragraph(
+      c(
+        "The total occurrence of polypharmacy on the population level/perscription-day",
+        "The expected occurrence of polypharmacy per person/perscription-day",
+        "Prescription day is defined as the number of prescribed medication per day"
+      )
+    )
+  ) |>
+  flextable::align(align = "center", part = "all") |>
+  flextable::align(j = 1:2, align = "left", part = "all") |>
+  flextable::fontsize(size = 7, part = "all") |>
+  #flextable::font(fontname = "Times", part = "all") |>
+  flextable::width(j = c(1:8), c(1, rep(1.8, 7)), unit = "cm") |>
+  flextable::set_table_properties(opts_pdf = list("arraystretch" = 1, "tabcolsep" = 0))
 
 ```
 

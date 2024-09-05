@@ -50,8 +50,8 @@ list(
 
   # Generate summary statistics for polypharmacy
   tar_map(
-    unlist = "FALSE",
-    values = data.frame("medication" = c("anxiolytics", "antidepressants")),
+    unlist = FALSE,
+    values = data.frame("medication" = c("Anxiolytics", "Antidepressants")),
     tar_target(
       res_tbl_poly,
       summarizePolypharmacy(sub_tbl_iadb_by_date, medication = medication),
@@ -59,6 +59,8 @@ list(
       iteration = "vector"
     )
   ),
+
+  tar_target(res_tbl_poly, catResPoly(res_tbl_poly_Antidepressants, res_tbl_poly_Anxiolytics, start_year = 2018)),
 
   # Describe the summary statistics
   tar_target(res_tbl_overview, overviewData(tbl_concat)),
