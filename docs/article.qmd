@@ -170,7 +170,7 @@ res_tbl_overview$overview |>
   #flextable::font(fontname = "Times", part = "all") |>
   flextable::fontsize(size = 7, part = "all") |>
   flextable::autofit(add_w = 0, add_h = 0) |>
-  flextable::line_spacing(space = 0.7, part = "all")
+  flextable::set_table_properties(opts_pdf = list("arraystretch" = 1, "tabcolsep" = 0))
 
 ```
 
@@ -269,7 +269,7 @@ res_recon_stat |>
   #flextable::font(fontname = "Times", part = "all") |>
   flextable::fontsize(size = 7, part = "all") |>
   flextable::autofit(add_w = 0, add_h = 0) |>
-  flextable::line_spacing(space = 0.7, part = "all")
+  flextable::set_table_properties(opts_pdf = list("arraystretch" = 1, "tabcolsep" = 0))
 
 ```
 
