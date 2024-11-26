@@ -1,0 +1,17 @@
+```{r}
+
+pkgs <- c("targets", "magrittr")
+pkgs_load <- sapply(pkgs, library, character.only = TRUE)
+options(digits = 2, scipen = 999)
+
+```
+
+```{r fig-period-day}
+#| fig-width: 14
+#| fig-height: 5
+#| fig-cap: Daily cyclical pattern captured on a de-trended data
+
+tar_read(plt_period_day)[[1]]
+
+```
+

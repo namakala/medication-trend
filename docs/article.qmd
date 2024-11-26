@@ -224,15 +224,6 @@ res_tbl_overview$overview |>
 
 ```
 
-```{r fig-period-day}
-#| fig-width: 14
-#| fig-height: 5
-#| fig-cap: Daily cyclical pattern captured on a de-trended data
-
-tar_read(plt_period_day)[[1]]
-
-```
-
 ## Time-series decomposition
 
 Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it.
