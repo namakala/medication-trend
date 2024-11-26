@@ -34,7 +34,7 @@ in:
 
 pkgs <- c("targets", "magrittr")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
-options(digits = 2, scipen = 999)
+options(digits = 2)
 
 ```
 
@@ -257,7 +257,7 @@ reportMedClaim <- function(med_obj) {
 }
 
 reportMedEigen <- function(med_obj) {
-  res <- with(med_obj, sprintf("%.4f [SD: %.4f]", eigen_mean, eigen_sd))
+  res <- with(med_obj, sprintf("%.2e [SD: %.2e]", eigen_mean, eigen_sd))
 
   return(res)
 }
@@ -281,28 +281,27 @@ Seven medications had a high relative importance as suggested by figure [-@fig-h
 res_recon_stat |>
   dplyr::arrange(-eigen_mean) |>
   dplyr::mutate(
-    "mean_sd_eigen"     = sprintf("%.3f [%.3f]", eigen_mean, eigen_sd),
-    "median_IQR_eigen"  = sprintf("%.3f [%.3f]", eigen_median, eigen_IQR),
-    "mean_sd_dose"      = sprintf("%.2f [%.2f]", dose_mean, dose_sd),
-    "median_IQR_dose"   = sprintf("%.2f [%.2f]", dose_median, dose_IQR),
-    "mean_sd_weight"    = sprintf("%.2f [%.2f]", weight_mean, weight_sd),
-    "median_IQR_weight" = sprintf("%.2f [%.2f]", weight_median, weight_IQR),
-    "range_dose"        = sprintf("%.2f - %.2f", dose_min, dose_max),
-    "range_weight"      = sprintf("%.2f - %.2f", weight_min, weight_max)
+    "mean_sd_eigen"     = sprintf("%.2e [%.2e]", eigen_mean, eigen_sd),
+    "median_IQR_eigen"  = sprintf("%.2e [%.2e]", eigen_median, eigen_IQR),
+    "mean_sd_dose"      = sprintf("%.2e [%.2e]", dose_mean, dose_sd),
+    "median_IQR_dose"   = sprintf("%.2e [%.2e]", dose_median, dose_IQR),
+    "mean_sd_weight"    = sprintf("%.2e [%.2e]", weight_mean, weight_sd),
+    "median_IQR_weight" = sprintf("%.2e [%.2e]", weight_median, weight_IQR),
+    "range_dose"        = sprintf("%.2e - %.2e", dose_min, dose_max),
+    "range_weight"      = sprintf("%.2e - %.2e", weight_min, weight_max)
   ) |>
-  subset(select = c(group, n_claim, mean_sd_eigen, mean_sd_dose, median_IQR_dose, mean_sd_weight)) |>
+  subset(select = c(group, n_claim, mean_sd_eigen, mean_sd_dose, mean_sd_weight)) |>
   flextable::flextable() |>
   flextable::set_header_labels(
     group            = "",
     n_claim          = "Claim",
-    mean_sd_eigen    = "Mean [SD]",
-    mean_sd_dose     = "Mean [SD]",
-    median_IQR_dose  = "Median [IQR]",
-    mean_sd_weight   = "Mean [SD]"
+    mean_sd_eigen    = "Importance",
+    mean_sd_dose     = "DDD",
+    mean_sd_weight   = "Weight"
   ) |>
   flextable::add_header_row(
-    values    = c("", "Importance", "Defined Daily Dose", "Weight"),
-    colwidths = c(2, 1, 2, 1),
+    values    = c("", "Mean [SD]"),
+    colwidths = c(2, 3),
     top       = TRUE
   ) |>
   flextable::align(align = "center", part = "all") |>
