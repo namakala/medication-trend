@@ -1,16 +1,16 @@
 abstract: |
 
-  **Background:** Networks have been used in different scientific fields
-  to model complex systems. In medicine and epidemiology, drug
-  prescription networks (DPN) have been proposed as a modeling tool for
-  studying the temporal dynamics of medication distribution and
-  consumption within a population.
+  **Background:**
+  Networks have been used in different scientific fields to model complex
+  systems. In medicine and epidemiology, drug prescription networks (DPN) have
+  been proposed as a modeling tool for studying the temporal dynamics of
+  medication co-prescription within a population.
 
   **Objectives:**  
-  Evaluate the structural properties of temporal DPNs that are constructed
-  from the observed daily co-prescriptions between treatments for mental
-  health problems and other drug therapies in a pharmacy dispensing
-  database.
+  This study aims to assess the structural characteristics of temporal DPNs,
+  derived from daily co-prescriptions between treatments for mental health
+  conditions and other therapeutic drug classes, as recorded in pharmacy
+  dispensing database.
 
   **Methods:** For exploratory time series analysis, and network
   construction, we utilized the IADB.nl database that collects

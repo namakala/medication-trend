@@ -14,7 +14,7 @@ $$
   n_{N, 1} & \dots & n_{N, N} \\
   \end{bmatrix}
 }
-\to
+\quad \to \quad
 \stackrel{\textrm{Regularized by } DDD}{
   \begin{bmatrix}
   \frac{1}{2} \cdot \left(\omega_1 + \omega_1 \right) & \dots & \frac{1}{2} \cdot \left(\omega_1 + \omega_N \right) \\
