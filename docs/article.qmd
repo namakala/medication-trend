@@ -66,9 +66,9 @@ A DPN is constructed as a matrix which rows to columns represent pairs of medica
 
 ## Graph theory
 
-- What characterizes a graph?
-- When a graph is directed/undirected?
-- Intuition behind an adjacency matrix
+Graph theory is a formal concept depicting connections among objects. A graph consists of nodes and edges, denoted as $\mathcal{G} = (\mathcal{V}, \mathcal{E})$. The nodes form a finite set, $\mathcal{V} = \{\mathcal{v}_1, \mathcal{v}_2, \dots, \mathcal{v}_n$, while the edges $\mathcal{E}$ represent the connection between these nodes. In a directed graph, the edge is an ordered pair of nodes, $(\mathcal{v}_i, \mathcal{v}_j) \in \mathcal{E}$, where the order of $i, j$ matters. Directed graphs may contain self connections $(\mathcal{v}_i, \mathcal{v}_i) \in \mathcal{E}$. In an undirected graph, the edge is an unordered set of nodes $\{\mathcal{v}_i, \mathcal{v}_j\} \in \mathcal{E}$, where the order of $i, j$ does not matter. Typically, undirected graphs do not contain self connections $\{\mathcal{v}_i, \mathcal{v}_i\} \notin \mathcal{E}$ [@estrada2012structure].
+
+A graph can be represented as an adjacency matrix $A$. The adjacency matrix $A$ has dimensions of $|\mathcal{V}| \times |\mathcal{V}|$, and $|\mathcal{V}|$ is the number of nodes in a graph. Each element of $a_{ij}$ is the edge: $(\mathcal{v}_i, \mathcal{v}_j) \in \mathcal{E}$ in a directed graph, or $\{\mathcal{v}_i, \mathcal{v}_j\} \in \mathcal{E}$ in an undirected graph. In an unweighted graph, $a_{ij} = 1$ if a connection exists between $\mathcal{v}_i$ and $\mathcal{v}_j$, and $a_{ij} = 0$ otherwise. In a weighted graph, $a_{ij}$ can take any real value ($a_{ij} \in \mathbb{R}$) depending on the application [@estrada2012structure].
 
 ## Data pre-processing
 
@@ -76,9 +76,9 @@ A DPN is constructed as a matrix which rows to columns represent pairs of medica
 
 ## Centrality measures in graph theory
 
-- Discuss about centrality measures in social network analysis
-- What can centrality measures offer in analyzing polypharmacy networks
-- Check the structure of complex network: theory and application by Estrada
+Centrality measures formalize the identification of important nodes in a graph [@estrada2012structure]. The centrality of a node is measured differently depending on the context of analysis. Previous publication on DPN highlighted four common centrality measures, namely degree, betweenness, closeness, and eigenvector centrality [@Miglio2021]. Degree centrality in a DPN describes the number of co-prescription with the medication of interest. High (low) degree centrality means the medication is often (seldom) co-prescribed. Betweenness centrality indicates the frequency of a medication connecting two other medications by the shortest possible path. High (low) betweenness centrality means the medication is (not) a "bridge" between different kind of medications. Closeness centrality is the average distance between one medication to all other medications in the DPN. High (low) closeness centrality means that the medication is (not) commonly co-prescribed. Eigenvector centrality reflects the number of co-prescription with medications that have vital role in the DPN. High (low) eigenvector centrality means that the medication is often (seldom) co-prescribed with other important medications.
+
+The choice of centrality largely depends on the objective of network analysis. As a general guide, degree centrality is useful to identify popular medication and monitor drug overuse. Betweenness centrality is suitable for targeting for drug-interaction study and optimizing therapy plan. Closeness centrality indicates widely-used key medications and efficiency in treatment networks. Eigenvector centrality is helpful to identify influential medications and narrow down high-impact medications for drug monitoring. This study focused on eigenvector centrality to evaluate which medications have a significant influence on how antidepressants and anxiolytics are prescribed.
 
 ## Measuring relative importance
 
