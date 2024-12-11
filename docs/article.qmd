@@ -117,7 +117,7 @@ lo_mean <- prettyNum(lo_claim$mean_claim, big.mark = ",")
 
 ```
 
-IADB recorded `r n_patient` patients having at least one prescription of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient depicts the dynamics of the population from 2018 to 2022. The ratio of male to female did not vary by a large margin, and the average age steadily increased over the year. These findings imply that the cohort stays relatively stable overtime without any indication of sudden demographic changes.
+IADB recorded `r n_patient` patients having at least one prescription of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient depicts the dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the cohort stays relatively stable overtime without any indication of sudden demographic changes.
 
 ```{r tbl-overview-patient}
 #| tbl-cap: "Number of participating patients with at least one claim of antidepressants or anxiolytics from 2018 to 2022"
@@ -153,6 +153,14 @@ tar_read(res_tbl_patient) |>
   flextable::set_table_properties(opts_pdf = list("arraystretch" = 1, "tabcolsep" = 0))
 
 ```
+
+@tbl-res-poly outlines the type of polypharmacy in the population. The summary statistics was based on prescription-day data on the population level over the year. Prescription-day is the number of dispensed medication in a day. For example, if seven medication is prescribed for 1 days, then it has 7 prescription-day. Same-class polypharmacy is co-prescription of psychopharmaca from the same class, e.g. combination of antidepressants. Multi-class polypharmacy is co-prescription of psychopharmaca from different classes, e.g. combination of antidepressants and anxiolytics. Total polypharmacy is the total number of co-prescription regardless of its class, which may contain medications other than psychopharmaca. There are two reported statistics in @tbl-res-poly, namely the sum and the mean alongside its standard deviation. The sum reflects the total prescription-day of polypharmacy occurring in a year. Meanwhile, the mean and its standard deviation reflect the expected duration in days a person may receive any polypharmacy regimen. As such, we can read the findings as follow:
+
+> *"In 2018, same-class polypharmacy of antidepressants occur for 73,528 prescription-day in the population, with the expected duration of 0.06 prescription-day per person."*
+
+The phrase *"0.06 prescription-day per person"* may sound confusing at first. However, it directly corresponds with the expected duration in days per 100 days a person might receive polypharmacy regimens. Therefore, it is interpretable as:
+
+> *"In 2018, a person prescribed with antidepressants is expected to receive same-class polypharmacy regimens for 6 out of 100 days."*
 
 ```{r tbl-res-poly}
 #| tbl-cap: Summary statistics of different psychiatric polypharmacy categories
