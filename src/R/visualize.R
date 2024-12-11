@@ -568,3 +568,22 @@ vizConnectivity <- function(graph_concat) {
 
   return(plt)
 }
+
+vizReconResult <- function(ts, ts_recon, ...) {
+  #' Visualize the Reconstruction Results
+  #'
+  #' Visualize the reconstructed time-series side-by-side with the original
+  #' time-series data.
+  #'
+  #' @param ts The original time-series data
+  #' @param ts_recon The reconstructed time-series data
+  #' @param ... Parameters being passed on to `vizDot`
+  #' @return A GGPlot2 object
+  require("ggplot2")
+
+  plt1 <- vizDot(ts, ...)
+  plt2 <- vizDot(ts_recon, ...)
+  plt  <- ggpubr::ggarrange(plt1, plt2, nrow = 1, align = "v")
+
+  return(plt)
+}
