@@ -1,6 +1,6 @@
 ---
 title: >
-  A temporal network analysis of drug co-prescription around antidepressants and anxiolytics uses in the Netherlands 2018-2022
+  A temporal network analysis of drug co-prescription around antidepressants and anxiolytics uses in the Netherlands from 2018 to 2022
 
 format:
   elsevier-pdf:
@@ -46,13 +46,13 @@ Mental disorders are a common comorbidity affecting nearly two billion people wo
 
 :::
 
-The inherently complex nature of health-related phenomena have fueled the growing implementation of network analysis, making it an indispensable research framework in medicine and epidemiology [@Luke2007]. Past implementations of network analysis in public health mostly focused on transmission network, social network, and organizational network. Only recently, @Cavallo2012 demonstrated a novel framework to describe medication uses on a population level, i.e. drug prescription network (DPN), a term which later is coined by @Bazzoni2015. Network analysis and graph theory offer an approach to model the relationship among building blocks of a complex system. From a complex system standpoint, polypharmacy is a prescription of multiple drug combinations which can be modelled as a network [@Miglio2021]. DPN can capture the complex relationships of a system that may vary overtime, which is highly relevant to drug prescribed for mental disorders.
+The inherently complex nature of health-related phenomena have fueled the growing implementation of network analysis, making it an important research framework in medicine and epidemiology [@Luke2007]. Past implementations of network analysis in public health mostly focused on transmission network, social network, and organizational network. Only recently, @Cavallo2012 demonstrated a novel framework to describe medication uses on a population level, i.e. drug prescription network (DPN), a term which later is coined by @Bazzoni2015. Network analysis and graph theory offer an approach to model the relationship among building blocks of a complex system. From a complex system standpoint, polypharmacy is a prescription of multiple drug combinations which can be modelled as a network [@Miglio2021]. DPN can capture the complex relationships of a system that may vary overtime, which is highly relevant to drug prescribed for mental disorders.
 
 In psychiatry, polypharmacy is defined as a patient with at least two concurrent psychiatric medications [@Shrivastava2013]. With a prevalence between 13-90%, psychiatric polypharmacy manifests in five categories, namely same-class, multi-class, adjunctive, augmentation, and total polypharmacy. Same-class polypharmacy is the use of multiple medications from the same class. Multi-class polypharmacy is the use of multiple medications from different classes indicated for the same symptom cluster. Adjunctive polypharmacy is the use of additional medications to treat side effects due to other medications. Augmentation polypharmacy is the use of full-dose and sub-dose medications from a different class for the same symptom cluster. Finally, total polypharmacy is the total count of all medications used by a patient, both psychopharmaca and other classes alike [@Shrivastava2013]. For policymakers, differences in defining polypharmacy pose a challenge to design a monitoring system [@Sirois2016].
 
 Monitoring polypharmacy regimens requires a holistic approach since drug prescription highly depends on the physician's prescribing habits [@Shrivastava2013], patient-physician relationship, and pharmaceutical market, which all bear an interplay with the decision-making process [@Cavallo2012]. A holistic polypharmacy monitoring system needs to describe the importance of polypharmacy by incorporating both qualitative and quantitative measures [@Sirois2016]. Quantitatively attributing importance to each medication is challenging, accounting for polypharmacy as a complex and interlinked medication uses. Network analysis is a viable framework for analyzing polypharmacy. Constructing DPNs from drug prescription data has been previously investigated, where DPN-based approach represented the general trend in co-prescription [@Cavallo2012; @Bazzoni2015].
 
-A DPN is constructed as a matrix which rows to columns represent pairs of medication being taken by a patient in a day. Since there is no limit for the number of rows and columns, a DPN can contain virtually every possible combination of polypharmacy regimens. A DPN is generalizable as a population aggregate by coalescing all single-patient DPN through matrix addition [@Cavallo2012]. Constructing a DPN allows examining co-prescription dynamics in the population as graph measures, which is also attributable to each medication. One of such measures is graph centrality, where we calculate scores representing the number of co-medications, number of connecting paths, average distance, and relative importance [@Askar2021]. The relative importance score is of particular interest to address concerns raised by @Sirois2016 and @Delara2022 regarding standardized quantitative indicator of polypharmacy. Relative importance, most commonly measured by eigenvector centrality, represents the connection to vital medications. A high eigenvector centrality in a DPN indicates more prescriptions with highly-prescribed medications. Following up @Cavallo2012 and @Bazzoni2015, we hypothesize that eigenvector centrality as a measure of relative importance is attributable to indicate polypharmacy. Our investigation showcases eigenvector centrality as a quantitative indicator of polypharmacy to promote a systematic public health monitoring system.
+A DPN is constructed as a matrix which rows to columns represent pairs of medication being taken by a patient in a day. Since there is no limit for the number of rows and columns, a DPN can contain virtually every possible combination of polypharmacy regimens. A DPN is generalizable as a population aggregate by coalescing all single-patient DPN through matrix addition [@Cavallo2012]. Constructing a DPN allows examining co-prescription dynamics in the population as graph measures, which is also attributable to each medication. One of such measures is graph centrality, where we calculate scores representing the number of co-prescriptions, number of connecting paths, average distance, and relative importance [@Askar2021]. The relative importance score is of particular interest to address concerns raised by @Sirois2016 and @Delara2022 regarding standardized quantitative indicator of polypharmacy. Relative importance, most commonly measured by eigenvector centrality, represents the connection to vital medications. A high eigenvector centrality in a DPN indicates more prescriptions with highly-prescribed medications. Following up @Cavallo2012 and @Bazzoni2015, we hypothesize that eigenvector centrality as a measure of relative importance is attributable to indicate polypharmacy. Our investigation showcases eigenvector centrality as a quantitative indicator of polypharmacy to promote a systematic public health monitoring system.
 
 ::: {.content-hidden}
 > **"How do we implement a network analysis approach to quantitatively attribute polypharmacy?"**
@@ -190,25 +190,11 @@ res_tbl_overview$overview |>
 
 ```
 
-## Time-series decomposition
-
-Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it.
-
-```{r fig-ssa}
-#| fig-width: 16
-#| fig-height: 12
-#| fig-pos: H
-#| fig-cap: An example of time-series decomposition using singular spectrum analysis-based approach
-
-tar_read(plt_ssa_recon_n_claim)[[17]]
-
-```
-
 ## Polypharmacy in the population
 
 @tbl-res-poly outlines the type of polypharmacy in the population. The summary statistics were based on prescription-day data aggregated at the population level over the year. Prescription-day is the number of medications dispensed on a given day. For example, if seven medications are prescribed for one day, it accounts for 7 prescription-days. Same-class polypharmacy refers to co-prescription of psychopharmaca from the same class, such as a combination of antidepressants. Multi-class polypharmacy involves co-prescription of psychopharmaca from different classes, such as combining antidepressants and anxiolytics. Total polypharmacy refers to the overall number of co-prescriptions, including those involving medications outside psychopharmaca classes. Two statistics are reported in @tbl-res-poly: the sum and the mean with its standard deviation. The sum indicates the total prescription-days of polypharmacy within a year. The mean and standard deviation represent the average number of prescription-days per person for any polypharmacy regimen. Thus, we can read the findings as follow:
 
-> *"In 2018, same-class polypharmacy of antidepressants occurred for a total of 73,528 prescription-days across the population, with an average of 0.06 prescription-days per person. For every 100 people prescribed with antidepressants, there were approximately 6 days in total during which polypharmacy regimens occurred."*
+> *"In 2018, same-class polypharmacy of antidepressants occurred for a total of 73,528 prescription-days across the population, with an average of 0.06 prescription-days per person. For every 100 people prescribed with antidepressants, there were approximately 6 days in total during which same-class polypharmacy regimens occurred."*
 
 ```{r tbl-res-poly}
 #| tbl-cap: Summary statistics of different psychiatric polypharmacy categories
@@ -260,6 +246,20 @@ tar_read(res_tbl_poly) |>
 
 ```
 
+## Time-series decomposition
+
+Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it. The trend, F1, and F2 were used to reconstruct the time series.
+
+```{r fig-ssa}
+#| fig-width: 16
+#| fig-height: 12
+#| fig-pos: H
+#| fig-cap: An example of time-series decomposition using singular spectrum analysis-based approach
+
+tar_read(plt_ssa_recon_n_claim)[[17]]
+
+```
+
 ## Relative importance score
 
 ```{r}
@@ -295,7 +295,7 @@ diffMed <- function(med_obj1, med_obj2, FUN) {
 
 ```
 
-Seven medications had a high relative importance as suggested by figure [-@fig-hi-eigen] and table [-@tbl-desc]. It is notable that highly prescribed medications usually have a high eigenvector centrality as well, which is theoretically supported by equation [-@eq-eigen-centrality]. However, despite higher prescription numbers (`r diffMed(antidepressants, respiratory, reportMedClaim)`), antidepressants had lower eigenvector centrality than medications for the respiratory system (`r diffMed(antidepressants, respiratory, reportMedEigen)`). We confirmed similar findings with anxiolytics, which had higher prescription numbers (`r diffMed(anxiolytics, analgesics, reportMedClaim)`) but lower eigenvector centrality (`r diffMed(anxiolytics, analgesics, reportMedEigen)`) than analgesics. The difference of eigenvector centrality became more pronounced as the number of prescriptions decreased.
+Seven medication classes had a high relative importance as suggested by figure [-@fig-hi-eigen] and table [-@tbl-desc]. It is notable that highly prescribed medications usually have a high eigenvector centrality as well, which is theoretically supported by equation [-@eq-eigen-centrality]. However, despite higher prescription numbers (`r diffMed(antidepressants, respiratory, reportMedClaim)`), antidepressants had lower eigenvector centrality than medications for the respiratory system (`r diffMed(antidepressants, respiratory, reportMedEigen)`). We confirmed similar findings with anxiolytics, which had higher prescription numbers (`r diffMed(anxiolytics, analgesics, reportMedClaim)`) but lower eigenvector centrality (`r diffMed(anxiolytics, analgesics, reportMedEigen)`) than analgesics. The difference of eigenvector centralities became more pronounced as the number of prescriptions decreased.
 
 ```{r tbl-desc}
 #| tbl-cap: Descriptive statistics of prescription data from 2018 to 2022, ordered by Eigenvector centrality as an indicator of nodal importance
@@ -346,66 +346,19 @@ tar_read(plt_hi_eigen_box)
 
 # Discussion
 
-This study is an egocentric network analysis of two population groups: individuals receiving antidepressants and those receiving anxiolytics. On average, each person received 6 days of polypharmacy regimens in a year. The rate of polypharmacy differs between these two groups. Same-class polypharmacy is more prevalent among individuals treated with antidepressants than among those treated with anxiolytics. Conversely, multi-class polypharmacy is more common in individuals treated with anxiolytics. In both groups, multi-class polypharmacy is ten times more prevalent than same-class polypharmacy. The high prevalence of multi-class polypharmacy in our findings aligns with previous studies, which show that antidepressants and anxiolytics are often co-prescribed with other medications [@Shrivastava2013], and multi-class regimens contribute the most to the prevalence of psychopharmaca polypharmacy [@de2004polypharmacy].
+This study is an egocentric network analysis of two population groups: individuals receiving antidepressants and those receiving anxiolytics. By examining co-prescription patterns, we aimed to understand the prevalence and nature of polypharmacy within these groups. The rate of polypharmacy differs between these two groups. While same-class polypharmacy is more prevalent among individuals treated with antidepressants than among those treated with anxiolytics, multi-class polypharmacy predominates among those treated with anxiolytics. In both groups, multi-class polypharmacy is ten times more prevalent than same-class polypharmacy. The high prevalence of multi-class polypharmacy in our findings aligns with previous studies, which show that antidepressants and anxiolytics are often co-prescribed with other medications [@Shrivastava2013], and multi-class regimens contribute the most to the prevalence of psychopharmaca polypharmacy [@de2004polypharmacy]. This highlights the interconnected nature of psychopharmaca prescription patterns.
 
-The rate of total polypharmacy in people prescribed with antidepressants
+To better understand these co-prescription patterns, the DPN was constructed to identify medication classes with strong centralities in relation to antidepressants and anxiolytics. Following @Cavallo2012, the weight of the adjacency matrix was the frequency of co-prescriptions or single prescriptions. We adjusted the weight to account for varying prescription dosages, alleviating previous limitation where the DDD was restricted to 1 [@Cavallo2012]. Seven medication classes clustered together, forming a modular structure. This modularity reflects the organization of medications into anatomically or functionally related groups, where certain drugs were found to form densely interconnected nodes preferentially linked to each other [@Bazzoni2015]. These network properties highlight the utility of DPNs in revealing prescribing patterns and their underlying clinical rationale.
 
-• First paragraph: Discuss about polypharmacy
-• Second paragraph: Explain the concordance with other literatures
-• Third paragraph: Explain about the DPN
-• Fourth paragraph: Strength
-• Fifth paragraph: Limitation
-  • Lost of individual values
-  • Add limitation about weighting the DDD $\to$ How does it reflect augmented polypharmacy?
+Seven medication classes were identified with a high eigenvector centrality in our DPN. Unsurprisingly, antidepressants and anxiolytics exhibited high centrality, as these medication classes were central to our DPN. Beyond these, medication classes with high centrality included those for the alimentary tract and metabolism (WHO ATC code `A`), blood and blood-forming organs (code `B`), cardiovascular system (code `C`), respiratory system (code `R`), and analgesics (code `N02`). These classes are closely associated with chronic illnesses. This finding aligns with previous investigation highlighting the bidirectional associations between depression/anxiety and chronic physical illnesses [@qi2024longitudinal]. For instance, a study demonstrated that diabetes mellitus, thyroid disorders, and asthma increased the risk of depression [@jang2024temporal]. Moreover, these conditions often necessitate long-term pharmacological interventions, increasing the likelihood of co-prescription. Similarly, fears of worsening symptoms in chronic diseases can lead to heightened health-related anxiety [@lebel2020health]. The frequent coexistence of physical and mental health conditions in chronic diseases underscores the rationale for polypharmacy regimens [@nizamie2015rational].
 
-@Delara2022
+We acknowledge several limitations in this study. First, data aggregation at the population level resulted in the loss of individual-level information, limiting interpretation to population trends. Second, while the adjustment of weights based on DDD introduces a novel element to the analysis, it is important to note that DDD values are not always equal to one, as defined by the WHO ATC system. However, our approach aligns with the general recommendation of @Cavallo2012, where DDD of 1 forms the basic of network edges. The adjusted weighting penalizes values deviating significantly from 1, reducing their impact on the network. Future studies should explore alternative weighting methods to further refine the analysis.
 
-- The prevalence of polypharmacy in all medication classes is 37% [95% CI: 31-43%]
-- Difference of prevalence measure is due to different numerical thresholds, study setting, and publication year
+Despite the limitations, our study demonstrates the utility of DPN as a powerful, data-driven approach to analyzing prescription dispensing data. By modelling intricate co-prescription patterns, DPN filters medication classes based on network properties, offering deeper insights into prescribing behaviors. These insights can reveal important trends in medication use, which can be essential to public health monitoring. By capturing the complexity of drug prescription relationships, DPN holds significant potential to improve decision-making in both clinical and administrative contexts
 
-@Sirois2016
+# Conclusion
 
-- Problem of exposure: Polypharmacy can be defined as cumulative or simultaneous prescriptions
-- Cut-off threshold of polypharmacy should be justified by the risk of deleterious health outcomes
-- An ideal monitoring system should describe the importance of polypharmacy
-
-@Menditto2019
-
-- Although polypharmacy is mostly researched in geriatric patients, younger population are also at risk of inappropriate multiple medication uses
-
-@Shrivastava2013
-
-- Among diagnoses, polypharmacy is often found in patients with schizophrenia, schizotypal, and delusional disorder
-- Multi-class polypharmacy is the most common (20.9%), usually the combination of SSRI and benzodiazepine or TCA and benzodiazepine
-- Five factors associated with psychiatric polypharmacy:
-  - Scientific: Emphasis on biogenic amines roles in depression and schizophrenia expanded the early clinical evidence of psychotropic medications
-  - Clinical: Standardization attempt resulted in overlapping diagnoses with limited validity; poly-nosology an polypharmacy go hand-in-hand
-  - Economic: Pharmaceutical company influenced the demand of psychopharmaca uses
-  - Political: US FDA imposes minimal guidelines for drug approval only for specific conditions
-  - Cultural: Large cultural appetite for pharmacological treatments
-
-@Stassen2021
-
-- Attending psychiatrist is the main determinant of polypharmaca prescription
-- Previous medical history and case severity at baseline only play a minor role in polypharmaca
-- Adverse drug reaction in polypharmaca is 2-3 times higher compared to monotherapy, and not attributed to particular drug or drug combination; it implies that any drug and its combination can virtually trigger the side effect
-- No advantage of polypharmacy over monotherapy, suggesting that polypharmacy regimens are not equally suited for every patient
-
-@Molokhia2017
-
-- The alternative measure is pre-defined criteria, e.g. BEERS, STOPP, and START
-- Each additional medication contributes to 16% increased risk of errors
-
-@Cavallo2012
-
-- The weight is the number of time a pair of medications is prescribed together
-- The co-prescription network has a scale-free property, suggesting that the probability new links being formed is growing alongside the degree of the target node
-- The scale-free property of the network might be explained by the physician's prescribing habit: The physician tends to prescribe medications with known medications
-
-@Bazzoni2015
-
-- Drug-prescription network is highly dense and clustered at the global level
-- Drug-prescription network is organized into anatomically homogeneous modules at the local level
+This study utilized DPN to evaluate the influence of specific medication classes on prescribing patterns of antidepressants and anxiolytics. By focusing on co-prescription patterns, we identified seven medication classes with significant eigenvector centrality, reflecting their critical role in polypharmacy regimens. This study highlights the potential of network-based approaches to narrow down high-impact medications for further evaluation.
 
 # References
 
