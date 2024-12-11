@@ -104,6 +104,8 @@ Since the sum of all eigenvector centralities $c_i$ in equation [-@eq-eigen-cent
 
 # Results
 
+## Description of the population
+
 ```{r}
 
 tar_load(res_tbl_overview)
@@ -117,7 +119,7 @@ lo_mean <- prettyNum(lo_claim$mean_claim, big.mark = ",")
 
 ```
 
-IADB recorded `r n_patient` patients having at least one prescription of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient depicts the dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the cohort stays relatively stable overtime without any indication of sudden demographic changes.
+IADB recorded `r n_patient` patients having at least one prescription of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes.
 
 ```{r tbl-overview-patient}
 #| tbl-cap: "Number of participating patients with at least one claim of antidepressants or anxiolytics from 2018 to 2022"
@@ -154,13 +156,59 @@ tar_read(res_tbl_patient) |>
 
 ```
 
-@tbl-res-poly outlines the type of polypharmacy in the population. The summary statistics was based on prescription-day data on the population level over the year. Prescription-day is the number of dispensed medication in a day. For example, if seven medication is prescribed for 1 days, then it has 7 prescription-day. Same-class polypharmacy is co-prescription of psychopharmaca from the same class, e.g. combination of antidepressants. Multi-class polypharmacy is co-prescription of psychopharmaca from different classes, e.g. combination of antidepressants and anxiolytics. Total polypharmacy is the total number of co-prescription regardless of its class, which may contain medications other than psychopharmaca. There are two reported statistics in @tbl-res-poly, namely the sum and the mean alongside its standard deviation. The sum reflects the total prescription-day of polypharmacy occurring in a year. Meanwhile, the mean and its standard deviation reflect the expected duration in days a person may receive any polypharmacy regimen. As such, we can read the findings as follow:
+## Weekly variation of prescription dispensing
 
-> *"In 2018, same-class polypharmacy of antidepressants occur for 73,528 prescription-day in the population, with the expected duration of 0.06 prescription-day per person."*
+The highest average of prescription dispensing occurred on `r hi_claim$day`, with an average of `r hi_mean` [SD: `r hi_claim$sd_claim`] prescriptions. Meanwhile, the lowest average of claim occurred on `r lo_claim$day`, with an average of `r lo_mean` [SD: `r lo_claim$sd_claim`] prescriptions. A large margin of difference between the highest and lowest average number of claim implies daily variation and cyclicality, where it peaks on Monday, starts declining afterwards, and is at the lowest during weekends, as shown in @tbl-overview-daily. The cyclical patterns are further explained in our supplementary material. @tbl-desc shows the number of prescriptions for each medication class alongside the distribution of DDD and its weight.
 
-The phrase *"0.06 prescription-day per person"* may sound confusing at first. However, it directly corresponds with the expected duration in days per 100 days a person might receive polypharmacy regimens. Therefore, it is interpretable as:
+```{r tbl-overview-daily}
+#| tbl-cap: "Daily prescription from 2018 to 2022 among patients with at least one claim of antidepressants or anxiolytics"
 
-> *"In 2018, a person prescribed with antidepressants is expected to receive same-class polypharmacy regimens for 6 out of 100 days."*
+res_tbl_overview$overview |>
+  dplyr::mutate(
+    "mean_sd" = sprintf("%s (%.2f)", prettyNum(mean_claim, big.mark = ","), sd_claim),
+    "median_IQR" = sprintf("%s (%.2f)", prettyNum(median_claim, big.mark = ","), IQR_claim),
+    "Range" = sprintf("%s - %s", prettyNum(min_claim, big.mark = ","), prettyNum(max_claim, big.mark = ","))
+  ) |>
+  dplyr::select(day, mean_sd, median_IQR, Range) |>
+  flextable::flextable() |>
+  flextable::set_header_labels(
+    day = "Day",
+    mean_sd = "Mean (SD)",
+    median_IQR = "Median (IQR)"
+  ) |>
+  flextable::add_header_row(
+    values    = c("", "Number of Claims"),
+    colwidths = c(1, 3),
+    top       = TRUE
+  ) |>
+  flextable::align(align = "center", part = "all") |>
+  flextable::align(j = 1, align = "left", part = "all") |>
+  #flextable::font(fontname = "Times", part = "all") |>
+  flextable::fontsize(size = 7, part = "all") |>
+  flextable::autofit(add_w = 0, add_h = 0) |>
+  flextable::set_table_properties(opts_pdf = list("arraystretch" = 1, "tabcolsep" = 0))
+
+```
+
+## Time-series decomposition
+
+Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it.
+
+```{r fig-ssa}
+#| fig-width: 16
+#| fig-height: 12
+#| fig-pos: H
+#| fig-cap: An example of time-series decomposition using singular spectrum analysis-based approach
+
+tar_read(plt_ssa_recon_n_claim)[[17]]
+
+```
+
+## Polypharmacy in the population
+
+@tbl-res-poly outlines the type of polypharmacy in the population. The summary statistics were based on prescription-day data aggregated at the population level over the year. Prescription-day is the number of medications dispensed on a given day. For example, if seven medications are prescribed for one day, it accounts for 7 prescription-days. Same-class polypharmacy refers to co-prescription of psychopharmaca from the same class, such as a combination of antidepressants. Multi-class polypharmacy involves co-prescription of psychopharmaca from different classes, such as combining antidepressants and anxiolytics. Total polypharmacy refers to the overall number of co-prescriptions, including those involving medications outside psychopharmaca classes. Two statistics are reported in @tbl-res-poly: the sum and the mean with its standard deviation. The sum indicates the total prescription-days of polypharmacy within a year. The mean and standard deviation represent the average number of prescription-days per person for any polypharmacy regimen. Thus, we can read the findings as follow:
+
+> *"In 2018, same-class polypharmacy of antidepressants occurred for a total of 73,528 prescription-days across the population, with an average of 0.06 prescription-days per person. For every 100 people prescribed with antidepressants, there were approximately 6 days in total during which polypharmacy regimens occurred."*
 
 ```{r tbl-res-poly}
 #| tbl-cap: Summary statistics of different psychiatric polypharmacy categories
@@ -209,52 +257,6 @@ tar_read(res_tbl_poly) |>
   #flextable::font(fontname = "Times", part = "all") |>
   flextable::width(j = c(1:8), c(1, rep(1.8, 7)), unit = "cm") |>
   flextable::set_table_properties(opts_pdf = list("arraystretch" = 1, "tabcolsep" = 0))
-
-```
-
-The highest average of prescription claim occurred on `r hi_claim$day`, with an average of `r hi_mean` [SD: `r hi_claim$sd_claim`] prescriptions. Meanwhile, the lowest average of claim occurred on `r lo_claim$day`, with an average of `r lo_mean` [SD: `r lo_claim$sd_claim`] prescriptions. A large margin of difference between the highest and lowest average number of claim implies daily variation and cyclicality, where it peaks on Monday, starts declining afterwards, and is at the lowest during weekends, as shown in table [-@tbl-overview-daily] and figure [-@fig-period-day]. The cyclical patterns are further explained in our supplementary material. @tbl-desc shows the number of prescriptions for each medication class alongside the distribution of DDD and its weight.
-
-```{r tbl-overview-daily}
-#| tbl-cap: "Daily prescription from 2018 to 2022 among patients with at least one claim of antidepressants or anxiolytics"
-
-res_tbl_overview$overview |>
-  dplyr::mutate(
-    "mean_sd" = sprintf("%s (%.2f)", prettyNum(mean_claim, big.mark = ","), sd_claim),
-    "median_IQR" = sprintf("%s (%.2f)", prettyNum(median_claim, big.mark = ","), IQR_claim),
-    "Range" = sprintf("%s - %s", prettyNum(min_claim, big.mark = ","), prettyNum(max_claim, big.mark = ","))
-  ) |>
-  dplyr::select(day, mean_sd, median_IQR, Range) |>
-  flextable::flextable() |>
-  flextable::set_header_labels(
-    day = "Day",
-    mean_sd = "Mean (SD)",
-    median_IQR = "Median (IQR)"
-  ) |>
-  flextable::add_header_row(
-    values    = c("", "Number of Claims"),
-    colwidths = c(1, 3),
-    top       = TRUE
-  ) |>
-  flextable::align(align = "center", part = "all") |>
-  flextable::align(j = 1, align = "left", part = "all") |>
-  #flextable::font(fontname = "Times", part = "all") |>
-  flextable::fontsize(size = 7, part = "all") |>
-  flextable::autofit(add_w = 0, add_h = 0) |>
-  flextable::set_table_properties(opts_pdf = list("arraystretch" = 1, "tabcolsep" = 0))
-
-```
-
-## Time-series decomposition
-
-Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it.
-
-```{r fig-ssa}
-#| fig-width: 16
-#| fig-height: 12
-#| fig-pos: H
-#| fig-cap: An example of time-series decomposition using singular spectrum analysis-based approach
-
-tar_read(plt_ssa_recon_n_claim)[[17]]
 
 ```
 
