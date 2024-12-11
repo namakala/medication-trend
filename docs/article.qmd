@@ -346,6 +346,18 @@ tar_read(plt_hi_eigen_box)
 
 # Discussion
 
+This study is an egocentric network analysis of two population groups: individuals receiving antidepressants and those receiving anxiolytics. On average, each person received 6 days of polypharmacy regimens in a year. The rate of polypharmacy differs between these two groups. Same-class polypharmacy is more prevalent among individuals treated with antidepressants than among those treated with anxiolytics. Conversely, multi-class polypharmacy is more common in individuals treated with anxiolytics. In both groups, multi-class polypharmacy is ten times more prevalent than same-class polypharmacy. The high prevalence of multi-class polypharmacy in our findings aligns with previous studies, which show that antidepressants and anxiolytics are often co-prescribed with other medications [@Shrivastava2013], and multi-class regimens contribute the most to the prevalence of psychopharmaca polypharmacy [@de2004polypharmacy].
+
+The rate of total polypharmacy in people prescribed with antidepressants
+
+• First paragraph: Discuss about polypharmacy
+• Second paragraph: Explain the concordance with other literatures
+• Third paragraph: Explain about the DPN
+• Fourth paragraph: Strength
+• Fifth paragraph: Limitation
+  • Lost of individual values
+  • Add limitation about weighting the DDD $\to$ How does it reflect augmented polypharmacy?
+
 @Delara2022
 
 - The prevalence of polypharmacy in all medication classes is 37% [95% CI: 31-43%]
