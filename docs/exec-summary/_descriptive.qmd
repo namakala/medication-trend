@@ -2,7 +2,7 @@
 ### Exploratory descriptive analysis
 :::
 
-The data was extracted as a daily time-series, which then aggregated into weekly and monthly for exploratory data analysis. The data contains five metrics, including the number of daily medication claims, the number of daily patients, claim-to-patient ratio, and eigenvector centrality. For each metrics in each dataset, univariate descriptive analysis was performed by calculating the statistical summary to describe the centrality and spread. Mean, median, standard deviation, and interquartile range were reported to evaluate the distribution.
+The data was extracted as a daily time series and aggregated into weekly and monthly intervals for analysis. It includes four metrics: daily medication claims, daily patients, claim-to-patient ratio, and eigenvector centrality. For each metric, a univariate descriptive analysis was performed, reporting the mean, median, standard deviation, and interquartile range to summarize centrality and dispersion.
 
 ::: {.content-visible unless-meta="in.article"}
 The data is split into pre-COVID-19 and during COVID-19 period, and mean difference was calculated using Welch's T-Test. For visual examination, pair plots were generated for each medication group. The correlations between metrics were calculated by considering pre-COVID-19, during COVID-19, and the overall association. Daily, weekly, and monthly time-series were also plotted and grouped by medications. Classical and seasonal-trend decomposition using LOESS (STL) were performed to extract decomposed trend for further visual evaluation. Each dataset was then detrended by performing a first-degree differencing, i.e. taking the differences between $x_t$ and $x_{t-1}$.
