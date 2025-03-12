@@ -47,3 +47,9 @@ R0x  <- results %>% getGroup("Respiratory")
 {{< include _abstract-ispor.qmd >}}
 
 :::
+
+::: {.content-visible when-meta="in.abstract.short"}
+
+{{< include _abstract-short.qmd >}}
+
+:::

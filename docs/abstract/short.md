@@ -1,0 +1,40 @@
+# Eigenvector centrality as a metric of polypharmacy: a network analysis
+to quantify psychopharmaca co-prescription networks around
+antidepressants
+
+Aly Lamuri, Spyros Balafas, Eelko Hak, Jens H. Bos, Frederike
+Jörg, Talitha L. Feenstra
+
+**Background:** Drug prescription networks (DPNs) model the temporal
+dynamics of medication co-prescription within a population.
+Understanding these networks can provide insights into polypharmacy and
+prescribing behaviors.
+
+**Objectives:** This study assesses the structural characteristics of
+temporal DPNs derived from daily co-prescriptions of antidepressants,
+anxiolytics, and other therapeutic drug classes. By analyzing these
+networks using eigenvector centrality, we identify influential
+medications and prescribing patterns.
+
+**Methods:** We utilized the IADB.nl database, including prescriptions
+from 128 Dutch pharmacies (2018–2022). A closed cohort of patients
+prescribed antidepressants/anxiolytics was extracted. Medications were
+classified using the Anatomical Therapeutic Chemical (ATC) system into
+24 therapeutic classes. Time-varying DPNs were constructed as undirected
+graphs using symmetric daily dose-adjusted co-prescriptions. Eigenvector
+centrality ($c_e$) quantified relative nodal importance.
+Weekly-aggregated data included prescriptions ($n_c$), number of
+patients, claim-to-patient ratio, and eigenvector centrality. Singular
+spectrum analysis decomposed trends.
+
+**Results:** Antidepressants (ATC `N06A`, $c_e$: 0.09, $n_c$: 28,993)
+and anxiolytics (`N05B`, $c_e$: 0.04, $n_c$: 14,061) had high
+eigenvector centrality, indicating frequent co-prescription. Additional
+high-centrality groups included medications for alimentary and
+metabolism (`A01-A16`), blood (`B01-B06`), cardiovascular (`C01-C10`),
+analgesics (`N02`), and respiratory (`R01-R07`).
+
+**Discussion:** DPNs reveal key polypharmacy patterns. High-centrality
+medications highlight potential targets for drug monitoring. This
+approach aids in identifying influential medications and refining
+prescribing oversight.

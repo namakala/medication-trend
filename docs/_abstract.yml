@@ -9,8 +9,9 @@ abstract: |
   **Objectives:**  
   This study aims to assess the structural characteristics of temporal DPNs,
   derived from daily co-prescriptions between treatments for mental health
-  conditions and other therapeutic drug classes, as recorded in pharmacy
-  dispensing database.
+  conditions and other therapeutic drug classes. By analyzing these networks,
+  particularly through eigenvector centrality, we can identify influential
+  medications and uncover prescribing patterns indicative of polypharmacy.
 
   **Methods:** For exploratory time series analysis, and network
   construction, we utilized the IADB.nl database that collects
@@ -44,11 +45,12 @@ abstract: |
   showed a positive time trend for both eigenvector centrality and actual
   number of claims.
 
-  **Discussion:** Seven medication therapy classes, three of which are
-  psychopharmaca, had a high eigenvector centrality, indicating
-  concurrence with other medication groups on a population level in the
-  group of antidepressant or anxiolytic users. Positive time trends in
-  both eigenvector centrality and dispensing suggest that increasing uses
-  of antidepressants was related to co-prescription with other medication
-  classes. Constructing a prescription network enriches the exploratory
-  analysis of medication use at the population level.
+  **Discussion:**
+  Seven medication therapy classes, including three psychopharmaceuticals,
+  exhibited high eigenvector centrality, indicating strong co-prescription
+  patterns with other medication groups among antidepressant and anxiolytic
+  users. Constructing a prescription network allows for a more detailed
+  exploration of polypharmacy patterns, helping to identify influential
+  medications and prescribing behaviors in this population. This approach
+  serves as a filtering mechanism to pinpoint high-impact medications for
+  targeted drug monitoring and improved clinical oversight.
