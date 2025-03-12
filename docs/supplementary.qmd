@@ -1,10 +1,46 @@
+---
+title: >
+  Supplementary: A temporal network analysis of drug co-prescription around antidepressants and anxiolytics uses in the Netherlands from 2018 to 2022
+
+format:
+  pdf:
+    keep-tex: false
+    include-in-header:
+      - file: _header.tex
+      - text: |
+          \renewcommand*{\thesection}{S\arabic{section}}
+    output-file: iadb-network-analysis-supplementary.pdf
+    number-sections: true
+    number-depth: 3
+  docx:
+    pandoc-options: ["--mathml"]
+    output-file: iadb-network-analysis-supplementary.docx
+
+metadata-files:
+  - _author.yml
+  - _knitr-bib.yml
+
+in:
+  article: true
+---
+
 ```{r}
 
 pkgs <- c("targets", "magrittr")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
-options(digits = 2, scipen = 999)
+options(digits = 2)
 
 ```
+
+# Methods
+
+## Decomposition with singular spectrum analysis
+
+{{< include exec-summary/_spectral.qmd >}}
+
+# Results
+
+## Cyclical patterns on de-trended data
 
 ```{r fig-period-day}
 #| fig-width: 14
@@ -15,3 +51,4 @@ tar_read(plt_period_day)[[1]]
 
 ```
 
+# References {-}
