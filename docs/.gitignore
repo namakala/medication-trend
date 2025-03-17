@@ -2,4 +2,7 @@
 *.sh
 !*.yml
 !*.bib
-!_*.tex
+!*.tex
+!*.spl
+!*.cls
+!*.bst
