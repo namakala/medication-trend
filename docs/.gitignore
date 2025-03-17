@@ -6,3 +6,4 @@
 !*.spl
 !*.cls
 !*.bst
+!*_files/**/*pdf
