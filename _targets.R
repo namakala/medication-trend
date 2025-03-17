@@ -366,6 +366,7 @@ list(
   tar_quarto(report_seasonality, "docs", profile = "seasonality", priority = 0),
   tar_quarto(report_spectral, "docs", profile = "spectral", priority = 0),
   tar_quarto(article, "docs/article.qmd"),
+  tar_quarto(supplementary, "docs/supplementary.qmd"),
   tar_quarto(readme, "README.qmd", priority = 0)
 
 )
