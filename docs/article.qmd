@@ -102,6 +102,10 @@ $$ {#eq-eigen-centrality}
 
 {{< include exec-summary/_seasonality.qmd >}}
 
+### Summarizing polypharmacy
+
+This study explored same-class, multi-class, and total polypharmacy. The summary statistics were based on prescription-day data aggregated at the population level over the year. Prescription-day is the number of medications dispensed on a given day. For example, if seven medications are prescribed for one day, it accounts for 7 prescription-days. The mean and standard deviation represent the average number of prescription-days per person for any polypharmacy regimen.
+
 ### Decomposition with singular spectrum analysis
 
 Classical and seasonal-trend decomposition techniques may not fully capture complex periodic patterns in time-series data. Singular spectrum analysis (SSA) is a non-parametric method that leverages Hankel matrix embedding for decomposition. In this study, SSA was applied to identify trends and seasonal components in weekly aggregated prescription data. To better isolate trend and seasonal components, sequential SSA was applied. First, a basic SSA model with the lag parameter $L$ = 52 was used to extract the dominant trend. The residuals were then analyzed with a second SSA model using $L = \frac{N}{2}$ to capture complex periodic patterns. The extracted trend, residuals, and oscillatory components were evaluated visually and statistically, with Mann-Kendall trend tests applied to assess long-term changes. A complete documentation of this approach and its rationale was included in the supplementary file section S1.1.
@@ -127,10 +131,10 @@ lo_mean <- prettyNum(lo_claim$mean_claim, big.mark = ",")
 
 ```
 
-IADB recorded `r n_patient` patients having at least one prescription of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes.
+IADB recorded `r n_patient` patients having at least one dispensing of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes.
 
 ```{r tbl-overview-patient}
-#| tbl-cap: "Number of participating patients with at least one claim of antidepressants or anxiolytics from 2018 to 2022"
+#| tbl-cap: "Number of participating patients with at least one dispensing of antidepressants or anxiolytics from 2018 to 2022"
 
 tar_read(res_tbl_patient) |>
   dplyr::mutate(
@@ -164,12 +168,12 @@ tar_read(res_tbl_patient) |>
 
 ```
 
-## Weekly variation of prescription dispensing
+## Weekly variation of medication dispensing
 
-The highest average of prescription dispensing occurred on `r hi_claim$day`, with an average of `r hi_mean` [SD: `r hi_claim$sd_claim`] prescriptions. Meanwhile, the lowest average of claim occurred on `r lo_claim$day`, with an average of `r lo_mean` [SD: `r lo_claim$sd_claim`] prescriptions. A large margin of difference between the highest and lowest average number of claim implies daily variation and cyclicality, where it peaks on Monday, starts declining afterwards, and is at the lowest during weekends, as shown in @tbl-overview-daily. The cyclical patterns are further explained in our supplementary material. @tbl-desc shows the number of prescriptions for each medication class alongside the distribution of DDD and its weight.
+The highest average of medication dispensing occurred on `r hi_claim$day`, with an average of `r hi_mean` [SD: `r hi_claim$sd_claim`]. Meanwhile, the lowest average of medication dispensing occurred on `r lo_claim$day`, with an average of `r lo_mean` [SD: `r lo_claim$sd_claim`] dispensing. A large margin of difference between the highest and lowest average number of dispensing implies daily variation and cyclicality, where it peaks on Monday, starts declining afterwards, and is at the lowest during weekends, as shown in @tbl-overview-daily. The cyclical patterns are detailed in the supplementary material section S2.1.
 
 ```{r tbl-overview-daily}
-#| tbl-cap: "Daily prescription from 2018 to 2022 among patients with at least one claim of antidepressants or anxiolytics"
+#| tbl-cap: "Daily dispensing from 2018 to 2022 among patients with at least one dispensing of antidepressants or anxiolytics"
 
 res_tbl_overview$overview |>
   dplyr::mutate(
@@ -185,7 +189,7 @@ res_tbl_overview$overview |>
     median_IQR = "Median (IQR)"
   ) |>
   flextable::add_header_row(
-    values    = c("", "Number of Claims"),
+    values    = c("", "Number of Dispensing"),
     colwidths = c(1, 3),
     top       = TRUE
   ) |>
@@ -200,9 +204,9 @@ res_tbl_overview$overview |>
 
 ## Polypharmacy in the population
 
-@tbl-res-poly outlines the type of polypharmacy in the population. The summary statistics were based on prescription-day data aggregated at the population level over the year. Prescription-day is the number of medications dispensed on a given day. For example, if seven medications are prescribed for one day, it accounts for 7 prescription-days. Same-class polypharmacy refers to co-prescription of psychopharmaca from the same class, such as a combination of antidepressants. Multi-class polypharmacy involves co-prescription of psychopharmaca from different classes, such as combining antidepressants and anxiolytics. Total polypharmacy refers to the overall number of co-prescriptions, including those involving medications outside psychopharmaca classes. Two statistics are reported in @tbl-res-poly: the sum and the mean with its standard deviation. The sum indicates the total prescription-days of polypharmacy within a year. The mean and standard deviation represent the average number of prescription-days per person for any polypharmacy regimen. Thus, we can read the findings as follow:
+@tbl-res-poly outlines the type of polypharmacy in the population. Two statistics are reported in @tbl-res-poly: the sum and the mean with its standard deviation. The sum indicates the total prescription-days of polypharmacy within a year. Thus, we can read the findings as follow:
 
-> *"In 2018, same-class polypharmacy of antidepressants occurred for a total of 73,528 prescription-days across the population, with an average of 0.06 prescription-days per person. For every 100 people prescribed with antidepressants, there were approximately 6 days in total during which same-class polypharmacy regimens occurred."*
+> "In 2018, same-class polypharmacy of antidepressants occurred for a total of 73,528 prescription-days across the population, with an average of 0.06 prescription-days per person. For every 100 people prescribed with antidepressants, there were approximately 6 days in total during which same-class polypharmacy regimens occurred."
 
 ```{r tbl-res-poly}
 #| tbl-cap: Summary statistics of different psychiatric polypharmacy categories
@@ -228,7 +232,7 @@ tar_read(res_tbl_poly) |>
     mean_sd_total = "Mean [SD]"
   ) |>
   flextable::add_header_row(
-    values    = c("", "Population Level (N)", "Per Person (Mean [SD])", "Total Polypharmacy"),
+    values    = c("", "Population Level", "Per Person (Mean [SD])", "Total Polypharmacy"),
     colwidths = c(2, 2, 2, 2),
     top       = TRUE
   ) |>
@@ -241,7 +245,7 @@ tar_read(res_tbl_poly) |>
       c(
         "The total occurrence of polypharmacy on the population level/perscription-day",
         "The expected occurrence of polypharmacy per person/perscription-day",
-        "Prescription day is defined as the number of prescribed medication per day"
+        "Prescription day is defined as the number of dispensed medication per day"
       )
     )
   ) |>
@@ -256,19 +260,19 @@ tar_read(res_tbl_poly) |>
 
 ## Time-series decomposition
 
-Using the weekly-aggregated data, we obtained decomposed series using an SSA-based approach. @fig-ssa depicts the decomposition result of the number of claim time-series in antidepressants. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it. The trend, F1, and F2 were used to reconstruct the time series.
+For brevity, @fig-ssa only depicts the decomposition result of antidepressants dispensing over the years. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it. The trend, F1, and F2 were used to reconstruct the time series. The largest graph in @fig-ssa represents the reconstructed time-series (green line) and its original data points (gray line). Other decomposition results are reported in the supplementary file section S2.2.
 
 ```{r fig-ssa}
 #| fig-width: 16
 #| fig-height: 12
 #| fig-pos: H
-#| fig-cap: An example of time-series decomposition using singular spectrum analysis-based approach
+#| fig-cap: Time-series decomposition of antidepressants dispensing data using singular spectrum analysis-based approach
 
 tar_read(plt_ssa_recon_n_claim)[[17]]
 
 ```
 
-## Relative importance score
+## Eigenvector centrality measures
 
 ```{r}
 
@@ -303,10 +307,10 @@ diffMed <- function(med_obj1, med_obj2, FUN) {
 
 ```
 
-Seven medication classes had a high relative importance as suggested by figure [-@fig-hi-eigen] and table [-@tbl-desc]. It is notable that highly prescribed medications usually have a high eigenvector centrality as well, which is theoretically supported by equation [-@eq-eigen-centrality]. However, despite higher prescription numbers (`r diffMed(antidepressants, respiratory, reportMedClaim)`), antidepressants had lower eigenvector centrality than medications for the respiratory system (`r diffMed(antidepressants, respiratory, reportMedEigen)`). We confirmed similar findings with anxiolytics, which had higher prescription numbers (`r diffMed(anxiolytics, analgesics, reportMedClaim)`) but lower eigenvector centrality (`r diffMed(anxiolytics, analgesics, reportMedEigen)`) than analgesics. The difference of eigenvector centralities became more pronounced as the number of prescriptions decreased.
+Seven medication classes exhibited high centrality, as shown in @fig-hi-eigen and @tbl-desc. Notably, highly dispensed medications generally had high eigenvector centrality, which aligns with the theoretical expectations from @eq-eigen-centrality. However, despite a higher number of dispensing (`r diffMed(antidepressants, respiratory, reportMedClaim)`), antidepressants had lower eigenvector centrality than medications for the respiratory system (`r diffMed(antidepressants, respiratory, reportMedEigen)`). A similar pattern was observed for anxiolytics, which had more dispensing than analgesics (`r diffMed(anxiolytics, analgesics, reportMedClaim)`) but lower eigenvector centrality (`r diffMed(anxiolytics, analgesics, reportMedEigen)`).
 
 ```{r tbl-desc}
-#| tbl-cap: Descriptive statistics of prescription data from 2018 to 2022, ordered by Eigenvector centrality as an indicator of nodal importance
+#| tbl-cap: Descriptive statistics of dispensing data from 2018 to 2022, ordered by Eigenvector centrality
 
 res_recon_stat |>
   dplyr::arrange(-eigen_mean) |>
@@ -324,8 +328,8 @@ res_recon_stat |>
   flextable::flextable() |>
   flextable::set_header_labels(
     group            = "",
-    n_claim          = "Claim",
-    mean_sd_eigen    = "Importance",
+    n_claim          = "Dispensing",
+    mean_sd_eigen    = "Centrality",
     mean_sd_dose     = "DDD",
     mean_sd_weight   = "Weight"
   ) |>
@@ -344,7 +348,7 @@ res_recon_stat |>
 ```
 
 ```{r fig-hi-eigen}
-#| fig-cap: Clusters of medication with a higher eigenvector centrality, implying a higher relative importance in polypharmacy regimens
+#| fig-cap: Clusters of medication with a significant influence on how antidepressants and anxiolytics are prescribed
 #| fig-width: 9
 #| fig-height: 10
 

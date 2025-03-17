@@ -28,7 +28,7 @@ getLabel <- function(metric) {
   #' @return A character vector signifying the label name
 
   labelname <- dplyr::case_when(
-    metric == "n_claim" ~ "The number of medication claims",
+    metric == "n_claim" ~ "The number of medication dispensing",
     metric == "n_patient" ~ "The number of patients prescribed for a medication",
     metric == "claim2patient" ~ "Medication claim to patient ratio",
     metric == "eigen" ~ "Eigenvector centrality",
@@ -389,12 +389,12 @@ vizReconSsa <- function(tidy_recon, ...) {
   plt1 <- ggplot(tbl, aes(x = date)) +
     geom_point(aes(y = Original), color = colors$black, alpha = 0.4, size = 2, shape = 18) +
     geom_line(aes(y = Original, color = "Data"), alpha  = 0.2, linewidth = 1.2) +
-    geom_line(aes(y = Trend, color = "Trend"), alpha  = 0.8, linewidth = 2) +
+    geom_line(aes(y = Trend, color = "Reconstructed"), alpha  = 0.8, linewidth = 2) +
     labs(title = plt_title, x = "", y = "") +
     scale_date +
     scale_color_manual(
       name = "",
-      values = c("Data" = colors$black, "Trend" = colors$green),
+      values = c("Data" = colors$black, "Reconstructed" = colors$green),
       guide = guide_legend(override.aes = aes(fill = NA))
     ) +
     ggpubr::theme_pubclean() +

@@ -4,7 +4,7 @@ title: >
 
 format:
   pdf:
-    keep-tex: false
+    keep-tex: true
     include-in-header:
       - file: _header.tex
       - text: |
@@ -12,6 +12,11 @@ format:
     output-file: iadb-network-analysis-supplementary.pdf
     number-sections: true
     number-depth: 3
+    geometry:
+      - inner=2cm
+      - outer=3cm
+      - top=2cm
+      - bottom=2.5cm
   docx:
     pandoc-options: ["--mathml"]
     output-file: iadb-network-analysis-supplementary.docx
@@ -38,6 +43,8 @@ options(digits = 2)
 
 {{< include exec-summary/_spectral.qmd >}}
 
+\uselandscape
+
 # Results
 
 ## Cyclical patterns on de-trended data
@@ -48,6 +55,42 @@ options(digits = 2)
 #| fig-cap: Daily cyclical pattern captured on a de-trended data
 
 tar_read(plt_period_day)[[1]]
+
+```
+
+\normalpapersize
+
+## Time-series decomposition
+
+```{r}
+#| fig-width: 16
+#| fig-height: 12
+#| fig-pos: H
+#| fig-cap: Time-series decomposition using singular spectrum analysis-based approach
+
+tar_read(plt_ssa_recon_n_claim)[[1]]
+tar_read(plt_ssa_recon_n_claim)[[2]]
+tar_read(plt_ssa_recon_n_claim)[[3]]
+tar_read(plt_ssa_recon_n_claim)[[4]]
+tar_read(plt_ssa_recon_n_claim)[[5]]
+tar_read(plt_ssa_recon_n_claim)[[6]]
+tar_read(plt_ssa_recon_n_claim)[[7]]
+tar_read(plt_ssa_recon_n_claim)[[8]]
+tar_read(plt_ssa_recon_n_claim)[[9]]
+tar_read(plt_ssa_recon_n_claim)[[10]]
+tar_read(plt_ssa_recon_n_claim)[[11]]
+tar_read(plt_ssa_recon_n_claim)[[12]]
+tar_read(plt_ssa_recon_n_claim)[[13]]
+tar_read(plt_ssa_recon_n_claim)[[14]]
+tar_read(plt_ssa_recon_n_claim)[[15]]
+tar_read(plt_ssa_recon_n_claim)[[16]]
+tar_read(plt_ssa_recon_n_claim)[[18]]
+tar_read(plt_ssa_recon_n_claim)[[19]]
+tar_read(plt_ssa_recon_n_claim)[[20]]
+tar_read(plt_ssa_recon_n_claim)[[21]]
+tar_read(plt_ssa_recon_n_claim)[[22]]
+tar_read(plt_ssa_recon_n_claim)[[23]]
+tar_read(plt_ssa_recon_n_claim)[[24]]
 
 ```
 
