@@ -199,16 +199,22 @@ mkGraph <- function(atc_tbl, method = "density", type = "additive") {
   return(graph)
 }
 
-getMetrics <- function(graph) {
+getMetrics <- function(graph, rm_loop = TRUE) {
   #' Calculate Graph Metrics
   #'
   #' Calculate graph metrics from a given medication graphs
   #' @param graph Medication graph from pairwises of ATC
+  #' @param rm_loop A boolean indicating whether to remove the loop
   #' @return A data frame containing node names and its metrics
 
   is_graph <- igraph::is_igraph(graph)
 
   if (is_graph) {
+
+    # Remove loops (diagonal) as indicated
+    graph %<>% igraph::simplify(remove.loops = rm_loop)
+
+    # Calculat the metrics
     degree   <- igraph::degree(graph)
     strength <- igraph::strength(graph)
     pagerank <- igraph::page_rank(graph) %>% extract2("vector")
@@ -216,6 +222,7 @@ getMetrics <- function(graph) {
       extract2("vector") %>%
       divide_by(sum(.))
 
+    # Tabulate the metrics
     metrics <- data.frame(eigen, pagerank, degree, strength) %>%
       tibble::add_column("group" = rownames(.), .before = 1)
 
