@@ -172,10 +172,10 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={A temporal network analysis of drug co-prescription around antidepressants and anxiolytics uses in the Netherlands from 2018 to 2022},
+  pdftitle={A temporal network analysis of drug co-prescription during antidepressant and anxiolytic dispensing in the Netherlands from 2018 to 2022},
   pdfauthor={Aly Lamuri; Spyros Balafas; Eelko Hak; Jens H. Bos; Frederike Jörg; Talitha L. Feenstra},
-  pdfkeywords={Graph Theory, Prescription Registry, Polypharmacy, Mental
-Health, Public Health Monitoring},
+  pdfkeywords={Graph Theory, Prescription
+Registry, Co-prescription, Mental Health, Public Health Monitoring},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -188,8 +188,8 @@ Health, Public Health Monitoring},
 \begin{document}
 
 \begin{frontmatter}
-\title{A temporal network analysis of drug co-prescription around
-antidepressants and anxiolytics uses in the Netherlands from 2018 to
+\title{A temporal network analysis of drug co-prescription during
+antidepressant and anxiolytic dispensing in the Netherlands from 2018 to
 2022}
 \author[1,2]{Aly Lamuri%
 \corref{cor1}%
@@ -274,7 +274,7 @@ and refining prescribing oversight.
 
 \begin{keyword}
     Graph Theory \sep Prescription
-Registry \sep Polypharmacy \sep Mental Health \sep 
+Registry \sep Co-prescription \sep Mental Health \sep 
     Public Health Monitoring
 \end{keyword}
 \end{frontmatter}
@@ -298,20 +298,21 @@ the complex relationships of a system that may vary over time, which is
 highly relevant to drugs prescribed for mental disorders.
 
 In psychiatry, polypharmacy is defined as a patient with at least two
-concurrent psychiatric medications. With a prevalence between 13-90\%,
-psychiatric polypharmacy manifests in five categories, namely
-same-class, multi-class, adjunctive, augmentation, and total
-polypharmacy \citep{Shrivastava2013}. Same-class polypharmacy is the use
-of multiple medications from the same class. Multi-class polypharmacy is
-the use of multiple medications from different classes indicated for the
-same symptom cluster. Adjunctive polypharmacy is the use of additional
-medications to treat side effects due to other medications. Augmentation
-polypharmacy is the use of full-dose and sub-dose medications from a
-different class for the same symptom cluster. Finally, total
-polypharmacy is the total count of all medications used by a patient,
-both psychopharmaca and other classes alike \citep{Shrivastava2013}. For
-policymakers, differences in defining polypharmacy pose a challenge to
-design a monitoring system \citep{Sirois2016}.
+concurrent psychiatric medications \citep{Shrivastava2013}. With a
+prevalence between 13-90\%, psychiatric polypharmacy manifests in five
+categories, namely same-class, multi-class, adjunctive, augmentation,
+and total polypharmacy \citep{Shrivastava2013}. Same-class polypharmacy
+is the use of multiple medications from the same class. Multi-class
+polypharmacy is the use of multiple medications from different classes
+indicated for the same symptom cluster. Adjunctive polypharmacy is the
+use of additional medications to treat side effects due to other
+medications. Augmentation polypharmacy is the use of full-dose and
+sub-dose medications from a different class for the same symptom
+cluster. Finally, total polypharmacy is the total count of all
+medications used by a patient, both psychopharmaca and other classes
+alike \citep{Shrivastava2013}. For policymakers, differences in defining
+polypharmacy pose a challenge to design a monitoring system
+\citep{Sirois2016}.
 
 A DPN is a graphical representation where medications correspond to
 nodes, and edges represent co-prescription relationships between them.
@@ -357,7 +358,7 @@ prescribing physicians, and the Anatomical Therapeutic Chemical (ATC)
 code. Except for the over the counter drugs and medication dispensed
 during hospitalization, other medication records for each patient are
 complete, mainly due to high patient-pharmacy commitment in the
-Netherlands. This analysis includes daily medication claims from a
+Netherlands. This analysis includes daily medication dispensing from a
 static cohort of adults aged 18-65 years old and prescribed for
 anxiolytics or antidepressants at least once in the time span from 2018
 to 2022.
@@ -386,7 +387,8 @@ and \(a_{ij} = 0\) otherwise. In a weighted graph, \(a_{ij}\) can take
 any real value (\(a_{ij} \in \mathbb{R}\)) depending on the application
 \citep{estrada2012structure}.
 
-\subsection{Data pre-processing}\label{data-pre-processing}
+\subsection{Data pre-processing to build the data
+matrix}\label{data-pre-processing-to-build-the-data-matrix}
 
 Daily medication claims are represented as tabular data where each row
 corresponds to an individual patient's prescriptions. The data was
@@ -501,15 +503,16 @@ deconstructed period and visually examine seasonality as overlapping
 pattern in most periods. To substantiate the findings, ACF and PACF
 plots were used to check on statistical significance of a given pattern.
 
-\subsubsection{Summarizing polypharmacy}\label{summarizing-polypharmacy}
+\subsubsection{Summarizing
+co-prescription}\label{summarizing-co-prescription}
 
-This study explored same-class, multi-class, and total polypharmacy. The
-summary statistics were based on prescription-day data aggregated at the
-population level over the year. Prescription-day is the number of
+This study explored same-class, multi-class, and total co-prescription.
+The summary statistics were based on prescription-day data aggregated at
+the population level over the year. Prescription-day is the number of
 medications dispensed on a given day. For example, if seven medications
 are prescribed for one day, it accounts for 7 prescription-days. The
 mean and standard deviation represent the average number of
-prescription-days per person for any polypharmacy regimen.
+prescription-days per person for any co-prescription regimen.
 
 \subsubsection{Decomposition with singular spectrum
 analysis}\label{decomposition-with-singular-spectrum-analysis}
@@ -556,11 +559,11 @@ population}\label{description-of-the-population}
 
 IADB recorded 149,071 patients having at least one dispensing of
 antidepressants or anxiolytics within five years of data extraction.
-Table~\ref{tbl-overview-patient} captures the dynamics of the population
-from 2018 to 2022. The ratio of male to female only varied slightly, and
-the average age steadily increased over the year. These findings imply
-that the population demography stays relatively stable overtime without
-any indication of sudden changes.
+Table~\ref{tbl-overview-patient} captures the demographical dynamics of
+the population from 2018 to 2022. The ratio of male to female only
+varied slightly, and the average age steadily increased over the year.
+These findings imply that the population demography stays relatively
+stable overtime without any indication of sudden changes.
 
 \global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
 
@@ -757,21 +760,21 @@ anxiolytics}
 
 \renewcommand*{\arraystretch}{1}
 
-\subsection{Polypharmacy in the
-population}\label{polypharmacy-in-the-population}
+\subsection{Co-prescription in the
+population}\label{co-prescription-in-the-population}
 
-Table~\ref{tbl-res-poly} outlines the type of polypharmacy in the
+Table~\ref{tbl-res-poly} outlines the type of co-prescription in the
 population. Two statistics are reported in Table~\ref{tbl-res-poly}: the
 sum and the mean with its standard deviation. The sum indicates the
-total prescription-days of polypharmacy within a year. Thus, we can read
-the findings as follow:
+total prescription-days of co-prescription within a year. Thus, we can
+read the findings as follow:
 
 \begin{quote}
-``In 2018, same-class polypharmacy of antidepressants occurred for a
+``In 2018, same-class co-prescription of antidepressants occurred for a
 total of 73,528 prescription-days across the population, with an average
 of 0.06 prescription-days per person. For every 100 people prescribed
 with antidepressants, there were approximately 6 days in total during
-which same-class polypharmacy regimens occurred.''
+which same-class co-prescription regimens occurred.''
 \end{quote}
 
 \global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
@@ -789,13 +792,13 @@ which same-class polypharmacy regimens occurred.''
 \begin{longtable}[c]{|p{0.39in}|p{0.71in}|p{0.71in}|p{0.71in}|p{0.71in}|p{0.71in}|p{0.71in}|p{0.71in}}
 
 \caption{\label{tbl-res-poly}Summary statistics of different psychiatric
-polypharmacy categories}
+co-prescription categories}
 
 \tabularnewline
 
 \ascline{1.5pt}{666666}{1-8}
 
-\multicolumn{2}{>{\raggedright}m{\dimexpr 1.1in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Population\ Level}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{1}}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Per\ Person\ (Mean\ [SD])}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{2}}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Total\ Polypharmacy}}}} \\
+\multicolumn{2}{>{\raggedright}m{\dimexpr 1.1in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Population\ Level}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{1}}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Per\ Person\ (Mean\ [SD])}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{2}}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Total\ Co-prescription}}}} \\
 
 \ascline{1.5pt}{666666}{1-8}
 
@@ -807,7 +810,7 @@ polypharmacy categories}
 
 \ascline{1.5pt}{666666}{1-8}
 
-\multicolumn{2}{>{\raggedright}m{\dimexpr 1.1in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Population\ Level}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{1}}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Per\ Person\ (Mean\ [SD])}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{2}}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Total\ Polypharmacy}}}} \\
+\multicolumn{2}{>{\raggedright}m{\dimexpr 1.1in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Population\ Level}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{1}}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Per\ Person\ (Mean\ [SD])}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{2}}}}} & \multicolumn{2}{>{\centering}m{\dimexpr 1.42in+2\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Total\ Co-prescription}}}} \\
 
 \ascline{1.5pt}{666666}{1-8}
 
@@ -879,19 +882,25 @@ polypharmacy categories}
 
 
 
-\multicolumn{8}{>{\raggedright}m{\dimexpr 5.35in+14\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{1}}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{The\ total\ occurrence\ of\ polypharmacy\ on\ the\ population\ level/perscription-day}}}} \\
+\multicolumn{8}{>{\raggedright}m{\dimexpr 5.35in+14\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{1}}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{The\ total\ occurrence\ of\ co-prescription\ on\ the\ population\ level/perscription-day}}}} \\
 
 
 
 
 
-\multicolumn{8}{>{\raggedright}m{\dimexpr 5.35in+14\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{2}}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{The\ expected\ occurrence\ of\ polypharmacy\ per\ person/perscription-day}}}} \\
+\multicolumn{8}{>{\raggedright}m{\dimexpr 5.35in+14\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{2}}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{The\ expected\ occurrence\ of\ co-prescription\ per\ person/perscription-day}}}} \\
 
 
 
 
 
 \multicolumn{8}{>{\raggedright}m{\dimexpr 5.35in+14\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{}}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Prescription\ day\ is\ defined\ as\ the\ number\ of\ dispensed\ medication\ per\ day}}}} \\
+
+
+
+
+
+\multicolumn{8}{>{\raggedright}m{\dimexpr 5.35in+14\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{\textsuperscript{}}}}\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Multi-class\ co-prescription\ is\ defined\ as\ the\ co-prescription\ of\ medications\ from\ different\ ATC\ classification}}}} \\
 
 
 
@@ -1155,29 +1164,30 @@ analgesics (2,644,309 vs 2,557,528) but lower eigenvector centrality
 }
 
 \caption{\label{fig-hi-eigen}Clusters of medication with a significant
-influence on how antidepressants and anxiolytics are prescribed}
+co-prescription patterns on antidepressant and anxiolytic dispensing}
 
 \end{figure}%
 
 \section{Discussion}\label{discussion}
 
 This network analysis of dispensing data in individuals using
-antidepressants or anxiolytics revealed distinct polypharmacy patterns
-between these groups. While same-class polypharmacy was more common
-among antidepressant users, multi-class polypharmacy predominated among
-those receiving anxiolytics. Notably, in both groups, multi-class
-polypharmacy was at least ten times more prevalent than same-class
-polypharmacy. Seven medication classes exhibited high eigenvector
-centrality, indicating their strong influence on co-prescription
-dynamics. These include medications for the alimentary tract and
-metabolism (ATC code \texttt{A}), blood and blood-forming organs
-(\texttt{B}), cardiovascular system (\texttt{C}), respiratory system
-(\texttt{R}), and analgesics (\texttt{N02}). These classes do not merely
-appear frequently but also serve as key connectors within prescribing
-networks, linking psychiatric treatments to chronic disease management.
-Their centrality suggests that they play a role in structuring
-multi-class polypharmacy, either as standard co-prescriptions due to
-clinical guidelines or as necessary adjuncts in managing comorbidities.
+antidepressants or anxiolytics revealed distinct co-prescription
+patterns between these groups. While same-class co-prescription was more
+common among antidepressant users, multi-class co-prescription
+predominated among those receiving anxiolytics. Notably, in both groups,
+multi-class co-prescription was at least ten times more prevalent than
+same-class co-prescription. Seven medication classes exhibited high
+eigenvector centrality, indicating their strong influence on
+co-prescription dynamics. These include medications for the alimentary
+tract and metabolism (ATC code \texttt{A}), blood and blood-forming
+organs (\texttt{B}), cardiovascular system (\texttt{C}), respiratory
+system (\texttt{R}), and analgesics (\texttt{N02}). These classes do not
+merely appear frequently but also serve as key connectors within
+prescribing networks, linking psychiatric treatments to chronic disease
+management. Their centrality suggests that they play a role in
+structuring multi-class co-prescription, either as standard
+co-prescriptions due to clinical guidelines or as necessary adjuncts in
+managing comorbidities.
 
 Our findings align with previous research showing that antidepressants
 and anxiolytics are frequently co-prescribed with other medications
@@ -1202,18 +1212,19 @@ between medications within a broader prescribing network
 \citep{Bazzoni2015}. The network approach is a particularly useful
 method for understanding complex prescribing dynamics, which allows for
 the identification of central medication classes that influence
-polypharmacy patterns. The high centrality of certain medication classes
-suggests they serve as critical connectors in treatment regimens,
-providing the basis for further monitoring and evaluation.
+co-prescription patterns. The high centrality of certain medication
+classes suggests they serve as critical connectors in treatment
+regimens, providing the basis for further monitoring and evaluation.
 
 By mapping the relationships between medications, DPN enables the
 detection of patterns that would be challenging to observe through
 standard statistical methods. For instance, the high centrality of
 certain medication classes suggests that they play a pivotal role in
-multi-class polypharmacy, likely due to their involvement in managing
+multi-class co-prescription, likely due to their involvement in managing
 both psychiatric and non-psychiatric conditions. As such, network
-analysis is a suitable approach for generating hypothesis, which has
-also been thoroughly discussed by \citet{Askar2021}.
+analysis is a suitable approach for generating hypotheses for further
+causal or predictive studies, which has also been thoroughly discussed
+by \citet{Askar2021}.
 
 We acknowledge several limitations in this study. First, data
 aggregation at the population level resulted in the loss of
@@ -1233,17 +1244,17 @@ powerful, data-driven approach to analyzing medication dispensing data.
 By modelling intricate co-prescription patterns, DPN filters medication
 classes based on network properties, offering insights into prescribing
 behaviors. These insights can reveal important trends in medication use,
-which can be useful to public health monitoring. By capturing the
-complexity of drug prescription relationships, DPN holds significant
-potential to improve decision-making in both clinical and administrative
-contexts.
+which can be useful to pharmaceutical reviews and public health
+monitoring. By capturing the complexity of drug prescription
+relationships, DPN holds significant potential to improve
+decision-making in both clinical and administrative contexts.
 
 Future DPN studies on individuals using antidepressants or anxiolytics
 should adopt a more fine-grained ATC classification to identify specific
-medications driving polypharmacy patterns within the currently
+medications driving co-prescription patterns within the currently
 identified seven medication classes. A more granular approach could
 reveal whether certain drugs disproportionately contribute to
-multi-class polypharmacy and whether these prescribing trends vary
+multi-class co-prescription and whether these prescribing trends vary
 across patient demographics or healthcare settings. Such insights could
 refine our understanding of prescribing behaviors and inform targeted
 interventions for optimizing medication regimens.

@@ -1,6 +1,6 @@
 ---
 title: >
-  A temporal network analysis of drug co-prescription around antidepressants and anxiolytics uses in the Netherlands from 2018 to 2022
+  A temporal network analysis of drug co-prescription during antidepressant and anxiolytic dispensing in the Netherlands from 2018 to 2022
 
 format:
   elsevier-pdf:
@@ -19,7 +19,7 @@ funding: "The author(s) received no specific funding for this work."
 keywords:
   - Graph Theory
   - Prescription Registry
-  - Polypharmacy
+  - Co-prescription
   - Mental Health   
   - Public Health Monitoring
 
@@ -50,7 +50,7 @@ Mental disorders are a common comorbidity affecting nearly two billion people wo
 
 The inherently complex nature of health-related phenomena have fueled the growing implementation of network analysis, making it an important research framework in medicine and epidemiology [@Luke2007]. Past implementations of network analysis in public health mostly focused on transmission network, social network, and organizational network. Only recently, @Cavallo2012 demonstrated a novel framework to describe medication use on a population level, i.e. drug prescription network (DPN), a term which later is coined by @Bazzoni2015. Network analysis and graph theory offer an approach to model the relationship among building blocks of a complex system. From a complex system standpoint, polypharmacy is a prescription of multiple drug combinations which can be modelled as a network [@Miglio2021]. DPN can capture the complex relationships of a system that may vary over time, which is highly relevant to drugs prescribed for mental disorders.
 
-In psychiatry, polypharmacy is defined as a patient with at least two concurrent psychiatric medications. With a prevalence between 13-90%, psychiatric polypharmacy manifests in five categories, namely same-class, multi-class, adjunctive, augmentation, and total polypharmacy [@Shrivastava2013]. Same-class polypharmacy is the use of multiple medications from the same class. Multi-class polypharmacy is the use of multiple medications from different classes indicated for the same symptom cluster. Adjunctive polypharmacy is the use of additional medications to treat side effects due to other medications. Augmentation polypharmacy is the use of full-dose and sub-dose medications from a different class for the same symptom cluster. Finally, total polypharmacy is the total count of all medications used by a patient, both psychopharmaca and other classes alike [@Shrivastava2013]. For policymakers, differences in defining polypharmacy pose a challenge to design a monitoring system [@Sirois2016].
+In psychiatry, polypharmacy is defined as a patient with at least two concurrent psychiatric medications [@Shrivastava2013]. With a prevalence between 13-90%, psychiatric polypharmacy manifests in five categories, namely same-class, multi-class, adjunctive, augmentation, and total polypharmacy [@Shrivastava2013]. Same-class polypharmacy is the use of multiple medications from the same class. Multi-class polypharmacy is the use of multiple medications from different classes indicated for the same symptom cluster. Adjunctive polypharmacy is the use of additional medications to treat side effects due to other medications. Augmentation polypharmacy is the use of full-dose and sub-dose medications from a different class for the same symptom cluster. Finally, total polypharmacy is the total count of all medications used by a patient, both psychopharmaca and other classes alike [@Shrivastava2013]. For policymakers, differences in defining polypharmacy pose a challenge to design a monitoring system [@Sirois2016].
 
 ::: {.content-hidden}
 
@@ -78,7 +78,7 @@ Mathematically, a graph $\mathcal{G}$ is a pair $\mathcal{G} = (\mathcal{V}, \ma
 
 A graph can be represented as an adjacency matrix $A$. The adjacency matrix $A$ has dimensions of $|\mathcal{V}| \times |\mathcal{V}|$, where $|\mathcal{V}|$ is the number of nodes in a graph. Each element of $a_{ij}$ is the edge, where in an unweighted graph, $a_{ij} = 1$ if a connection exists between $\mathcal{v}_i$ and $\mathcal{v}_j$, and $a_{ij} = 0$ otherwise. In a weighted graph, $a_{ij}$ can take any real value ($a_{ij} \in \mathbb{R}$) depending on the application [@estrada2012structure].
 
-## Data pre-processing
+## Data pre-processing to build the data matrix
 
 {{< include exec-summary/_preprocessing.qmd >}}
 
@@ -102,9 +102,9 @@ $$ {#eq-eigen-centrality}
 
 {{< include exec-summary/_seasonality.qmd >}}
 
-### Summarizing polypharmacy
+### Summarizing co-prescription
 
-This study explored same-class, multi-class, and total polypharmacy. The summary statistics were based on prescription-day data aggregated at the population level over the year. Prescription-day is the number of medications dispensed on a given day. For example, if seven medications are prescribed for one day, it accounts for 7 prescription-days. The mean and standard deviation represent the average number of prescription-days per person for any polypharmacy regimen.
+This study explored same-class, multi-class, and total co-prescription. The summary statistics were based on prescription-day data aggregated at the population level over the year. Prescription-day is the number of medications dispensed on a given day. For example, if seven medications are prescribed for one day, it accounts for 7 prescription-days. The mean and standard deviation represent the average number of prescription-days per person for any co-prescription regimen.
 
 ### Decomposition with singular spectrum analysis
 
@@ -131,7 +131,7 @@ lo_mean <- prettyNum(lo_claim$mean_claim, big.mark = ",")
 
 ```
 
-IADB recorded `r n_patient` patients having at least one dispensing of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes.
+IADB recorded `r n_patient` patients having at least one dispensing of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the demographical dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes.
 
 ```{r tbl-overview-patient}
 #| tbl-cap: "Number of participating patients with at least one dispensing of antidepressants or anxiolytics from 2018 to 2022"
@@ -202,14 +202,14 @@ res_tbl_overview$overview |>
 
 ```
 
-## Polypharmacy in the population
+## Co-prescription in the population
 
-@tbl-res-poly outlines the type of polypharmacy in the population. Two statistics are reported in @tbl-res-poly: the sum and the mean with its standard deviation. The sum indicates the total prescription-days of polypharmacy within a year. Thus, we can read the findings as follow:
+@tbl-res-poly outlines the type of co-prescription in the population. Two statistics are reported in @tbl-res-poly: the sum and the mean with its standard deviation. The sum indicates the total prescription-days of co-prescription within a year. Thus, we can read the findings as follow:
 
-> "In 2018, same-class polypharmacy of antidepressants occurred for a total of 73,528 prescription-days across the population, with an average of 0.06 prescription-days per person. For every 100 people prescribed with antidepressants, there were approximately 6 days in total during which same-class polypharmacy regimens occurred."
+> "In 2018, same-class co-prescription of antidepressants occurred for a total of 73,528 prescription-days across the population, with an average of 0.06 prescription-days per person. For every 100 people prescribed with antidepressants, there were approximately 6 days in total during which same-class co-prescription regimens occurred."
 
 ```{r tbl-res-poly}
-#| tbl-cap: Summary statistics of different psychiatric polypharmacy categories
+#| tbl-cap: Summary statistics of different psychiatric co-prescription categories
 
 tar_read(res_tbl_poly) |>
   dplyr::mutate(
@@ -232,7 +232,7 @@ tar_read(res_tbl_poly) |>
     mean_sd_total = "Mean [SD]"
   ) |>
   flextable::add_header_row(
-    values    = c("", "Population Level", "Per Person (Mean [SD])", "Total Polypharmacy"),
+    values    = c("", "Population Level", "Per Person (Mean [SD])", "Total Co-prescription"),
     colwidths = c(2, 2, 2, 2),
     top       = TRUE
   ) |>
@@ -243,9 +243,10 @@ tar_read(res_tbl_poly) |>
     part = "header",
     value = flextable::as_paragraph(
       c(
-        "The total occurrence of polypharmacy on the population level/perscription-day",
-        "The expected occurrence of polypharmacy per person/perscription-day",
-        "Prescription day is defined as the number of dispensed medication per day"
+        "The total occurrence of co-prescription on the population level/perscription-day",
+        "The expected occurrence of co-prescription per person/perscription-day",
+        "Prescription day is defined as the number of dispensed medication per day",
+        "Multi-class co-prescription is defined as the co-prescription of medications from different ATC classification"
       )
     )
   ) |>
@@ -348,7 +349,7 @@ res_recon_stat |>
 ```
 
 ```{r fig-hi-eigen}
-#| fig-cap: Clusters of medication with a significant influence on how antidepressants and anxiolytics are prescribed
+#| fig-cap: Clusters of medication with a significant co-prescription patterns on antidepressant and anxiolytic dispensing
 #| fig-width: 9
 #| fig-height: 10
 
@@ -358,19 +359,19 @@ tar_read(plt_hi_eigen_box)
 
 # Discussion
 
-This network analysis of dispensing data in individuals using antidepressants or anxiolytics revealed distinct polypharmacy patterns between these groups. While same-class polypharmacy was more common among antidepressant users, multi-class polypharmacy predominated among those receiving anxiolytics. Notably, in both groups, multi-class polypharmacy was at least ten times more prevalent than same-class polypharmacy. Seven medication classes exhibited high eigenvector centrality, indicating their strong influence on co-prescription dynamics. These include medications for the alimentary tract and metabolism (ATC code `A`), blood and blood-forming organs (`B`), cardiovascular system (`C`), respiratory system (`R`), and analgesics (`N02`). These classes do not merely appear frequently but also serve as key connectors within prescribing networks, linking psychiatric treatments to chronic disease management. Their centrality suggests that they play a role in structuring multi-class polypharmacy, either as standard co-prescriptions due to clinical guidelines or as necessary adjuncts in managing comorbidities.
+This network analysis of dispensing data in individuals using antidepressants or anxiolytics revealed distinct co-prescription patterns between these groups. While same-class co-prescription was more common among antidepressant users, multi-class co-prescription predominated among those receiving anxiolytics. Notably, in both groups, multi-class co-prescription was at least ten times more prevalent than same-class co-prescription. Seven medication classes exhibited high eigenvector centrality, indicating their strong influence on co-prescription dynamics. These include medications for the alimentary tract and metabolism (ATC code `A`), blood and blood-forming organs (`B`), cardiovascular system (`C`), respiratory system (`R`), and analgesics (`N02`). These classes do not merely appear frequently but also serve as key connectors within prescribing networks, linking psychiatric treatments to chronic disease management. Their centrality suggests that they play a role in structuring multi-class co-prescription, either as standard co-prescriptions due to clinical guidelines or as necessary adjuncts in managing comorbidities.
 
 Our findings align with previous research showing that antidepressants and anxiolytics are frequently co-prescribed with other medications [@Shrivastava2013], and that multi-class regimens contribute most to psychopharmaca polypharmacy [@de2004polypharmacy]. Furthermore, there have been established bidirectional associations between depression/anxiety and chronic illnesses [@qi2024longitudinal]. Conditions such as diabetes mellitus, thyroid disorders, and asthma have been linked to an increased risk of depression [@jang2024temporal]. The need for long-term pharmacological management further drives co-prescription patterns. Additionally, chronic illness-related anxiety can contribute to heightened prescribing of anxiolytics [@lebel2020health]. This underscores the interconnected nature of psychopharmaca prescribing patterns and highlights the complexity of medication management in these populations.
 
-DPN complements traditional drug utilization analyses by capturing the structural properties of prescribing behaviors. Beyond evaluating individual drug utilization or basic pairwise co-prescriptions, DPN provides a structural perspective by mapping the interconnections between medications within a broader prescribing network [@Bazzoni2015]. The network approach is a particularly useful method for understanding complex prescribing dynamics, which allows for the identification of central medication classes that influence polypharmacy patterns. The high centrality of certain medication classes suggests they serve as critical connectors in treatment regimens, providing the basis for further monitoring and evaluation.
+DPN complements traditional drug utilization analyses by capturing the structural properties of prescribing behaviors. Beyond evaluating individual drug utilization or basic pairwise co-prescriptions, DPN provides a structural perspective by mapping the interconnections between medications within a broader prescribing network [@Bazzoni2015]. The network approach is a particularly useful method for understanding complex prescribing dynamics, which allows for the identification of central medication classes that influence co-prescription patterns. The high centrality of certain medication classes suggests they serve as critical connectors in treatment regimens, providing the basis for further monitoring and evaluation.
 
-By mapping the relationships between medications, DPN enables the detection of patterns that would be challenging to observe through standard statistical methods. For instance, the high centrality of certain medication classes suggests that they play a pivotal role in multi-class polypharmacy, likely due to their involvement in managing both psychiatric and non-psychiatric conditions. As such, network analysis is a suitable approach for generating hypothesis, which has also been thoroughly discussed by @Askar2021.
+By mapping the relationships between medications, DPN enables the detection of patterns that would be challenging to observe through standard statistical methods. For instance, the high centrality of certain medication classes suggests that they play a pivotal role in multi-class co-prescription, likely due to their involvement in managing both psychiatric and non-psychiatric conditions. As such, network analysis is a suitable approach for generating hypotheses for further causal or predictive studies, which has also been thoroughly discussed by @Askar2021.
 
 We acknowledge several limitations in this study. First, data aggregation at the population level resulted in the loss of individual-level information, limiting interpretation to population trends. Second, while the adjustment of weights based on DDD introduces a novel element to the analysis, it is important to note that DDD values are not always equal to one, as defined by the WHO ATC system. Our study adopted a DDD-based weighting approach to refine network edges, aligning with the recommendation of @Cavallo2012. The adjusted weighting penalizes values deviating significantly from 1, reducing their impact on the network. Future research should explore alternative weighting techniques, such as patient-level dosage adjustments, to enhance network precision.
 
-Despite the limitations, our study demonstrates the utility of DPN as a powerful, data-driven approach to analyzing medication dispensing data. By modelling intricate co-prescription patterns, DPN filters medication classes based on network properties, offering insights into prescribing behaviors. These insights can reveal important trends in medication use, which can be useful to public health monitoring. By capturing the complexity of drug prescription relationships, DPN holds significant potential to improve decision-making in both clinical and administrative contexts.
+Despite the limitations, our study demonstrates the utility of DPN as a powerful, data-driven approach to analyzing medication dispensing data. By modelling intricate co-prescription patterns, DPN filters medication classes based on network properties, offering insights into prescribing behaviors. These insights can reveal important trends in medication use, which can be useful to pharmaceutical reviews and public health monitoring. By capturing the complexity of drug prescription relationships, DPN holds significant potential to improve decision-making in both clinical and administrative contexts.
 
-Future DPN studies on individuals using antidepressants or anxiolytics should adopt a more fine-grained ATC classification to identify specific medications driving polypharmacy patterns within the currently identified seven medication classes. A more granular approach could reveal whether certain drugs disproportionately contribute to multi-class polypharmacy and whether these prescribing trends vary across patient demographics or healthcare settings. Such insights could refine our understanding of prescribing behaviors and inform targeted interventions for optimizing medication regimens.
+Future DPN studies on individuals using antidepressants or anxiolytics should adopt a more fine-grained ATC classification to identify specific medications driving co-prescription patterns within the currently identified seven medication classes. A more granular approach could reveal whether certain drugs disproportionately contribute to multi-class co-prescription and whether these prescribing trends vary across patient demographics or healthcare settings. Such insights could refine our understanding of prescribing behaviors and inform targeted interventions for optimizing medication regimens.
 
 ::: {.content-hidden}
 - Following @Cavallo2012, the weight of the adjacency matrix was the frequency of co-prescriptions or single prescriptions. We adjusted the weight to account for varying prescription dosages, alleviating previous limitation where the DDD was restricted to 1 [@Cavallo2012].
