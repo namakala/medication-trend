@@ -51,20 +51,48 @@ options(digits = 2)
 
 ```{r fig-period-day}
 #| fig-width: 14
-#| fig-height: 5
+#| fig-height: 8
 #| fig-cap: Daily cyclical pattern captured on a de-trended data
 
 tar_read(plt_period_day)[[1]]
 
 ```
 
+\pagebreak
+
+## Daily ACF and PACF plots
+
+```{r fig-season-day}
+#| fig-width: 14
+#| fig-height: 8
+#| fig-cap: Daily cyclical pattern captured on a de-trended data
+
+tar_read(plt_acf_day)[[4]]
+tar_read(plt_pacf_day)[[4]]
+
+```
+
+\pagebreak
+
+## Weekly ACF and PACF plots
+
+```{r fig-season-week}
+#| fig-width: 14
+#| fig-height: 8
+#| fig-cap: Daily cyclical pattern captured on a de-trended data
+
+tar_read(plt_acf_week)[[4]]
+tar_read(plt_pacf_week)[[4]]
+
+```
+
 \normalpapersize
 
-## Time-series decomposition
+## Time-series decomposition of medication dispensing records
 
 ```{r}
 #| fig-width: 16
-#| fig-height: 12
+#| fig-height: 9
 #| fig-pos: H
 #| fig-cap: Time-series decomposition using singular spectrum analysis-based approach
 

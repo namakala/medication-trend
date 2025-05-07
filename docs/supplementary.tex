@@ -278,9 +278,12 @@ possible \(L\) to capture all patterns, which is conveniently defined as
 \(L = \frac{N}{2}\). The decomposed series and its corresponding
 original data is then extracted from the model alongside all of the
 oscillating functions which contributes to complex seasonality. The
-original data, trend, residuals, and oscillating functions are plotted
-for further inspection. The original data and trend is further evaluated
-using Mann-Kendall trend test.
+oscillatory components extracted from SSA correspond to harmonics,
+namely a distinct periodic signals with different frequencies. These
+harmonics form complex seasonality and captured in pairs of
+eigentriples. The original data, trend, residuals, and oscillating
+functions are plotted for further inspection. The original data and
+trend is further evaluated using Mann-Kendall trend test.
 
 \uselandscape
 
@@ -302,9 +305,70 @@ de-trended data}
 
 \end{figure}%
 
+\pagebreak
+
+\subsection{Daily ACF and PACF plots}\label{daily-acf-and-pacf-plots}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{supplementary_files/figure-pdf/fig-season-day-1.pdf}
+
+}
+
+\caption{\label{fig-season-day-1}Daily cyclical pattern captured on a
+de-trended data}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{supplementary_files/figure-pdf/fig-season-day-2.pdf}
+
+}
+
+\caption{\label{fig-season-day-2}Daily cyclical pattern captured on a
+de-trended data}
+
+\end{figure}%
+
+\pagebreak
+
+\subsection{Weekly ACF and PACF plots}\label{weekly-acf-and-pacf-plots}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{supplementary_files/figure-pdf/fig-season-week-1.pdf}
+
+}
+
+\caption{\label{fig-season-week-1}Daily cyclical pattern captured on a
+de-trended data}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{supplementary_files/figure-pdf/fig-season-week-2.pdf}
+
+}
+
+\caption{\label{fig-season-week-2}Daily cyclical pattern captured on a
+de-trended data}
+
+\end{figure}%
+
 \normalpapersize
 
-\subsection{Time-series decomposition}\label{time-series-decomposition}
+\subsection{Time-series decomposition of medication dispensing
+records}\label{time-series-decomposition-of-medication-dispensing-records}
 
 \begin{figure}[H]
 

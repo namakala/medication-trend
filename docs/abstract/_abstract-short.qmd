@@ -1,14 +1,14 @@
 **Background:**
-Drug prescription networks (DPNs) model the temporal dynamics of medication co-prescription within a population. Understanding these networks can provide insights into polypharmacy and prescribing behaviors.  
+Drug prescription networks (DPNs) model the temporal dynamics of medication co-prescription within a population. Understanding prescription networks can provide insights into prescribing behaviors.  
 
 **Objectives:**
-This study assesses the structural characteristics of temporal DPNs derived from daily co-prescriptions of antidepressants, anxiolytics, and other therapeutic drug classes. By analyzing these networks using eigenvector centrality, we identify influential medications and prescribing patterns.  
+This study assesses the characteristics of temporal DPNs derived from daily co-prescriptions of antidepressants, anxiolytics, and all other therapeutic drug classes. By analyzing these networks using eigenvector centrality, we identified influential medications and prescribing patterns.  
 
 **Methods:**
-We utilized the IADB.nl database, including prescriptions from 128 Dutch pharmacies (2018–2022). A closed cohort of patients prescribed antidepressants/anxiolytics was extracted. Medications were classified using the Anatomical Therapeutic Chemical (ATC) system into 24 therapeutic classes. Time-varying DPNs were constructed as undirected graphs using symmetric daily dose-adjusted co-prescriptions. Eigenvector centrality ($c_e$) quantified relative nodal importance. Weekly-aggregated data included prescriptions ($n_c$), number of patients, claim-to-patient ratio, and eigenvector centrality. Singular spectrum analysis decomposed trends.  
+Data were obtained from the University of Groningen IADB.nl database, including prescriptions from 128 Dutch pharmacies (2018–2022). A static cohort of patients prescribed antidepressants (ATC `N06A`) / anxiolytics (`N05B`) was extracted. Medications were classified using the Anatomical Therapeutic Chemical (ATC) system into 24 therapeutic classes. Time-varying DPNs were constructed as undirected graphs using symmetric daily dose-adjusted co-prescriptions. Eigenvector centrality ($c_e$) quantified relative nodal importance. Weekly-aggregated data included prescriptions ($n_c$), number of patients, dispensing-to-patient ratio, and eigenvector centrality. Singular spectrum analysis decomposed trends.  
 
 **Results:**
-Antidepressants (ATC `N06A`, $c_e$: `r N06A$ce`, $n_c$: `r N06A$nc`) and anxiolytics (`N05B`, $c_e$: `r N05B$ce`, $n_c$: `r N05B$nc`) had high eigenvector centrality, indicating frequent co-prescription. Additional high-centrality groups included medications for alimentary and metabolism (`A01-A16`), blood (`B01-B06`), cardiovascular (`C01-C10`), analgesics (`N02`), and respiratory (`R01-R07`).  
+Antidepressants ($c_e$: `r N06A$ce`, $n_c$: `r N06A$nc`) and anxiolytics ($c_e$: `r N05B$ce`, $n_c$: `r N05B$nc`) had high eigenvector centrality, indicating frequent co-prescription. Additional high-centrality groups included medications for alimentary and metabolism (`A01-A16`), blood (`B01-B06`), cardiovascular (`C01-C10`), analgesics (`N02`), and respiratory diseases (`R01-R07`).  
 
 **Discussion:**
-DPNs reveal key polypharmacy patterns. High-centrality medications highlight potential targets for drug monitoring. This approach aids in identifying influential medications and refining prescribing oversight.  
+DPNs revealed key co-prescription patterns. High-centrality medications highlight potential targets for drug monitoring.  
