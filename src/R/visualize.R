@@ -365,14 +365,23 @@ vizReconSsa <- function(tidy_recon, ...) {
   #' @param tidy_recon A tidy data frame obtained from `tidyReconSsa`
   #' @return A GGPlot2 object
   require("ggplot2")
+  require("tsibble")
   
   # Separate oscillating functions + noise from the rest
   id      <- grepl(x = tidy_recon$component, "^F")
   tbl_fun <- subset(tidy_recon, id)
   resid   <- tidy_recon %>% subset(.$component == "Residuals")
-  tbl     <- tidy_recon %>%
+  ts      <- tidy_recon %>%
     subset(!{id | .$component == "Residuals"}) %>%
     tidyr::pivot_wider(names_from = component, values_from = value)
+
+  # Reconstruct the time series based on the trend, F1, and F2
+  recon <- genReconTs(tidy_recon, n = 2, detrend = FALSE, widen = FALSE)
+
+  # Merge the time-series and its reconstructed data points
+  tbl <- ts |>
+    dplyr::inner_join(recon, by = c("metric", "date", "group")) |>
+    dplyr::rename("Recon" = value)
 
   # Set labels and colors
   med <- unique(tidy_recon$group)
@@ -385,16 +394,16 @@ vizReconSsa <- function(tidy_recon, ...) {
     date_breaks = "1 month", date_labels = "%b %Y", expand = expansion(add = c(10, 30))
   )
 
-  # Plot for original and trend
+  # Plot for original and the reconstructed data
   plt1 <- ggplot(tbl, aes(x = date)) +
     geom_point(aes(y = Original), color = colors$black, alpha = 0.4, size = 2, shape = 18) +
-    geom_line(aes(y = Original, color = "Data"), alpha  = 0.2, linewidth = 1.2) +
-    geom_line(aes(y = Trend, color = "Reconstructed"), alpha  = 0.8, linewidth = 2) +
+    geom_line(aes(y = Original, color = "Original Data"), alpha  = 0.2, linewidth = 1.2) +
+    geom_line(aes(y = Recon, color = "Reconstructed Series"), alpha  = 0.8, linewidth = 2) +
     labs(title = plt_title, x = "", y = "") +
     scale_date +
     scale_color_manual(
       name = "",
-      values = c("Data" = colors$black, "Reconstructed" = colors$green),
+      values = c("Original Data" = colors$black, "Reconstructed Series" = colors$green),
       guide = guide_legend(override.aes = aes(fill = NA))
     ) +
     ggpubr::theme_pubclean() +

@@ -5,6 +5,7 @@ title: >
 format:
   elsevier-pdf:
     keep-tex: true
+    keep-md: true
     include-in-header:
       file: _header.tex
     journal:
@@ -74,7 +75,17 @@ Node centrality measures, such as eigenvector centrality, quantify the importanc
 
 ## Graph theory
 
-Mathematically, a graph $\mathcal{G}$ is a pair $\mathcal{G} = (\mathcal{V}, \mathcal{E})$, where $\mathcal{V}$ is the set of nodes and $\mathcal{E}$ is the set of edges. In a DPN, the node set $\mathcal{V} = \{\mathcal{v}_1, \mathcal{v}_2, \dots, \mathcal{v}_n\}$ represents a finite set of $n$ medications. Additionally, $\mathcal{E}$ is a finite set of edges, where each edge is a pair of nodes that corresponds to a co-prescription. In an undirected graph, the order of $i, j$ does not matter. Typically, undirected graphs do not contain self connections, $\{\mathcal{v}_i, \mathcal{v}_i\} \notin \mathcal{E}$ [@estrada2012structure].
+Mathematically, a simple undirected graph $\mathcal{G}$ is a pair $\mathcal{G} = (\mathcal{V}, \mathcal{E})$, where $\mathcal{V} = \left(1, \dots, n \right)$ is the set of nodes and $\mathcal{E} = \left(\{j, k\} \ | \ j, k \in \mathcal{V}, \ j \neq k \right)$ is the finite set of edges with $\{j, k\} = \{k, j\}$. The adjacency matrix $A \in \{0, 1\}^{n \times n}$ of a simple undirected graph $\mathcal{G}$ with $\mathcal{V}$ nodes is a square symmetric matrix of dimension $n \times n$ defined as @eq-graph-theory, with $A_{jk} = A_{kj}$ for all $j, k \in \mathcal{V}$ where $j \neq k$. For each day $t = \left(1, \dots, T \right)$ and each individual $p = \left(1, \dots, P \right)$, the adjacency matrix represented a simple undirected graph.
+
+$$
+A_{jk} = 
+\begin{cases}
+1 & \text{if } \{j, k\} \in \mathcal{E} \\
+0 & \text{otherwise}
+\end{cases}
+$$ {#eq-graph-theory}
+
+In a DPN, the node set $\mathcal{V} = \{\mathcal{v}_1, \mathcal{v}_2, \dots, \mathcal{v}_n\}$ represents a finite set of $n$ medications. Additionally, $\mathcal{E}$ is a finite set of edges, where each edge is a pair of nodes that corresponds to a co-prescription. In an undirected graph, the order of $i, j$ does not matter. Typically, undirected graphs do not contain self connections, $\{\mathcal{v}_i, \mathcal{v}_i\} \notin \mathcal{E}$ [j].
 
 A graph can be represented as an adjacency matrix $A$. The adjacency matrix $A$ has dimensions of $|\mathcal{V}| \times |\mathcal{V}|$, where $|\mathcal{V}|$ is the number of nodes in a graph. Each element of $A_{ij}$ is the edge, where in an unweighted graph, $A_{ij} = 1$ if a connection exists between $\mathcal{v}_i$ and $\mathcal{v}_j$, and $A_{ij} = 0$ otherwise. In a weighted graph, $A_{ij}$ can take any real value ($A_{ij} \in \mathbb{R}$) depending on the application [@estrada2012structure].
 
@@ -247,11 +258,11 @@ tar_read(res_tbl_poly) |>
     part = "header",
     value = flextable::as_paragraph(
       c(
-        "The total occurrence of co-prescription on the population level/perscription-day",
-        "The expected occurrence of co-prescription per person/perscription-day",
-        "The overall number of medications a patient uses, including those prescribed for multiple psychiatric symptom clusters as well as for comorbid non-psychiatric conditions",
-        "Prescription day is defined as the number of dispensed medication per day",
-        "Multi-class co-prescription is defined as the co-prescription of medications from different ATC classification"
+        "The total occurrence of co-prescription on the population level/prescription-day.",
+        "The expected occurrence of co-prescription per person/prescription-day.",
+        "The overall number of medications a patient uses, including those prescribed for multiple psychiatric symptom clusters as well as for comorbid non-psychiatric conditions.",
+        "Prescription day is defined as the number of dispensed medication per day.",
+        "Multi-class co-prescription is defined as the co-prescription of medications from different ATC classification."
       )
     )
   ) |>
@@ -346,8 +357,20 @@ res_recon_stat |>
     colwidths = c(2, 3),
     top       = TRUE
   ) |>
+  flextable::footnote(
+    i = 2,
+    j = c(4, 5),
+    ref_symbols = c("1", "2"),
+    part = "header",
+    value = flextable::as_paragraph(
+      c(
+        "Defined Daily Dose, representing the assumed average maintenance dose per day for a drug used for its main indication in adults (WHO definition).",
+        "Edge weight assigned to each medication class in the drug prescription network, reflecting the strength of co-prescription connections (see Methods: Data pre-processing to build the data matrix)."
+      )
+    )
+  ) |>
   flextable::align(align = "center", part = "all") |>
-  flextable::align(j = 1, align = "left", part = "body") |>
+  flextable::align(j = 1, align = "left", part = "all") |>
   #flextable::font(fontname = "Times", part = "all") |>
   flextable::fontsize(size = 7, part = "all") |>
   flextable::autofit(add_w = 0, add_h = 0) |>

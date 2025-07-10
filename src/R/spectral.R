@@ -186,7 +186,7 @@ bindReconSsa <- function(ts_list) {
   return(tbl)
 }
 
-genReconTs <- function(tbl, n = 2, detrend = FALSE) {
+genReconTs <- function(tbl, n = 2, detrend = FALSE, widen = TRUE) {
   #' Generate Reconstructed Time Series
   #'
   #' Generate a reconstructed time series based on trend and n number of
@@ -201,6 +201,7 @@ genReconTs <- function(tbl, n = 2, detrend = FALSE) {
   #' = 2.
   #' @param detrend A boolean indicating whether to return a detrended series
   #' or not
+  #' @param widen Will return a wide table when set to `TRUE`
   #' @return A tidy time series
   require("tsibble")
 
@@ -227,8 +228,11 @@ genReconTs <- function(tbl, n = 2, detrend = FALSE) {
     subset(id) %>%
     dplyr::group_by(metric, date, group) %>%
     dplyr::summarize("value" = sum(value)) %>%
-    tidyr::pivot_wider(names_from = metric, values_from = value) %>%
     dplyr::ungroup()
+
+  if (widen) {
+    tbl %<>% tidyr::pivot_wider(names_from = metric, values_from = value)
+  }
 
   ts <- tbl %>% tsibble::as_tsibble(key = group, index = date)
 
