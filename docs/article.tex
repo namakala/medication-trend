@@ -4,7 +4,7 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-  authoryear,
+  number,
   review]{elsarticle}
 
 \usepackage{amsmath,amssymb}
@@ -164,9 +164,10 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+\journal{International Journal of Epidemiology}
 
 \usepackage[]{natbib}
-\bibliographystyle{elsarticle-harv}
+\bibliographystyle{elsarticle-num-names}
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -244,7 +245,7 @@ networks using eigenvector centrality, we identify influential
 medications and prescribing patterns.
 
 \textbf{Methods:} We utilized the IADB.nl database, including
-prescriptions from 128 Dutch pharmacies (2018--2022). A closed cohort of
+prescriptions from 128 Dutch pharmacies (2018--2022). A cohort of
 patients prescribed antidepressants/anxiolytics was extracted.
 Medications were classified using the Anatomical Therapeutic Chemical
 (ATC) system into 24 therapeutic classes. Time-varying DPNs were
@@ -254,18 +255,20 @@ nodal importance. Weekly-aggregated data included prescriptions
 (\(n_c\)), number of patients, claim-to-patient ratio, and eigenvector
 centrality. Singular spectrum analysis decomposed trends.
 
-\textbf{Results:} Antidepressants (ATC \texttt{N06A}, \(c_e\): 0.09,
-\(n_c\): 28,993) and anxiolytics (\texttt{N05B}, \(c_e\): 0.04, \(n_c\):
-14,061) had high eigenvector centrality, indicating frequent
-co-prescription. Additional high-centrality groups included medications
-for alimentary and metabolism (\texttt{A01-A16}), blood
-(\texttt{B01-B06}), cardiovascular (\texttt{C01-C10}), analgesics
-(\texttt{N02}), and respiratory (\texttt{R01-R07}).
+\textbf{Results:} Antidepressants (\(c_e\): 0.09, \(n_c\): 28,993) and
+anxiolytics (\(c_e\): 0.05, \(n_c\): 14,061) had high eigenvector
+centrality, demonstrating frequent co-prescription. Other ATC groups
+with high centrality included those for the alimentary tract and
+metabolism (\texttt{A01-A16}), blood and blood-forming organs
+(\texttt{B01-B06}), cardiovascular system (\texttt{C01-C10}),
+respiratory system (\texttt{R01-R07}), and analgesics (\texttt{N02}).
 
-\textbf{Discussion:} DPNs reveal key polypharmacy patterns.
+\textbf{Discussion:} DPNs revealed key co-prescription patterns.
 High-centrality medications highlight potential targets for drug
-monitoring. This approach aids in identifying influential medications
-and refining prescribing oversight.
+monitoring, such as identifying co-prescription trends that may warrant
+evaluation for safety, appropriateness, or policy oversight. This
+approach aids in identifying influential medications and refining
+prescribing oversight.
 \end{abstract}
 
 
@@ -282,22 +285,18 @@ Registry \sep Co-prescription \sep Mental Health \sep
 
 \section{Introduction}\label{introduction}
 
-The inherently complex nature of health-related phenomena have fueled
-the growing implementation of network analysis, making it an important
-research framework in medicine and epidemiology \citep{Luke2007}. Past
-implementations of network analysis in public health mostly focused on
-transmission network, social network, and organizational network. Only
-recently, \citet{Cavallo2012} demonstrated a novel framework to describe
-medication use on a population level, i.e.~drug prescription network
-(DPN), a term which later is coined by \citet{Bazzoni2015}. Network
-analysis and graph theory offer an approach to model the relationship
-among building blocks of a complex system. From a complex system
-standpoint, polypharmacy is a prescription of multiple drug combinations
-which can be modelled as a network \citep{Miglio2021}. DPN can capture
-the complex relationships of a system that may vary over time, which is
-highly relevant to drugs prescribed for mental disorders.
+The complexity of health-related phenomena has led to the growing
+application of network analysis in medicine and epidemiology
+\citep{Luke2007, Miglio2021}. Graph theory provides the mathematical
+foundation for network analysis, offering an approach to study the
+relationships among the entities of a complex system. The early
+implementations of network analysis focused primarily on transmission,
+social, and organizational networks. More recently, \citet{Cavallo2012}
+introduced drug prescription networks (DPNs) to model population-level
+drug prescription data. \citet{Bazzoni2015} formalized the term,
+emphasizing its utility in understanding polypharmacy.
 
-In psychiatry, polypharmacy is defined as a patient with at least two
+Psychiatric polypharmacy is defined as a patient with at least two
 concurrent psychiatric medications \citep{Shrivastava2013}. With a
 prevalence between 13-90\%, psychiatric polypharmacy manifests in five
 categories, namely same-class, multi-class, adjunctive, augmentation,
@@ -328,7 +327,28 @@ the structural characteristics of a DPN using both local
 (medication-level) and global (network-level) graph measures provides
 insights into co-prescription dynamics.
 
-Node centrality measures, such as eigenvector centrality, quantify the
+A DPN for an individual on a given day can be formalized as a simple
+undirected graph where medications correspond to nodes, and edges
+connecting pairs of nodes represent co-prescription relationships
+between medications \citep{Cavallo2012}. Typically, simple undirected
+graphs are represented by a square symmetric matrix with zeros on the
+diagonal called the adjacency matrix \citep{estrada2012structure}. In
+the adjacency matrix of the individual-level DPN, nonzero off-diagonal
+elements correspond to two medications being co-prescribed on a given
+day.
+
+A population-level DPN on a given day can be constructed from
+individual-level DPNs through matrix addition of the corresponding
+adjacency matrices \citep{Cavallo2012}. A DPN at the population level on
+a given day is then formulated as a weighted undirected graph, which is
+characterized by a weighted adjacency matrix with weights equal to the
+counts of medication co-prescription occurrences. Therefore, analyzing
+the structural characteristics of a DPN over time using both local
+(medication-level) and global (network-level) graph measures offers
+valuable insights into co-prescription dynamics and can deepen our
+understanding of polypharmacy.
+
+Local network statistics, such as node centrality measures, quantify the
 importance of a medication in polypharmacy patterns \citep{Askar2021}.
 Addressing concerns about standardized polypharmacy indicators raised by
 \citet{Sirois2016} and \citet{Delara2022}, we highlight eigenvector
@@ -373,20 +393,20 @@ antidepressants at least once in the time span from 2018 to 2022.
 Mathematically, a simple undirected graph \(\mathcal{G}\) is a pair
 \(\mathcal{G} = (\mathcal{V}, \mathcal{E})\), where
 \(\mathcal{V} = \left(1, \dots, n \right)\) is the set of nodes and
-\(\mathcal{E} = \left(\{j, k\} \ | \ j, k \in \mathcal{V}, \ j \neq k \right)\)
-is the finite set of edges with \(\{j, k\} = \{k, j\}\). The adjacency
+\(\mathcal{E} = \left(\{i, j\} \ | \ i, j \in \mathcal{V}, \ i \neq j \right)\)
+is the finite set of edges with \(\{i, j\} = \{j, i\}\). The adjacency
 matrix \(A \in \{0, 1\}^{n \times n}\) of a simple undirected graph
 \(\mathcal{G}\) with \(\mathcal{V}\) nodes is a square symmetric matrix
 of dimension \(n \times n\) defined as Equation~\ref{eq-graph-theory},
-with \(A_{jk} = A_{kj}\) for all \(j, k \in \mathcal{V}\) where
-\(j \neq k\). For each day \(t = \left(1, \dots, T \right)\) and each
+with \(A_{ij} = A_{ji}\) for all \(i, j \in \mathcal{V}\) where
+\(i \neq j\). For each day \(t = \left(1, \dots, T \right)\) and each
 individual \(p = \left(1, \dots, P \right)\), the adjacency matrix
-represented a simple undirected graph.
+represented a simple undirected graph \citep{estrada2012structure}.
 
 \begin{equation}\phantomsection\label{eq-graph-theory}{
-A_{jk} = 
+A_{ij} = 
 \begin{cases}
-1 & \text{if } \{j, k\} \in \mathcal{E} \\
+1 & \text{if} \{i, j\} \in \mathcal{E} \\
 0 & \text{otherwise}
 \end{cases}
 }\end{equation}
@@ -400,36 +420,27 @@ order of \(i, j\) does not matter. Typically, undirected graphs do not
 contain self connections,
 \(\{\mathcal{v}_i, \mathcal{v}_i\} \notin \mathcal{E}\) {[}j{]}.
 
-A graph can be represented as an adjacency matrix \(A\). The adjacency
-matrix \(A\) has dimensions of \(|\mathcal{V}| \times |\mathcal{V}|\),
-where \(|\mathcal{V}|\) is the number of nodes in a graph. Each element
-of \(A_{ij}\) is the edge, where in an unweighted graph, \(A_{ij} = 1\)
-if a connection exists between \(\mathcal{v}_i\) and \(\mathcal{v}_j\),
-and \(A_{ij} = 0\) otherwise. In a weighted graph, \(A_{ij}\) can take
-any real value (\(A_{ij} \in \mathbb{R}\)) depending on the application
-\citep{estrada2012structure}.
-
 \subsection{Data pre-processing to build the data
 matrix}\label{data-pre-processing-to-build-the-data-matrix}
 
 At the individual level, each patient's daily prescription record at
-time \(t\) was encoded into a square matrix \(A_t^{(i)}\), where rows
+time \(t\) was encoded into a square matrix \(A_t^{(p)}\), where rows
 and columns represent medication classes according to the ATC
-classification. An off-diagonal entry \(A_{t_{jk}}^{(i)} = 1\) indicates
-that medication classes \(j\) and \(k\) were co-prescribed on the same
-day for individual \(i\), while a diagonal entry
-\(A_{t_{jj}}^{(i)} = 1\) captures the presence of a single prescription
-of medication \(j\). To derive the population-level DPN, all
-individual-level daily prescription matrix \(A^{(i)}\) were aggregated
+classification. An off-diagonal entry \(A_{t_{ij}}^{(p)} = 1\) indicates
+that medication classes \(i\) and \(j\) were co-prescribed on the same
+day for individual \(p\), while a diagonal entry
+\(A_{t_{ii}}^{(p)} = 1\) captures the presence of a single prescription
+of medication \(i\). To derive the population-level DPN, all
+individual-level daily prescription matrix \(A^{(p)}\) were aggregated
 by computing their element-wise sum.
 
-\begin{equation}\phantomsection\label{eq-DPN}{A_t = \displaystyle \sum_i A_t^{(i)}}\end{equation}
+\begin{equation}\phantomsection\label{eq-DPN}{A_t = \displaystyle \sum_i A_t^{(p)}}\end{equation}
 
 The population matrix \(A_t\) captures the frequency of co-prescriptions
 (off-diagonal) and single prescriptions (diagonal) across the dataset at
-the specified time \(t\). Each element \(A_{t_{jk}}\) in the matrix was
+the specified time \(t\). Each element \(A_{t_{ij}}\) in the matrix was
 interpreted as the number of patients being prescribed with medication
-classes \(j\) and \(k\) on the same day \(t\). \(A_t\) was represented
+classes \(i\) and \(j\) on the same day \(t\). \(A_t\) was represented
 as a weighted undirected graph, where each node corresponds to a
 medication class and edges reflect co-prescription frequencies. In the
 original work of DPN, all defined daily dose (DDD) were assumed equal to
@@ -445,7 +456,7 @@ for a gradual reduction in weight as DDD deviates from 1.
 
 \begin{equation}\phantomsection\label{eq-weighted-DDD}{\omega_j = \frac{1}{\frac{\omega_B}{3} \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{DDD - \omega_B}{\omega_B/3}\right)^2}}\end{equation}
 
-The edge weight between medication classes \(j\) and \(k\) was computed
+The edge weight between medication classes \(i\) and \(j\) was computed
 as the average of their individual weights:
 
 \begin{equation}\phantomsection\label{eq-regularize-mtx}{
@@ -524,8 +535,8 @@ analysis}\label{exploratory-descriptive-analysis}
 
 The data was extracted as a daily time series and aggregated into weekly
 and monthly intervals for analysis. It includes four metrics: daily
-medication claims, daily patients, claim-to-patient ratio, and
-eigenvector centrality. For each metric, a univariate descriptive
+prescription dispensing, daily patients, dispensing-to-patient ratio,
+and eigenvector centrality. For each metric, a univariate descriptive
 analysis was performed, reporting the mean, median, standard deviation,
 and interquartile range to summarize centrality and dispersion.
 
@@ -1290,17 +1301,18 @@ centrality if they are co-prescribed with less central or sparsely
 connected drug classes.
 
 The predomination of multi-class co-prescription among anxiolytics
-recipients is consistent with the recommendations in the Dutch
-Huisartsengenootschap {[}NHG; \citet{NHG2019Anxiety}{]}. Specifically,
-the NHG guideline for anxiety disorders advises short-term
-benzodiazepine use, limited to two to four weeks, as an adjunct to
-Selective Serotonin Reuptake Inhibitors (SSRIs) during treatment
-initiation. In contrast, the NHG guideline for depressive disorders
-recommends initiating pharmacotherapy with a single SSRI and discourages
-the combination of multiple antidepressants \citep{NHG2023Depression}.
-Therefore, the higher rate of multi-class co-prescription observed among
-anxiolytic users is consistent with evidence-based clinical practice,
-rather than an artifact of sampling or measurement methods.
+recipients is consistent with the recommendations in the Dutch College
+of General Practitioner (\emph{Nederlands Huisartsen Genootschap}/NHG)
+\citep{NHG2019Anxiety}. Specifically, the NHG guideline for anxiety
+disorders advises short-term benzodiazepine use, limited to two to four
+weeks, as an adjunct to Selective Serotonin Reuptake Inhibitors (SSRIs)
+during treatment initiation. In contrast, the NHG guideline for
+depressive disorders recommends initiating pharmacotherapy with a single
+SSRI and discourages the combination of multiple antidepressants
+\citep{NHG2023Depression}. Therefore, the higher rate of multi-class
+co-prescription observed among anxiolytic users is consistent with
+evidence-based clinical practice, rather than an artifact of sampling or
+measurement methods.
 
 Our findings also align with previous research showing that
 antidepressants and anxiolytics are frequently co-prescribed with other

@@ -327,9 +327,9 @@ list(
   tar_map(
     unlist = TRUE,
     values = tibble::tibble(
-      "varname" = c("n_claim", "eigen"), "scales" = c("free_y", "fixed")
+      "varname" = c("n_claim", "eigen")
     ),
-    tar_target(plt_dot_recon, vizDot(ts_recon, y = varname, scales = scales, nrow = 4))
+    tar_target(plt_dot_recon, vizDot(ts_recon, y = varname, scales = "free_y", nrow = 4))
   ),
 
   # Compare time-series models and produce a model evaluation table
@@ -367,6 +367,7 @@ list(
   tar_quarto(report_spectral, "docs", profile = "spectral", priority = 0),
   tar_quarto(article, "docs/article.qmd"),
   tar_quarto(supplementary, "docs/supplementary.qmd"),
+  tar_quarto(cover_letter_ije, "docs/submission/cover-letter-ije.md"),
   tar_quarto(readme, "README.qmd", priority = 0)
 
 )

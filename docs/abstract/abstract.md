@@ -7,14 +7,14 @@ Jörg, Talitha L. Feenstra
 **Background:** Networks have been used in different scientific fields
 to model complex systems. In medicine and epidemiology, drug
 prescription networks (DPN) have been proposed as a modeling tool for
-studying the temporal dynamics of medication distribution and
-consumption within a population.
+studying the temporal dynamics of medication co-prescription within a
+population.
 
 **Objectives:**  
-Evaluate the structural properties of temporal DPNs that are constructed
-from the observed daily co-prescriptions between treatments for mental
-health problems and other drug therapies in a pharmacy dispensing
-database.
+This study aims to assess the structural characteristics of temporal
+DPNs, derived from daily co-prescriptions between treatments for mental
+health conditions and other therapeutic drug classes, as recorded in
+pharmacy dispensing database.
 
 **Methods:** For exploratory time series analysis, and network
 construction, we utilized the IADB.nl database that collects
@@ -36,14 +36,14 @@ performed to decompose the data into its constituting trend, harmonics,
 and noise components.
 
 **Results:** Antidepressants (ATC `N06A`, $c_e$: 0.09, $n_c$: 28,993)
-and anxiolytics (`N05B`, $c_e$: 0.04, $n_c$: 14,061) are psychopharmaca
+and anxiolytics (`N05B`, $c_e$: 0.05, $n_c$: 14,061) are psychopharmaca
 with high eigenvector centrality. These classes of medication are likely
 to be co-prescribed apart from other medications. Further groups with
 high eigenvector centrality were medications for alimentary and
-metabolism (`A01-A16`, $c_e$: 0.21, $n_c$: 53,602), blood (`B01-B06`,
-$c_e$: 0.08, $n_c$: 13,310), cardiovascular (`C01-C10`, $c_e$: 0.19,
-$n_c$: 44,802), analgesics (`N02`, $c_e$: 0.05, $n_c$: 13,847), and
-respiratory (`R01-R07`, $c_e$: 0.09, $n_c$: 25,034). Among the seven
+metabolism (`A01-A16`, $c_e$: 0.16, $n_c$: 53,602), blood (`B01-B06`,
+$c_e$: 0.09, $n_c$: 13,310), cardiovascular (`C01-C10`, $c_e$: 0.15,
+$n_c$: 44,802), analgesics (`N02`, $c_e$: 0.06, $n_c$: 13,847), and
+respiratory (`R01-R07`, $c_e$: 0.1, $n_c$: 25,034). Among the seven
 medication groups with high eigenvector centrality, only antidepressants
 showed a positive time trend for both eigenvector centrality and actual
 number of claims.

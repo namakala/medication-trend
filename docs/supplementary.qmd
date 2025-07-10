@@ -17,9 +17,6 @@ format:
       - outer=3cm
       - top=2cm
       - bottom=2.5cm
-  docx:
-    pandoc-options: ["--mathml"]
-    output-file: iadb-network-analysis-supplementary.docx
 
 metadata-files:
   - _author.yml
@@ -86,15 +83,57 @@ tar_read(plt_pacf_week)[[4]]
 
 ```
 
+## Time-series decomposition of medication dispensing records
+
+```{r}
+#| fig-width: 14
+#| fig-height: 8
+#| fig-cap: Reconstructed time series data using the SSA-based approach
+
+tar_read(plt_dot_recon_n_claim)
+tar_read(plt_dot_recon_eigen)
+
+```
+
 \normalpapersize
 
-## Time-series decomposition of medication dispensing records
+```{r tbl-trend}
+#| tbl-cap: Trend of medication uses alongside its measure of relative importance
+
+prettyRound <- function(x, ...) {
+  x %<>% round(...) %>% {ifelse(. == 0, "<0.001", as.character(.))}
+}
+
+fnote <- "The statistics were obtained from Mann-Kendall trend test, where positive result signifies a positive slope"
+
+tar_read(decom_ssa) %>%
+  subset(.$component %in% c("Original", "Trend") & .$metric != "claim2patient") %>%
+  tibble::tibble() %>%
+  dplyr::group_by(metric, group, component) %>%
+  dplyr::group_modify(~trend::mk.test(.x$value) %>% broom::tidy()) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    "Mann-Kendall" = sprintf(
+      "%s (p %s)", prettyRound(statistic, 2), prettyRound(p.value, 3)
+    )
+  ) %>%
+  subset(select = -c(statistic:alternative)) %>%
+  tidyr::pivot_wider(names_from = metric, values_from = `Mann-Kendall`) %>%
+  tidyr::pivot_wider(names_from = component, values_from = eigen:n_claim) %>%
+  set_colnames(c("ATC Group", rep(c("Original", "Trend"), 2))) %>%
+  knitr::kable(longtable = TRUE, booktabs = TRUE) %>%
+  kableExtra::kable_styling(latex_options = "repeat_header") %>%
+  kableExtra::add_header_above(c(" " = 1, "Eigenvector Centrality" = 2, "Prescription Dispensing" = 2)) %>%
+  kableExtra::add_footnote(fnote, notation = "none")
+
+```
 
 ```{r}
 #| fig-width: 16
 #| fig-height: 9
 #| fig-pos: H
 #| fig-cap: Time-series decomposition using singular spectrum analysis-based approach
+#| eval: FALSE
 
 tar_read(plt_ssa_recon_n_claim)[[1]]
 tar_read(plt_ssa_recon_n_claim)[[2]]
@@ -119,6 +158,31 @@ tar_read(plt_ssa_recon_n_claim)[[21]]
 tar_read(plt_ssa_recon_n_claim)[[22]]
 tar_read(plt_ssa_recon_n_claim)[[23]]
 tar_read(plt_ssa_recon_n_claim)[[24]]
+
+tar_read(plt_ssa_recon_eigen)[[1]]
+tar_read(plt_ssa_recon_eigen)[[2]]
+tar_read(plt_ssa_recon_eigen)[[3]]
+tar_read(plt_ssa_recon_eigen)[[4]]
+tar_read(plt_ssa_recon_eigen)[[5]]
+tar_read(plt_ssa_recon_eigen)[[6]]
+tar_read(plt_ssa_recon_eigen)[[7]]
+tar_read(plt_ssa_recon_eigen)[[8]]
+tar_read(plt_ssa_recon_eigen)[[9]]
+tar_read(plt_ssa_recon_eigen)[[10]]
+tar_read(plt_ssa_recon_eigen)[[11]]
+tar_read(plt_ssa_recon_eigen)[[12]]
+tar_read(plt_ssa_recon_eigen)[[13]]
+tar_read(plt_ssa_recon_eigen)[[14]]
+tar_read(plt_ssa_recon_eigen)[[15]]
+tar_read(plt_ssa_recon_eigen)[[16]]
+tar_read(plt_ssa_recon_eigen)[[17]]
+tar_read(plt_ssa_recon_eigen)[[18]]
+tar_read(plt_ssa_recon_eigen)[[19]]
+tar_read(plt_ssa_recon_eigen)[[20]]
+tar_read(plt_ssa_recon_eigen)[[21]]
+tar_read(plt_ssa_recon_eigen)[[22]]
+tar_read(plt_ssa_recon_eigen)[[23]]
+tar_read(plt_ssa_recon_eigen)[[24]]
 
 ```
 
