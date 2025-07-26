@@ -12,6 +12,12 @@ format:
       name: International Journal of Epidemiology
       formatting: review
       cite-style: numbername
+      highlights:
+        - Multi-class co-prescription was over ten times more common than same-class use in both antidepressant and anxiolytic users.
+        - Seven highly central drug classes link psychiatric medications with chronic disease treatments, indicating key roles in co-prescription networks.
+        - Network analysis reveals prescribing hubs not detectable through traditional drug utilization methods.
+        - Findings align with Dutch clinical guidelines promoting multi-class use in anxiety and monotherapy in depression management.
+        - Co-prescription patterns reflect underlying multimorbidity, highlighting the complexity of psychiatric and chronic illness care.
     output-file: iadb-network-analysis.pdf
   docx:
     pandoc-options: ["--mathml"]
@@ -80,7 +86,7 @@ Local network statistics, such as node centrality measures, quantify the importa
 
 ## Graph theory
 
-Mathematically, a simple undirected graph $\mathcal{G}$ is a pair $\mathcal{G} = (\mathcal{V}, \mathcal{E})$, where $\mathcal{V} = \left(1, \dots, n \right)$ is the set of nodes and $\mathcal{E} = \left(\{i, j\} \ | \ i, j \in \mathcal{V}, \ i \neq j \right)$ is the finite set of edges with $\{i, j\} = \{j, i\}$. The adjacency matrix $A \in \{0, 1\}^{n \times n}$ of a simple undirected graph $\mathcal{G}$ with $\mathcal{V}$ nodes is a square symmetric matrix of dimension $n \times n$ defined as @eq-graph-theory, with $A_{ij} = A_{ji}$ for all $i, j \in \mathcal{V}$ where $i \neq j$. For each day $t = \left(1, \dots, T \right)$ and each individual $p = \left(1, \dots, P \right)$, the adjacency matrix represented a simple undirected graph [@estrada2012structure].
+Mathematically, a simple undirected graph $\mathcal{G}$ is a pair $\mathcal{G} = \left(\mathcal{V}, \mathcal{E}\right)$, where $\mathcal{V} = \left(1, \dots, n \right)$ is the set of nodes and $\mathcal{E} = \left(\{i, j\} \ | \ i, j \in \mathcal{V}, \ i \neq j \right)$ is the finite set of edges. The adjacency matrix $A \in \{0, 1\}^{n \times n}$ of a simple undirected graph $\mathcal{G}$ is a square symmetric matrix of dimension $n \times n$ defined as:
 
 $$
 A_{ij} = 
@@ -90,7 +96,9 @@ A_{ij} =
 \end{cases}
 $$ {#eq-graph-theory}
 
-In a DPN, the node set $\mathcal{V} = \{\mathcal{v}_1, \mathcal{v}_2, \dots, \mathcal{v}_n\}$ represents a finite set of $n$ medications. Additionally, $\mathcal{E}$ is a finite set of edges, where each edge is a pair of nodes that corresponds to a co-prescription. In an undirected graph, the order of $i, j$ does not matter. Typically, undirected graphs do not contain self connections, $\{\mathcal{v}_i, \mathcal{v}_i\} \notin \mathcal{E}$ [j].
+with elements $A_{ij} = A_{ji}$, for all $i, j \in \mathcal{V}$ where $i \neq j$ [@estrada2012structure].
+
+In our setting, drug co-prescriptions from a single individual $p$ on a specific day $t$ are encoded in a simple undirected graph $\mathcal{G}^p(t)=\left(\mathcal{V}, \mathcal{E}^p\left(t\right)\right)$ with $n \times n$ adjacency matrix ${A^p}\left(t\right)$. In these daily observed individual-level networks, the node set $\mathcal{V}$ corresponds to a set of $n$ medication classes according to the ATC classification, and the edge set $\mathcal{E}^p\left(t\right)$ contains edges that indicate the concurrent use of pairs of medications for a particular individual $p$ on a given day $t$.
 
 ## Data pre-processing to build the data matrix
 
@@ -100,10 +108,10 @@ In a DPN, the node set $\mathcal{V} = \{\mathcal{v}_1, \mathcal{v}_2, \dots, \ma
 
 Centrality measures formalize the identification of important nodes in a graph [@estrada2012structure]. Different node centrality measures quantify different structural properties of a node. Previous work on DPNs highlighted four centrality measures that could be used to assess the importance of a medication within a co-prescription network [@Miglio2021]. Degree centrality in a DPN describes the number of co-prescription with the medication of interest. High (low) degree centrality means the medication is often (seldom) co-prescribed. Betweenness centrality indicates the frequency of a medication connecting two other medications by the shortest possible path. High (low) betweenness centrality means the medication is (not) a "bridge" between different kind of medications. Closeness centrality is the average distance between one medication to all other medications in the DPN. High (low) closeness centrality means that the medication is (not) commonly co-prescribed. Eigenvector centrality reflects the number of co-prescription with medications that have vital role in the DPN. High (low) eigenvector centrality means that the medication is often (seldom) co-prescribed with other important medications.
 
-The choice of centrality largely depends on the objective of network analysis. As a general guide, degree centrality is useful to identify popular medication and monitor drug overuse. Betweenness centrality is suitable for targeting for drug-interaction study and optimizing therapy plan. Closeness centrality indicates widely-used key medications and efficiency in treatment networks. Eigenvector centrality is helpful to identify influential medications and narrow down high-impact medications for drug monitoring. We defined high and low eigenvector centrality relative to the expected value $\frac{1}{n}$, based on the null model of uniform connectivity (see "Determining relative importance"). This study focused on eigenvector centrality to evaluate which medications have a significant influence on how antidepressants and anxiolytics are prescribed. @eq-eigen-centrality outlines the calculation of eigenvector centrality; $c_i$ and $c_j$ are the centralities of node $\mathcal{v}_i$ and $\mathcal{v}_j$, respectively; $\lambda$ is the eigenvalue; $A_{ji}$ is an element on row $j$ and column $i$ from an adjacency matrix $A$, representing the connection between node $\mathcal{v}_j$ and $\mathcal{v}_i$.
+The choice of centrality largely depends on the objective of network analysis. As a general guide, degree centrality is useful to identify popular medication and monitor drug overuse. Betweenness centrality is suitable for targeting for drug-interaction study and optimizing therapy plan. Closeness centrality indicates widely-used key medications and efficiency in treatment networks. Eigenvector centrality is helpful to identify influential medications and narrow down high-impact medications for drug monitoring. We defined high and low eigenvector centrality relative to the expected value $\frac{1}{n}$, based on the null model of uniform connectivity (see "Determining relative importance"). This study focused on eigenvector centrality to evaluate which medications have a significant influence on the prescription of antidepressants and anxiolytics. @eq-eigen-centrality outlines the calculation of eigenvector centrality; $c_i$ and $c_j$ are the centralities of nodes $\mathcal{v}_i$ and $\mathcal{v}_j$, respectively, with $i, j \in \mathcal{V}$; $\lambda$ is the eigenvalue; $A_{ji}\left(t\right)$ is an element on row $j$ and column $i$ from an adjacency matrix $A\left(t\right)$, representing the connection between node $\mathcal{v}_j$ and $\mathcal{v}_i$ with $i, j \in \mathcal{V}$.
 
 $$
-\displaystyle c_i = \frac{1}{\lambda} \sum_{j \neq i} A_{ji} \cdot c_j
+\displaystyle c_i\left(t\right) = \frac{1}{\lambda} \sum_{j \neq i} A_{ji}\left(t\right) \cdot c_j\left(t\right)
 $$ {#eq-eigen-centrality}
 
 ## Data analysis
@@ -186,7 +194,7 @@ tar_read(res_tbl_patient) |>
 
 ## Cyclicality and seasonality of medication dispensing
 
-Visual inspection of daily dispensing volumes revealed consistent weekly cycles. Dispensing peaked on `r hi_claim$day`, with an average of `r hi_mean` [SD: `r hi_claim$sd_claim`] and dropped to its lowest on `r lo_claim$day`, with an average of `r lo_mean` [SD: `r lo_claim$sd_claim`] dispensing. The variation between weekends and weekdays showed a regular and repeating structure in the data. There was a large margin of difference between the highest and lowest average number of prescription dispensed, with a peak on Monday, followed by a decline throughout the week and the lowest levels occurring during weekends, as shown in @tbl-overview-daily. The cyclical patterns are detailed in the supplementary material section S2.1. Seasonality was explored as dependencies at daily and weekly lags and further described in the supplementary material section S2.2.
+Visual inspection of daily dispensing volumes revealed consistent weekly cycles. Dispensing peaked on `r hi_claim$day`, with an average of `r hi_mean` [SD: `r hi_claim$sd_claim`] and dropped to its lowest on `r lo_claim$day`, with an average of `r lo_mean` [SD: `r lo_claim$sd_claim`] dispensing. The variation between weekends and weekdays showed a regular and repeating structure in the data. There was a large margin of difference between the highest and lowest average number of prescription dispensed, with a peak on Monday, followed by a decline throughout the week and the lowest levels occurring during weekends, as shown in @tbl-overview-daily. The cyclical patterns are detailed in the supplementary material section S2.1. Seasonality was explored as dependencies at daily and weekly lags and further described in the supplementary material section S2.2 and S2.3.
 
 ```{r tbl-overview-daily}
 #| tbl-cap: "Daily dispensing from 2018 to 2022 among patients with at least one dispensing of antidepressants or anxiolytics"
@@ -282,7 +290,7 @@ tar_read(res_tbl_poly) |>
 
 For brevity, @fig-ssa only depicts the decomposition result of antidepressants dispensed over the years. SSA-based decomposition separates the trend from its harmonics, as shown in the lower half of the plot. The trend explains roughly 90% of the variability, and harmonics explain 10%. The first two harmonics, F1 and F2, captured most of the variability in a series compared to the rest of it. The trend, F1, and F2 were used to reconstruct the time series. The largest panel in @fig-ssa displays the reconstructed time-series (green line) overlaid on the original data points (gray line).
 
-Additional decomposition results for other medication classes are presented in the supplementary section S2.3. Broadly antidepressants exhibited a steady increasing trend over time, while anxiolytics showed a gradual decline both in dispensing frequency and eigenvector centrality. Notably, the decomposition made long-term directional patterns more discernible across all medication classes, emphasizing the utility of SSA in isolating interpretable temporal dynamics from complex dispensing data. These decomposed trends provides the reconstructed data for the subsequent analysis.
+Additional decomposition results for other medication classes are presented in the supplementary section S2.4. Broadly antidepressants exhibited a steady increasing trend over time, while anxiolytics showed a gradual decline both in dispensing frequency and eigenvector centrality. Notably, the decomposition made long-term directional patterns more discernible across all medication classes, emphasizing the utility of SSA in isolating interpretable temporal dynamics from complex dispensing data. These decomposed trends provides the reconstructed data for the subsequent analysis.
 
 ```{r fig-ssa}
 #| fig-width: 16
@@ -416,6 +424,10 @@ Future DPN studies on individuals using antidepressants or anxiolytics should ad
 # Conclusion
 
 This study demonstrates the utility of DPN in uncovering the patterns of co-prescriptions among antidepressants and anxiolytics recipients. We found that multi-class regimens were markedly more prevalent, particularly among anxiolytic users, consistent with clinical guidelines. Moreover, we identified seven highly central medication classes that act as hubs in the prescribing network, linking psychiatric medications to the management of chronic somatic conditions. These findings emphasize the role of multimorbidity in shaping co-prescription behaviors and highlight the importance of these seven classes in both psychiatric care and broader chronic disease management. Our study contributes a network-based perspective to drug utilization research, offering an alternative approach to identifying high-impact medication classes that warrant further monitoring and future investigation.
+
+# Funding {-}
+
+This work was supported by The Indonesia Endowment Funds for Education (LPDP) in the form of a PhD scholarship to AL with Grant Agreement Number 0007457/PHA/D/2/lpdp2022 (26 July 2025).
 
 # References
 

@@ -2,13 +2,34 @@
 ### Data pre-processing
 :::
 
-At the individual level, each patient's daily prescription record at time $t$ was encoded into a square matrix $A_t^{(p)}$, where rows and columns represent medication classes according to the ATC classification. An off-diagonal entry $A_{t_{ij}}^{(p)} = 1$ indicates that medication classes $i$ and $j$ were co-prescribed on the same day for individual $p$, while a diagonal entry $A_{t_{ii}}^{(p)} = 1$ captures the presence of a single prescription of medication $i$. To derive the population-level DPN, all individual-level daily prescription matrix $A^{(p)}$ were aggregated by computing their element-wise sum.
+Assume an observational study where $P$ individuals indexed by $p$, $p=1,\dots,P$ are followed for each day $t$, $t=1, \dots, T$ for a total period of $T$ days. To derive the population-level DPN on each day $t$ with adjacency matrix $A_t$, the individual-level daily prescription matrices $A^{p}\left(t\right)$ were aggregated by computing their element-wise sum, that is,
 
-$$A_t = \displaystyle \sum_i A_t^{(p)}$$ {#eq-DPN}
+$$
+\displaystyle \sum_{p=1}^P A^{p}\left(t\right), \ \text{where} \ A\left(t\right) \in \ \mathbb{Z}_+^{n\times n}.
+$$ {#eq-DPN}
 
-The population matrix $A_t$ captures the frequency of co-prescriptions (off-diagonal) and single prescriptions (diagonal) across the dataset at the specified time $t$. Each element $A_{t_{ij}}$ in the matrix was interpreted as the number of patients being prescribed with medication classes $i$ and $j$ on the same day $t$. $A_t$ was represented as a weighted undirected graph, where each node corresponds to a medication class and edges reflect co-prescription frequencies. In the original work of DPN, all defined daily dose (DDD) were assumed equal to 1, allowing for applying raw counts as the edge weights. However, since not all medications have DDD = 1, this assumption could lead to inaccurate representations. To enhance the accuracy of edge weights, we introduced a weighting function to adjust the contribution of each co-prescription. Specifically, each co-prescribed medication class was assigned a weight $\omega_j$ based on its DDD value using a Gaussian kernel centered at the baseline weight $\omega_B = 1$, i.e., the expected DDD, with standard deviation $\sigma = \frac{1}{3}$ to allow for a gradual reduction in weight as DDD deviates from 1.
+The matrix $A\left(t\right)$ captures the population frequency of co-prescriptions (off-diagonal) and single prescriptions (diagonal) in the data at
 
-$$\omega_j = \frac{1}{\frac{\omega_B}{3} \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{DDD - \omega_B}{\omega_B/3}\right)^2}$$ {#eq-weighted-DDD}
+the specified time $t$. Each element $A_{ij}\left(t\right)$ in the matrix was interpreted as the number of patients being prescribed medication classes $i$ and $j$, with $i,j\in \mathcal{V}$, on the same day $t$. 
+
+The population-level DPN is then a weighted undirected graph $\mathcal{G}\left(t\right) = \left(\mathcal{V}, \mathcal{E}\left(t\right)\right)$ observed over $T$ discrete time points $t=1,\dots,T$, where:
+- $\mathcal{V}$ is the fixed set of $n$ nodes,
+- $\mathcal{E}_t \subseteq \{ \{i, j\} : i, j \in \mathcal{V}, i \neq j \}$ is the edge set at time $t$.
+
+The population-level DPN at time $t$ is fully described by its symmetric weighted adjacency matrix $A\left(t\right) \in \mathbb{Z}_+^{n \times n}$, which is defined as:
+
+$$
+{A}_{ij}\left(t\right) =
+\begin{cases}
+w_{t,ij} > 0 & \text{if } \{i, j\} \in \mathcal{E}\left(t\right), \\
+0 & \text{otherwise},
+\end{cases}
+\quad \text{with } {A}\left(t\right) = {{A}\left(t\right)}^\top.
+$$
+
+In the original work of DPN, all defined daily dose (DDD) were assumed equal to 1, allowing for applying raw counts as the edge weights. However, since not all medications have DDD = 1, this assumption could lead to inaccurate representations. To enhance the accuracy of edge weights, we introduced a weighting function to adjust the contribution of each co-prescription. Specifically, each co-prescribed medication class was assigned a weight $\omega_j$ based on its DDD value using a Gaussian kernel centered at the baseline weight $\omega_B = 1$, i.e., the expected DDD, with standard deviation $\sigma = \frac{1}{3}$ to allow for a gradual reduction in weight as DDD deviates from 1.
+
+$$\omega_j = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{\left(DDD_j - 1\right)}{2\sigma^2}^2}$$ {#eq-weighted-DDD}
 
 The edge weight between medication classes $i$ and $j$ was computed as the average of their individual weights:
 

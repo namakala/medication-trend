@@ -367,7 +367,7 @@ list(
   tar_quarto(report_spectral, "docs", profile = "spectral", priority = 0),
   tar_quarto(article, "docs/article.qmd"),
   tar_quarto(supplementary, "docs/supplementary.qmd"),
-  tar_quarto(cover_letter_ije, "docs/submission/cover-letter-ije.md"),
+  tar_quarto(cover_letter_ije, "docs/submission/IJE/cover-letter-ije.md"),
   tar_quarto(readme, "README.qmd", priority = 0)
 
 )
