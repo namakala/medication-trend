@@ -5,23 +5,54 @@ author:
     affiliations:
       - ref: rug
       - ref: ui
-    roles: [conceptualization, methodology, analysis, visualization, writing]
+    roles:
+      - conceptualization
+      - methodology
+      - formal analysis
+      - visualization
+      - writing - original draft
+      - project administration
   - name: Spyros Balafas
+    email-address: s.balafas@rug.nl
     affiliations:
       - ref: rug
+    roles:
+      - methodology
+      - writing - review & editing
   - name: Eelko Hak 
+    email-address: e.hak@rug.nl
     affiliations:
       - ref: rug
+    roles: 
+      - writing - review & editing
   - name: Jens H. Bos
+    email-address: h.j.bos@rug.nl
     affiliations:
       - ref: rug
+    roles: 
+      - data curation
+      - investigation
+      - project administration
   - name: Frederike Jörg
+    email-address: f.jorg@umcg.nl
     affiliations:
       - ref: rug
       - ref: umcg
+    roles:
+      - conceptualization
+      - supervision
+      - writing - original draft
+      - writing - review & editing
   - name: Talitha L. Feenstra
+    email-address: t.l.feenstra@rug.nl
     affiliations:
       - ref: rug
+    roles:
+      - conceptualization
+      - supervision
+      - methodology
+      - writing - original draft
+      - writing - review & editing
 
 affiliations:
   - id: rug

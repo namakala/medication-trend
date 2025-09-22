@@ -7,9 +7,11 @@ format:
     keep-tex: true
     keep-md: true
     include-in-header:
-      file: _header.tex
+      - file: _header.tex
+      - text: |
+          \newpageafter{author}
     journal:
-      name: International Journal of Epidemiology
+      name: Global Epidemiology
       formatting: review
       cite-style: numbername
       highlights:
@@ -295,7 +297,6 @@ Additional decomposition results for other medication classes are presented in t
 ```{r fig-ssa}
 #| fig-width: 16
 #| fig-height: 12
-#| fig-pos: H
 #| fig-cap: Time-series decomposition of antidepressants dispensing data using singular spectrum analysis-based approach
 
 tar_read(plt_ssa_recon_n_claim)[[17]]
@@ -424,6 +425,10 @@ Future DPN studies on individuals using antidepressants or anxiolytics should ad
 # Conclusion
 
 This study demonstrates the utility of DPN in uncovering the patterns of co-prescriptions among antidepressants and anxiolytics recipients. We found that multi-class regimens were markedly more prevalent, particularly among anxiolytic users, consistent with clinical guidelines. Moreover, we identified seven highly central medication classes that act as hubs in the prescribing network, linking psychiatric medications to the management of chronic somatic conditions. These findings emphasize the role of multimorbidity in shaping co-prescription behaviors and highlight the importance of these seven classes in both psychiatric care and broader chronic disease management. Our study contributes a network-based perspective to drug utilization research, offering an alternative approach to identifying high-impact medication classes that warrant further monitoring and future investigation.
+
+# Author Contributions {-}
+
+**AL**: Conceptualization, Methodology, Formal analysis, Visualization, Writing - original draft, Project administration. **SB**: Methodology, Writing - review and editing. **EH**: Writing - review and editing. **JHB**: Data curation, Investigation, Project administration. **FJ**: Conceptualization, Supervision, Writing - original draft, Writing - review and editing. **TLF**: Conceptualization, Supervision, Methodology, Writing - original draft, Writing - review and editing.
 
 # Funding {-}
 

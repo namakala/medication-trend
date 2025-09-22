@@ -123,6 +123,7 @@
   \recalctypearea
   \areaset{1.2\textwidth}{1.2\textheight}%
 }
+\newpageafter{author}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -164,7 +165,7 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-\journal{International Journal of Epidemiology}
+\journal{Global Epidemiology}
 
 \usepackage[]{natbib}
 \bibliographystyle{elsarticle-num-names}
@@ -251,9 +252,9 @@ Medications were classified using the Anatomical Therapeutic Chemical
 (ATC) system into 24 therapeutic classes. Time-varying DPNs were
 constructed as undirected graphs using symmetric daily dose-adjusted
 co-prescriptions. Eigenvector centrality (\(c_e\)) quantified relative
-nodal importance. Weekly-aggregated data included prescriptions
-(\(n_c\)), number of patients, claim-to-patient ratio, and eigenvector
-centrality. Singular spectrum analysis decomposed trends.
+nodal importance. Weekly-aggregated data included number of dispensing
+(\(n_c\)) and eigenvector centrality, which were decomposed using a
+singular-spectrum approach.
 
 \textbf{Results:} Antidepressants (\(c_e\): 0.09, \(n_c\): 28,993) and
 anxiolytics (\(c_e\): 0.05, \(n_c\): 14,061) had high eigenvector
@@ -273,6 +274,18 @@ prescribing oversight.
 
 
 
+\begin{highlights}
+\item Multi-class co-prescription was over ten times more common than
+same-class use in both antidepressant and anxiolytic users.\item Seven
+highly central drug classes link psychiatric medications with chronic
+disease treatments, indicating key roles in co-prescription
+networks.\item Network analysis reveals prescribing hubs not detectable
+through traditional drug utilization methods.\item Findings align with
+Dutch clinical guidelines promoting multi-class use in anxiety and
+monotherapy in depression management.\item Co-prescription patterns
+reflect underlying multimorbidity, highlighting the complexity of
+psychiatric and chronic illness care.
+\end{highlights}
 
 
 \begin{keyword}
@@ -384,9 +397,9 @@ medication dispensed during hospitalization, all medication records for
 each patient are complete, mainly due to high patient-pharmacy
 commitment in the Netherlands.
 
-This analysis includes daily drug administration from a static cohort
-of adults aged 18 to 65 years and prescribed anxiolytics or
-antidepressants at least once in the period 2018-2022.
+This analysis includes daily drug administration from a static cohort of
+adults aged 18 to 65 years and prescribed anxiolytics or antidepressants
+at least once in the period 2018-2022.
 
 \subsection{Graph theory}\label{graph-theory}
 
@@ -394,41 +407,66 @@ Mathematically, a simple undirected graph \(\mathcal{G}\) is a pair
 \(\mathcal{G} = \left(\mathcal{V}, \mathcal{E}\right)\), where
 \(\mathcal{V} = \left(1, \dots, n \right)\) is the set of nodes and
 \(\mathcal{E} = \left(\{i, j\} \ | \ i, j \in \mathcal{V}, \ i \neq j \right)\)
-is the finite set of edges. The adjacency
-matrix \(A \in \{0, 1\}^{n \times n}\) of a simple undirected graph
-\(\mathcal{G}\) is a square symmetric matrix
-of dimension \(n \times n\) defined as
+is the finite set of edges. The adjacency matrix
+\(A \in \{0, 1\}^{n \times n}\) of a simple undirected graph
+\(\mathcal{G}\) is a square symmetric matrix of dimension \(n \times n\)
+defined as:
+
 \begin{equation}\phantomsection\label{eq-graph-theory}{
 A_{ij} = 
 \begin{cases}
-1 & \text{if} \ \{i, j\} \in \mathcal{E}, \\
+1 & \text{if} \{i, j\} \in \mathcal{E} \\
 0 & \text{otherwise}
 \end{cases}
 }\end{equation}
-with elements \(A_{ij} = A_{ji}\), for all \(i, j \in \mathcal{V}\) where
-\(i \neq j\) \citep{estrada2012structure}.
 
-In our setting, drug co-prescriptions from a single individual $p$ on a specific day $t$ are encoded in a simple undirected graph \(\mathcal{G}^p(t)=\left(\mathcal{V}, \mathcal{E}^p\left(t\right)\right)\) with $n \times n$ adjacency matrix \({A^p}\left(t\right)\). In these daily observed individual-level networks, the node set $\mathcal{V}$ corresponds to a set of $n$ medication classes according to the ATC
-classification, and the edge set $\mathcal{E}^p\left(t\right)$ contains edges that indicate the concurrent use of pairs of medications for a particular individual $p$ on a given day $t$.
+with elements \(A_{ij} = A_{ji}\), for all \(i, j \in \mathcal{V}\)
+where \(i \neq j\) \citep{estrada2012structure}.
+
+In our setting, drug co-prescriptions from a single individual \(p\) on
+a specific day \(t\) are encoded in a simple undirected graph
+\(\mathcal{G}^p(t)=\left(\mathcal{V}, \mathcal{E}^p\left(t\right)\right)\)
+with \(n \times n\) adjacency matrix \({A^p}\left(t\right)\). In these
+daily observed individual-level networks, the node set \(\mathcal{V}\)
+corresponds to a set of \(n\) medication classes according to the ATC
+classification, and the edge set \(\mathcal{E}^p\left(t\right)\)
+contains edges that indicate the concurrent use of pairs of medications
+for a particular individual \(p\) on a given day \(t\).
 
 \subsection{Data pre-processing to build the data
 matrix}\label{data-pre-processing-to-build-the-data-matrix}
 
+Assume an observational study where \(P\) individuals indexed by \(p\),
+\(p=1,\dots,P\) are followed for each day \(t\), \(t=1, \dots, T\) for a
+total period of \(T\) days. To derive the population-level DPN on each
+day \(t\) with adjacency matrix \(A_t\), the individual-level daily
+prescription matrices \(A^{p}\left(t\right)\) were aggregated by
+computing their element-wise sum, that is,
 
-Assume an observational study where $P$ individuals indexed by $p$, $p=1,\dots,P$ are followed for each day $t$, $t=1, \dots, T$ for a total period of $T$ days. To derive the population-level DPN on each day $t$ with adjacency matrix $A_t$, the individual-level daily prescription matrices \(A^{p}\left(t\right)\) were aggregated by computing their element-wise sum, that is,
+\begin{equation}\phantomsection\label{eq-DPN}{
+\displaystyle \sum_{p=1}^P A^{p}\left(t\right), \ \text{where} \ A\left(t\right) \in \ \mathbb{Z}_+^{n\times n}.
+}\end{equation}
 
-\begin{equation}\phantomsection\label{eq-DPN}{A\left(t\right) = \displaystyle \sum_{p=1}^P A^{p}\left(t\right), \  \text{where} \ A\left(t\right) \in \mathbb{Z}_+^{n\times n}.}\end{equation} The matrix \(A\left(t\right)\) captures the population frequency of co-prescriptions (off-diagonal) and single prescriptions (diagonal) in the data at
-the specified time \(t\). Each element \(A_{ij}\left(t\right)\) in the matrix was
-interpreted as the number of patients being prescribed medication
-classes \(i\) and \(j\), with $i,j\in \mathcal{V}$, on the same day \(t\). 
+The matrix \(A\left(t\right)\) captures the population frequency of
+co-prescriptions (off-diagonal) and single prescriptions (diagonal) in
+the data at
 
-The population-level DPN is then a weighted undirected graph \( \mathcal{G}\left(t\right) = \left(\mathcal{V}, \mathcal{E}\left(t\right)\right)\) observed over \( T \) discrete time points $t=1,\dots,T$, where:
-\begin{itemize}
-    \item \( \mathcal{V} \) is the fixed set of \( n \) nodes,
-    \item \( \mathcal{E}_t \subseteq \{ \{i, j\} : i, j \in \mathcal{V}, i \neq j \} \) is the edge set at time \( t \).
-\end{itemize}
+the specified time \(t\). Each element \(A_{ij}\left(t\right)\) in the
+matrix was interpreted as the number of patients being prescribed
+medication classes \(i\) and \(j\), with \(i,j\in \mathcal{V}\), on the
+same day \(t\).
 
-The population-level DPN  at time $t$ is fully described by its symmetric weighted adjacency matrix  \( {A}\left(t\right) \in \mathbb{Z}_+^{n \times n} \), which is defined as:
+The population-level DPN is then a weighted undirected graph
+\(\mathcal{G}\left(t\right) = \left(\mathcal{V}, \mathcal{E}\left(t\right)\right)\)
+observed over \(T\) discrete time points \(t=1,\dots,T\), where: -
+\(\mathcal{V}\) is the fixed set of \(n\) nodes, -
+\(\mathcal{E}_t \subseteq \{ \{i, j\} : i, j \in \mathcal{V}, i \neq j \}\)
+is the edge set at time \(t\).
+
+The population-level DPN at time \(t\) is fully described by its
+symmetric weighted adjacency matrix
+\(A\left(t\right) \in \mathbb{Z}_+^{n \times n}\), which is defined as:
+
 \[
 {A}_{ij}\left(t\right) =
 \begin{cases}
@@ -438,16 +476,16 @@ w_{t,ij} > 0 & \text{if } \{i, j\} \in \mathcal{E}\left(t\right), \\
 \quad \text{with } {A}\left(t\right) = {{A}\left(t\right)}^\top.
 \]
 
-In the original work of DPN, all defined daily dose (DDD) were assumed equal to
-1, allowing for applying raw counts as the edge weights. However, since
-not all medications have DDD = 1, this assumption could lead to
-inaccurate representations. To enhance the accuracy of edge weights, we
-introduced a weighting function to adjust the contribution of each
-co-prescription. Specifically, each co-prescribed medication class was
-assigned a weight \(\omega_j\) based on its DDD value using a Gaussian
-kernel centered at the baseline weight \(\omega_B = 1\), i.e., the
-expected DDD, with standard deviation \(\sigma = \frac{1}{3}\) to allow
-for a gradual reduction in weight as DDD deviates from 1.
+In the original work of DPN, all defined daily dose (DDD) were assumed
+equal to 1, allowing for applying raw counts as the edge weights.
+However, since not all medications have DDD = 1, this assumption could
+lead to inaccurate representations. To enhance the accuracy of edge
+weights, we introduced a weighting function to adjust the contribution
+of each co-prescription. Specifically, each co-prescribed medication
+class was assigned a weight \(\omega_j\) based on its DDD value using a
+Gaussian kernel centered at the baseline weight \(\omega_B = 1\), i.e.,
+the expected DDD, with standard deviation \(\sigma = \frac{1}{3}\) to
+allow for a gradual reduction in weight as DDD deviates from 1.
 
 \begin{equation}\phantomsection\label{eq-weighted-DDD}{\omega_j = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{\left(DDD_j - 1\right)}{2\sigma^2}^2}}\end{equation}
 
@@ -511,12 +549,15 @@ for drug monitoring. We defined high and low eigenvector centrality
 relative to the expected value \(\frac{1}{n}\), based on the null model
 of uniform connectivity (see ``Determining relative importance''). This
 study focused on eigenvector centrality to evaluate which medications
-have a significant influence on the prescription of antidepressants and anxiolytics. Equation~\ref{eq-eigen-centrality} outlines the calculation
+have a significant influence on the prescription of antidepressants and
+anxiolytics. Equation~\ref{eq-eigen-centrality} outlines the calculation
 of eigenvector centrality; \(c_i\) and \(c_j\) are the centralities of
-nodes \(i\) and \(j\), with $i,j\in \mathcal{V}$, respectively; \(\lambda\)
-is the eigenvalue; \(A_{ji}\left(t\right)\) is an element on row \(j\) and column
-\(i\) from an adjacency matrix \(A\left(t\right)\), representing the connection
-between node \(j\) and \(i\) with $i,j\in \mathcal{V}$.
+nodes \(\mathcal{v}_i\) and \(\mathcal{v}_j\), respectively, with
+\(i, j \in \mathcal{V}\); \(\lambda\) is the eigenvalue;
+\(A_{ji}\left(t\right)\) is an element on row \(j\) and column \(i\)
+from an adjacency matrix \(A\left(t\right)\), representing the
+connection between node \(\mathcal{v}_j\) and \(\mathcal{v}_i\) with
+\(i, j \in \mathcal{V}\).
 
 \begin{equation}\phantomsection\label{eq-eigen-centrality}{
 \displaystyle c_i\left(t\right) = \frac{1}{\lambda} \sum_{j \neq i} A_{ji}\left(t\right) \cdot c_j\left(t\right)
@@ -720,7 +761,7 @@ decline throughout the week and the lowest levels occurring during
 weekends, as shown in Table~\ref{tbl-overview-daily}. The cyclical
 patterns are detailed in the supplementary material section S2.1.
 Seasonality was explored as dependencies at daily and weekly lags and
-further described in the supplementary material section S2.2.
+further described in the supplementary material section S2.2 and S2.3.
 
 \global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
 
@@ -1005,7 +1046,7 @@ panel in Figure~\ref{fig-ssa} displays the reconstructed time-series
 (green line) overlaid on the original data points (gray line).
 
 Additional decomposition results for other medication classes are
-presented in the supplementary section S2.3. Broadly antidepressants
+presented in the supplementary section S2.4. Broadly antidepressants
 exhibited a steady increasing trend over time, while anxiolytics showed
 a gradual decline both in dispensing frequency and eigenvector
 centrality. Notably, the decomposition made long-term directional
@@ -1014,7 +1055,7 @@ utility of SSA in isolating interpretable temporal dynamics from complex
 dispensing data. These decomposed trends provides the reconstructed data
 for the subsequent analysis.
 
-\begin{figure}[H]
+\begin{figure}
 
 \centering{
 
@@ -1400,6 +1441,25 @@ psychiatric care and broader chronic disease management. Our study
 contributes a network-based perspective to drug utilization research,
 offering an alternative approach to identifying high-impact medication
 classes that warrant further monitoring and future investigation.
+
+\section*{Author Contributions}\label{author-contributions}
+\addcontentsline{toc}{section}{Author Contributions}
+
+\textbf{AL}: Conceptualization, Methodology, Formal analysis,
+Visualization, Writing - original draft, Project administration.
+\textbf{SB}: Methodology, Writing - review and editing. \textbf{EH}:
+Writing - review and editing. \textbf{JHB}: Data curation,
+Investigation, Project administration. \textbf{FJ}: Conceptualization,
+Supervision, Writing - original draft, Writing - review and editing.
+\textbf{TLF}: Conceptualization, Supervision, Methodology, Writing -
+original draft, Writing - review and editing.
+
+\section*{Funding}\label{funding}
+\addcontentsline{toc}{section}{Funding}
+
+This work was supported by The Indonesia Endowment Funds for Education
+(LPDP) in the form of a PhD scholarship to AL with Grant Agreement
+Number 0007457/PHA/D/2/lpdp2022 (26 July 2025).
 
 
 \renewcommand\refname{References}

@@ -19,7 +19,6 @@ format:
       - bottom=2.5cm
 
 metadata-files:
-  - _author.yml
   - _knitr-bib.yml
 
 in:
