@@ -395,7 +395,7 @@ res_recon_stat |>
 #| fig-width: 9
 #| fig-height: 10
 
-tar_read(plt_hi_eigen_box)
+tar_read(plt_hi_eigen_ridge)
 
 ```
 
