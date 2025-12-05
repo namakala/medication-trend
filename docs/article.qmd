@@ -44,7 +44,7 @@ in:
 
 ```{r}
 
-pkgs <- c("targets", "magrittr")
+pkgs <- c("targets", "magrittr", "ggplot2")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 options(digits = 2)
 
