@@ -404,7 +404,7 @@ vizReconSsa <- function(tidy_recon, ...) {
     scale_color_manual(
       name = "",
       values = c("Original Data" = colors$black, "Reconstructed Series" = colors$green),
-      guide = guide_legend(override.aes = aes(fill = NA))
+      guide = guide_legend(override.aes = list(fill = NA))
     ) +
     ggpubr::theme_pubclean() +
     theme(
@@ -541,9 +541,9 @@ vizEigenBox <- function(ts_clust, ...) {
     ggpubr::theme_pubclean() +
     labs(x = "", y = "") +
     scale_x_continuous(expand = c(0, 0)) +
-    scale_fill_manual(values = c("grey60", colors$green)) +
-    scale_color_manual(values = c("grey60", colors$green)) +
-    scale_alpha_manual(values = c(0.5, 0.7)) +
+    scale_fill_manual(values = c("FALSE" = "grey60", "TRUE" = colors$green)) +
+    scale_color_manual(values = c("FALSE" = "grey60", "TRUE" = colors$green)) +
+    scale_alpha_manual(values = c("FALSE" = 0.5, "TRUE" = 0.7)) +
     theme(axis.ticks = element_blank())
 
   return(plt)
@@ -593,6 +593,159 @@ vizReconResult <- function(ts, ts_recon, ...) {
   plt1 <- vizDot(ts, ...)
   plt2 <- vizDot(ts_recon, ...)
   plt  <- ggpubr::ggarrange(plt1, plt2, nrow = 1, align = "v")
+
+  return(plt)
+}
+
+addRidge <- function(tbl, alpha, add_interval = FALSE, ...) {
+  #' Visualize the Legend Box
+  #'
+  #' Generate a legend box to aid in interpreting eigenvector centrality ridge
+  #' plot.
+  #'
+  #' @param tbl A data frame object
+  #' @param alpha Transparency level
+  #' @param add_interval A boolean indicating whether to add `stat_interval`
+  #' @return A GGPlot2 layer
+  require("ggplot2")
+  require("ggdist")
+  require("ggtext")
+
+  layer <- stat_halfeye(
+    data = tbl,
+    inherit.aes = FALSE,
+    alpha = alpha,
+    normalize = "xy",
+    fill_type = "segments",
+    interval_size_range = c(0, 0),
+    aes(
+      x = eigen,
+      y = group,
+      ...
+    )
+  )
+
+  if (add_interval) {
+    layers <- list(
+      layer,
+      stat_interval(interval_size_range = c(1, 5), show.legend = FALSE, alpha = 1),
+      stat_summary(geom = "point", fun = median),
+      scale_color_manual(values = c("#e7e5cc", "#c2d6a4", "#9cc184"))
+    )
+  } else {
+    layers <- list(layer)
+  }
+
+  return(layers)
+}
+
+vizEigenRidgeLegend <- function(sub_tbl, ...) {
+  #' Visualize the Legend Box
+  #'
+  #' Generate a legend box to aid in interpreting eigenvector centrality ridge
+  #' plot.
+  #'
+  #' @param sub_tbl A subet of combined data frame from all subgroups
+  #' @return A GGPlot2 object
+  require("ggplot2")
+  require("ggdist")
+  require("ggtext")
+
+  xpos <- c(0.094, 0.0985, 0.0965, 0.09455, 0.0975)
+  ypos <- c(0.85, 0.85, 0.85, 1.3, 1.8)
+
+  plt <- ggplot(sub_tbl, aes(x = eigen, y = group)) +
+    addRidge(sub_tbl, alpha = 0.6, add_interval = TRUE) +
+    annotate(
+      "text",
+      x = xpos,
+      y = ypos,
+      label = c(
+        "50% of\nvalues",
+        "95% of\nvalues",
+        "80% of\nvalues",
+        "Median",
+        "Distribution\nof values"
+      ),
+      size = 3,
+      vjust = 1
+    ) +
+    geom_curve(
+      data = data.frame(
+        x    = xpos,
+        xend = xpos + c(0, 0, 0, 0, -0.0011),
+        y    = ypos + c(0, 0, 0, -0.14, 0.01),
+        yend = ypos + c(0.10, 0.10, 0.10, -0.25, 0.01)
+      ),
+      aes(x = x, xend = xend, y = y, yend = yend),
+      stat = "unique",
+      curvature = 0.2,
+      linewidth = 0.3,
+      color = "grey12",
+      arrow = arrow(angle = 20, length = unit(1, "mm"))
+    ) +
+    guides(color = "none") +
+    labs(title = "Legend") +
+    theme_void() +
+    theme(
+      plot.title      = element_text(size = 16, hjust = 0.045, face = "bold"),
+      plot.background = element_rect(color = "grey30", linewidth = 0.2, fill = "white")
+    )
+
+  return(plt)
+}
+
+vizEigenRidge <- function(tbl_combined, ...) {
+  #' Visualize Eigenvector Centrality Ridge Plot
+  #'
+  #' Generate ridge plot of eigenvector centrality for each medication group.
+  #'
+  #' @param tbl_combined A combined data frame from all subgroups
+  #' @return A GGPlot2 object
+  require("ggplot2")
+  require("ggdist")
+  require("ggtext")
+  require("patchwork")
+
+  # Reorder the medication groups based on eigenvector centrality median
+  tbl <- tbl_combined |>
+    dplyr::mutate("group" = reorder(group, eigen, median, na.rm = TRUE))
+
+  # Generate legends
+  sub_tbl <- tbl |> subset(sub == "All" & group == "Antidepressants")
+  plt_legend <- vizEigenRidgeLegend(sub_tbl, alpha = 0.6)
+
+  # Split the data frame
+  tbl_all      <- tbl |> subset(sub == "All")
+  tbl_subgroup <- tbl |> subset(sub != "All")
+
+  # Generate the plot
+  plt_main <- ggplot(tbl_all, aes(x = eigen, y = group)) +
+    geom_vline(xintercept = 1/24, linetype = 2, color = "grey60") +
+    addRidge(tbl_subgroup, alpha = 0.2, fill = sub) +
+    addRidge(tbl_all, alpha = 0.8, add_interval = TRUE) +
+    scale_x_continuous(expand = c(0, 0)) +
+    theme_minimal() +
+    guides(fill = guide_legend(nrow = 2)) +
+    labs(
+      title = "The distribution of eigenvector centrality in the population",
+      subtitle = "A high overlap of the distribution indicates similarity of connectedness across the subgroup.",
+      x = "",
+      y = "",
+      fill = "Subgroup Distribution: "
+    ) +
+    theme(
+      panel.grid.major.x   = element_blank(),
+      panel.grid.minor.x   = element_blank(),
+      legend.position      = "bottom",
+      legend.justification = "left",
+      axis.ticks.x         = element_blank(),
+      axis.text.x          = element_blank()
+    )
+
+  # Combine the main and legend plots
+  plt <- plt_main +
+    inset_element(plt_legend, left = 0.4, right = 1.0, top = 0.3, bottom = 0, clip = FALSE)
 
   return(plt)
 }

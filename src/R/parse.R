@@ -23,9 +23,13 @@ readIADB <- function(filepath, ...) {
   #' @return An indexed tibble data frame
   coltype = "cDDci"
   tbl <- vroom::vroom(filepath, delim = ";", col_types = coltype, ...) %>%
-    tibble::add_column(
-      "month" = format(.$startdat, "%m"),
-      "year"  = format(.$startdat, "%y")
+    dplyr::mutate(
+      "month"    = format(startdat, "%m"),
+      "year"     = format(startdat, "%y"),
+      "duration" = stopdat - startdat,
+      "count"    = strsplit(atcs, ",") |> sapply(length),
+      "is_poly"  = (duration >= 30 & count >= 5),
+      "is_old"   = (age >= 65)
     )
   
   return(tbl)
@@ -116,7 +120,10 @@ splitAtc <- function(tbl, atcs) {
     anopat   <- entry[1]
     startdat <- entry[2]
     stopdat  <- entry[3]
-    atc      <- entry[4]
+    gender   <- entry[5]
+    atc      <- entry[6]
+    is_poly  <- entry[11]
+    is_old   <- entry[12]
 
     atc   %<>% as.character() %>% strsplit(split = ",") %>% unlist()
     label  <- gsub(x = atc, ";.*", "")
@@ -125,13 +132,16 @@ splitAtc <- function(tbl, atcs) {
       as.numeric()
 
     tbl <- tibble::tibble(
-      "label" = label,
-      "dose"  = dose,
-      "n"     = 1,
-      "N"     = N,
-      "id"    = anopat,
-      "date"  = startdat,
-      "end"   = stopdat
+      "label"   = label,
+      "dose"    = dose,
+      "n"       = 1,
+      "N"       = N,
+      "id"      = anopat,
+      "date"    = startdat,
+      "end"     = stopdat,
+      "gender"  = gender,
+      "is_poly" = is_poly,
+      "is_old"  = is_old
     ) %>%
       groupAtc() %>%
       subset(.$label != "")
@@ -210,4 +220,3 @@ catIADB <- function(fpath) {
 
   return(tbl)
 }
-

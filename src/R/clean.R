@@ -238,3 +238,23 @@ cleanDose <- function(atc_tbl, period = NULL) {
   return(res)
 }
 
+combineSubgroup <- function(tbl_list) {
+  #' Combine Subgroup
+  #'
+  #' Combine time-series data frame obtained from subgroup analyses.
+  #'
+  #' @param tbl_list A named list containing similarly constructed data frame
+  #' @return A concatenated data frame for visualization
+
+  res <- names(tbl_list) |>
+    lapply(\(id) {
+      sub_tbl <- tbl_list[[id]] |>
+        tibble::tibble() |>
+        dplyr::select(date, group, eigen, n_claim, hi_eigen) |>
+        dplyr::mutate("sub" = id)
+      return(sub_tbl)
+    }) %>%
+    {do.call(rbind, .)}
+
+  return(res)
+}

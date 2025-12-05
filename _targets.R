@@ -63,6 +63,7 @@ list(
   tar_target(res_tbl_poly, catResPoly(res_tbl_poly_Antidepressants, res_tbl_poly_Anxiolytics, start_year = 2018)),
 
   # Describe the summary statistics
+  tar_target(dispensing_by_year, table(tbl_iadb$year)),
   tar_target(res_tbl_overview, overviewData(tbl_concat)),
   tar_target(res_tbl_stat, summarizeStat(tbl_concat)),
   tar_target(res_tbl_patient, readr::read_csv("data/processed/iadb-desc/patient.csv")),
@@ -322,6 +323,175 @@ list(
   # Generate reconstructed time series based on trend + 2 oscillating functions
   tar_target(ts_recon, genReconTs(decom_ssa, n = 2)),
   tar_target(res_recon_stat, mergeReconSummary(ts_recon, res_tbl_stat)),
+
+  # Preparation for subgroup analyses
+  tar_map(
+    values = tidyr::expand_grid(subgroup = c("is_old", "is_poly"), indicator = c(TRUE, FALSE)),
+    tar_target(sub_tbl_iadb, tbl_iadb %>% subset(.[[subgroup]] == indicator)),
+    tar_group_select(tbl_iadb_by_date, sub_tbl_iadb, by = c("month", "year", subgroup)),
+    tar_target(
+      tbl_iadb_split_date,
+      iterby(tbl_iadb_by_date, "startdat", splitAtc, "atcs"),
+      pattern   = map(tbl_iadb_by_date),
+      iteration = "vector"
+    ),
+
+    tar_target(
+      iadb_graph,
+      lapply(tbl_iadb_split_date, mkGraph),
+      pattern   = map(tbl_iadb_split_date),
+      iteration = "list",
+      priority  = 0
+    ),
+
+    # Create a time-series object based on the calculated metrics
+    tar_target(
+      iadb_metrics,
+      lapply(iadb_graph, function(branch) {
+        lapply(branch, getMetrics) %>% combineMetrics()
+      }) %>%
+        {do.call(rbind, .)}
+    ),
+
+    tar_target(
+      iadb_stats, lapply(tbl_iadb_split_date, fieldSummary) %>% combineMetrics()
+    ),
+
+    tar_target(ts_week, mergeTS(iadb_metrics, iadb_stats, covid_date = covid_date, type = "week")),
+
+    # Fit SSA models to the subgroups then reconstruct the data
+    tar_map(
+      unlist = FALSE,
+      values = list("y" = c("n_claim", "eigen")),
+
+      tar_target(
+        mod_ssa,
+        fitModel(ts_week, groupname = med_groups, y = y, FUN = fitSsa, method = "sequential", kind = "1d-ssa", L = 52),
+        pattern = map(med_groups),
+        iteration = "list"
+      ),
+
+      tar_target(
+        mod_ssa_recon,
+        reconSsa(mod_ssa, naive = FALSE, type = "wcor"),
+        pattern = map(mod_ssa),
+        iteration = "list"
+      )
+    ),
+
+    # Combine the decomposed data per subgroup
+    tar_target(
+      decom_ssa,
+      bindReconSsa(
+        list(
+          mod_ssa_recon_n_claim,
+          mod_ssa_recon_eigen
+        )
+      )
+    ),
+
+    # Generate reconstructed time series based on trend + 2 oscillating functions
+    tar_target(ts_recon, genReconTs(decom_ssa, n = 2)),
+    tar_target(res_recon_stat, mergeReconSummary(ts_recon, res_tbl_stat)),
+    
+    # Cluster and visualize eigenvector centrality
+    tar_target(ts_clust, setCluster(ts_recon, nclusts = 2:10)),
+    tar_target(plt_hi_eigen_box, vizEigenBox(ts_clust))
+  ),
+
+  # Slicing on both subgroup variables
+  tar_map(
+    values = tibble::tibble("indicator" = c(TRUE, FALSE)),
+    tar_target(tbl_iadb_poly_and_old, tbl_iadb %>% subset(.$is_poly == indicator & .$is_old == indicator)),
+    tar_group_select(tbl_iadb_by_date_poly_and_old, tbl_iadb_poly_and_old, by = c("month", "year")),
+    tar_target(
+      tbl_iadb_split_date_poly_and_old,
+      iterby(tbl_iadb_by_date_poly_and_old, "startdat", splitAtc, "atcs"),
+      pattern   = map(tbl_iadb_by_date_poly_and_old),
+      iteration = "vector"
+    ),
+
+    tar_target(
+      iadb_graph_poly_and_old,
+      lapply(tbl_iadb_split_date_poly_and_old, mkGraph),
+      pattern   = map(tbl_iadb_split_date_poly_and_old),
+      iteration = "list",
+      priority  = 0
+    ),
+
+    # Create a time-series object based on the calculated metrics
+    tar_target(
+      iadb_metrics_poly_and_old,
+      lapply(iadb_graph_poly_and_old, function(branch) {
+        lapply(branch, getMetrics) %>% combineMetrics()
+      }) %>%
+        {do.call(rbind, .)}
+    ),
+
+    tar_target(
+      iadb_stats_poly_and_old, lapply(tbl_iadb_split_date_poly_and_old, fieldSummary) %>% combineMetrics()
+    ),
+
+    tar_target(ts_week_poly_and_old, mergeTS(iadb_metrics_poly_and_old, iadb_stats_poly_and_old, covid_date = covid_date, type = "week")),
+
+    # Fit SSA models to the subgroups then reconstruct the data
+    tar_map(
+      unlist = FALSE,
+      values = list("y" = c("n_claim", "eigen")),
+
+      tar_target(
+        mod_ssa_poly_and_old,
+        fitModel(ts_week_poly_and_old, groupname = med_groups, y = y, FUN = fitSsa, method = "sequential", kind = "1d-ssa", L = 52),
+        pattern = map(med_groups),
+        iteration = "list"
+      ),
+
+      tar_target(
+        mod_ssa_recon_poly_and_old,
+        reconSsa(mod_ssa_poly_and_old, naive = FALSE, type = "wcor"),
+        pattern = map(mod_ssa_poly_and_old),
+        iteration = "list"
+      )
+    ),
+
+    # Combine the decomposed data per subgroup
+    tar_target(
+      decom_ssa_poly_and_old,
+      bindReconSsa(
+        list(
+          mod_ssa_recon_poly_and_old_n_claim,
+          mod_ssa_recon_poly_and_old_eigen
+        )
+      )
+    ),
+
+    # Generate reconstructed time series based on trend + 2 oscillating functions
+    tar_target(ts_recon_poly_and_old, genReconTs(decom_ssa_poly_and_old, n = 2)),
+    tar_target(res_recon_stat_poly_and_old, mergeReconSummary(ts_recon_poly_and_old, res_tbl_stat)),
+    
+    # Cluster and visualize eigenvector centrality
+    tar_target(ts_clust_poly_and_old, setCluster(ts_recon_poly_and_old, nclusts = 2:10)),
+    tar_target(plt_hi_eigen_box_poly_and_old, vizEigenBox(ts_clust_poly_and_old))
+  ),
+
+  # Combine the resulting time-series data frame from all subgroups
+  tar_target(
+    ts_list,
+    list(
+      "All"                = ts_clust,
+      "Age < 65"           = ts_clust_is_old_FALSE,
+      "Age >= 65"          = ts_clust_is_old_TRUE,
+      "Non-Poly"           = ts_clust_is_poly_FALSE,
+      "Poly"               = ts_clust_is_poly_TRUE,
+      "Non-Poly, Age < 65" = ts_clust_poly_and_old_FALSE,
+      "Poly, Age >= 65"     = ts_clust_poly_and_old_TRUE
+    )
+  ),
+
+  tar_target(tbl_combined, combineSubgroup(ts_list)),
+
+  # Generate a ridge plot of high eigenvector centrality in the population and subgroups
+  tar_target(plt_hi_eigen_ridge, vizEigenRidge(tbl_combined)),
 
   # Plot the reconstructed time-series
   tar_map(
