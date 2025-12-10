@@ -23,7 +23,21 @@ University of Groningen
 
 **Dear {{< meta var.greeting >}},**
 
-Thank you for the opportunity to revise and resubmit our original research article entitled *"A temporal network analysis of drug co-prescription during antidepressants and anxiolytics dispensing in the Netherlands from 2018 to 2022"* (Manuscript ID: **{{< meta var.manuscript-id >}}**). We would like to express our gratitude for the reviewers for their constructive feedback, which has been invaluable in enhancing the quality of our manuscript. Below, we provide detailed responses to each comment. All revision in the manuscript are highlighted and noted by page and line numbers.
+Thank you for the opportunity to revise and resubmit our original research article entitled *"A temporal network analysis of drug co-prescription during antidepressants and anxiolytics dispensing in the Netherlands from 2018 to 2022"* (Manuscript ID: **{{< meta var.manuscript-id >}}**). We would like to express our gratitude for the reviewers for their constructive feedback, which has been important in enhancing the quality of our manuscript. Attached, please find detailed responses to each comment. All revisions in the manuscript are highlighted and noted by page and line numbers.
+
+Yours sincerely,  
+Aly Lamuri, PhD Candidate  
+
+**On behalf of other co-authors:**  
+Spyros Balafas  
+Eelko Hak  
+Jens H. Bos  
+Frederike Jörg  
+Talitha L. Feenstra  
+
+\newpage
+
+We thank both reviewers for their constructive feedback.
 
 ## Reviewer 1
 
@@ -31,7 +45,7 @@ Thank you for the opportunity to revise and resubmit our original research artic
 The study was performed based on a pharmacy database. The authors should introduce more details about the prescription behavior of local patients. for example, the main route of obtaining drugs, hospital or pharmacy?
 
 **Response:**  
-We appreciate the reviewer’s suggestion to clarify prescription behaviors in our study context. The primary route of medication dispensing in our setting is through community pharmacies based on physician's prescription, which constitute the main data source for this study. The database does not include records of in-hospital medication dispensing or over-the-counter (OTC) medications. We have added these details to the section 2.1 (paragraph 1) to provide better context regarding the data source and patient prescription behavior.
+We appreciate the reviewer’s suggestion to clarify prescription behaviors in our study context. The primary route of medication dispensing in our setting is through community pharmacies based on physician's prescriptions. Community pharmacy dispensings constitute the main data source for this study. The database does not include records of in-hospital medication dispensing or over-the-counter (OTC) medications. We have added these details to the section 2.1 (paragraph 1) to provide better context regarding the data source and patient prescription behavior.
 
 **Changes in the manuscript:**  
 
@@ -41,11 +55,11 @@ We appreciate the reviewer’s suggestion to clarify prescription behaviors in o
 Was the full information of database used? Or only part? This should be specified in the methods.
 
 **Response:**  
-We thank the reviewer for this important clarification request. Only a subset of the database was used for this analysis. Specifically, we extracted anonymized patient identifiers, prescription start and end dates, and ATC codes. Other individual-level variables that is not required to build DPN were not requested to follow the internal regulation of research data management. We have now clarified this in the section 2.1 (paragraph 2) of the revised manuscript.
+We agree this could be clarified. Only a subset of the database was used for this analysis. Specifically, we extracted anonymized patient identifiers, prescription start and end dates, and ATC codes. Other individual-level variables that are not required to build DPN were not requested to follow the internal regulation of research data management and to satisfy data minimization requirements. We have now clarified this in section 2.1 (paragraph 2) of the revised manuscript.
 
 **Changes in the manuscript:**  
 
-> This analysis includes daily drug administration from a static cohort of adults aged 18 to 65 years and prescribed anxiolytics or antidepressants at least once in the period 2018-2022. For this study, only a subset of the database was used to construct the DPN: anonymized patient identifiers, age, prescription start and end dates, and ATC codes. No additional individual-level data were included to align with internal research data management regulations. Other demographic or clinical information available in the database was not extracted.
+> This analysis includes daily drug administration from a static cohort of adults aged 18 to 65 years and prescribed anxiolytics or antidepressants at least once in the period 2018-2022. For this study, only a subset of the database was used to construct the DPN: anonymized patient identifiers, age, prescription start and end dates, and ATC codes. No additional individual-level data were included to align with internal research data management regulations and general data minimization requirements. Other demographic or clinical information available in the database was not extracted.
 
 **Comment 3:**  
 The expected $C_e$ should be provided, or no comparison can be made.
@@ -61,7 +75,7 @@ We thank the reviewer for pointing out this clarification. The expected $C_e$ va
 There was COVID 19 epidemic in 2020. Would this influence the dispensing volume?
 
 **Response:**  
-We appreciate the reviewer’s thoughtful question. Based on our data, the COVID-19 pandemic did not substantially affect the overall dispensing volume. The total number of prescriptions remained relatively stable across the study period: 2018 – 2,215,195; 2019 – 2,279,405; 2020 – 2,279,204; 2021 – 2,224,839; and 2022 – 2,151,496. These figures indicate no significant deviation in dispensing trends during 2020. We have added this information to the section 3.1 for completeness.
+We appreciate the reviewer’s thoughtful question. Based on our data, the COVID-19 pandemic did not substantially affect the overall dispensing volume. The total number of prescriptions remained relatively stable across the study period: 2018 – 2,215,195; 2019 – 2,279,405; 2020 – 2,279,204; 2021 – 2,224,839; and 2022 – 2,151,496. These figures indicate no significant deviation in dispensing trends during 2020. We have added this information to section 3.1 for completeness and explain this is as expected, since pharmacies stayed operational during the pandemic.
 
 **Changes in the manuscript:**  
 
@@ -71,7 +85,7 @@ We appreciate the reviewer’s thoughtful question. Based on our data, the COVID
 Figure 1. more detailed caption should be provided to better read the figure.
 
 **Response:**  
-We appreciate the reviewer’s suggestion. We have revised and expanded the Figure 1 caption to provide clearer descriptions of the figure elements and to facilitate interpretation. The updated caption now reads as follows:
+Thank you for this suggestion. We have revised and expanded the Figure 1 caption to provide clearer descriptions of the figure elements and to facilitate interpretation. The updated caption now reads as follows:
 
 **Changes in the manuscript:**  
 
@@ -81,7 +95,7 @@ We appreciate the reviewer’s suggestion. We have revised and expanded the Figu
 Figure 2. What does the vertical dash line represent?
 
 **Response:**  
-We thank the reviewer for this question. The vertical dashed line in Figure 2 represents the expected Ce value, which equals 1/24 in our analysis (corresponding to the total of 24 medication classes). We have clarified this in the figure caption in the revised manuscript.
+Indeed this has to be clarified. The vertical dashed line in Figure 2 represents the expected $C_e$ value, which equals $\frac{1}{24}$ in our analysis (corresponding to the total of 24 medication classes). We have clarified this in the figure caption in the revised manuscript.
 
 **Changes in the manuscript:**  
 
@@ -95,7 +109,7 @@ Age-stratified analysis (e.g., $< 65$ vs. $\geq 65$ years) Older adults tend to 
 Consider defining a polypharmacy subgroup prior to DPN analysis In many epidemiological and clinical studies, polypharmacy has been defined as the concurrent use of five or more medications for at least 30 days. Identifying a subgroup based on such a definition and then applying DPN analysis specifically to that cohort might help elucidate drug-drug association patterns in a clinically significant context.
 
 **Response:**  
-We thank the reviewer for these valuable suggestions regarding subgroup analyses. We agree that both age-stratified and polypharmacy-based subgroup analyses are important for understanding differential co-prescription patterns among high-risk populations. As described in Section 2.5.6 of the Methods and reported in Section 3.5 (paragraph 2 and 3), we conducted the subgroup analyses feasible within the constraints of our dataset and study design. These results have been presented in the revised manuscript for clarity.
+We thank the reviewer for these valuable suggestions regarding subgroup analyses. We agree that both age-stratified and polypharmacy-based subgroup analyses are important for understanding differential co-prescription patterns among high-risk populations. As described in Section 2.5.6 of the Methods and reported in Section 3.5 (paragraph 2 and 3), we conducted the additional  subgroup analyses that were feasible within the constraints of our dataset and study design. These results have been added to the  revised manuscript and inform on age and polypharmacy specific results.
 
 **Changes in the manuscript:**  
 
@@ -113,21 +127,10 @@ We thank the reviewer for these valuable suggestions regarding subgroup analyses
 Abbreviations used in tables and figures (e.g., SD, IQR, ACF, PACF) should be fully spelled out at first use or included in the respective footnotes.
 
 **Response:**  
-We thank the reviewer for this suggestion. All abbreviations have now been fully spelled out at first use in the main text, tables, figures, and the supplementary material to ensure clarity for readers.
+All abbreviations have now been fully spelled out at first use in the main text, tables, figures, and the supplementary material to ensure clarity for readers.
 
 **Changes in the supplementary:**  
 
 > Exploration on seasonality was done on detrended daily and weekly data by generating seasonal plots and calculating the autocorrelation (ACF) and partial autocorrelation function (PACF). Seasonal plots were generated for weekly and yearly pattern by using daily and weekly data, respectively.  To generate the seasonal plots, the data was first deconstructed based on its period. For daily data, the weekly period was used; while for monthly data, the yearly period was used. The weekly period was obtained by creating an ordered value formatted as year - week, e.g. `2018 - W01`. Similarly, monthly period was obtained by creating an ordered value formatted as year - month, e.g. `2018 - M01`. We then grouped the series by its deconstructed period and visually examine seasonality as overlapping pattern in most periods. To substantiate the findings, ACF and PACF plots were used to check on statistical significance of a given pattern.
 
 Once again, we appreciate the feedback and have made the necessary revisions to improve our work. We hope that our revised manuscript meets your expectations.
-
-Sincerely,  
-Aly Lamuri, PhD Candidate  
-
-**On behalf of other co-authors:**  
-Spyros Balafas  
-Eelko Hak  
-Jens H. Bos  
-Frederike Jörg  
-Talitha L. Feenstra  
-
