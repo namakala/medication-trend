@@ -258,3 +258,19 @@ combineSubgroup <- function(tbl_list) {
 
   return(res)
 }
+
+clamp <- function(x, minval = 0, maxval = 1) {
+  #' Clamp a Number
+  #'
+  #' Bound the value of a given integer (sigular) into the configured min and
+  #' maximum values.
+  #'
+  #' @param x An integer
+  #' @param minval The minimum allowed value
+  #' @param maxval The maximum allowed value
+  #' @return An integer
+
+  res <- min(max(x, minval), maxval)
+
+  return(res)
+}

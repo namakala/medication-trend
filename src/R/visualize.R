@@ -695,17 +695,21 @@ vizEigenRidgeLegend <- function(sub_tbl, ...) {
   return(plt)
 }
 
-vizEigenRidge <- function(tbl_combined, ...) {
+vizEigenRidge <- function(tbl_combined, add_interval = TRUE, ...) {
   #' Visualize Eigenvector Centrality Ridge Plot
   #'
   #' Generate ridge plot of eigenvector centrality for each medication group.
   #'
   #' @param tbl_combined A combined data frame from all subgroups
+  #' @param add_interval Whether to add the interval indicator below the ridge plot
   #' @return A GGPlot2 object
   require("ggplot2")
   require("ggdist")
   require("ggtext")
   require("patchwork")
+
+  # Bind eigenvector centrality range to [0, 1]
+  tbl_combined$eigen %<>% sapply(clamp)
 
   # Reorder the medication groups based on eigenvector centrality median
   tbl <- tbl_combined |>
@@ -722,14 +726,14 @@ vizEigenRidge <- function(tbl_combined, ...) {
   # Generate the plot
   plt_main <- ggplot(tbl_all, aes(x = eigen, y = group)) +
     geom_vline(xintercept = 1/24, linetype = 2, color = "grey60") +
-    addRidge(tbl_subgroup, alpha = 0.2, fill = sub) +
-    addRidge(tbl_all, alpha = 0.8, add_interval = TRUE) +
-    scale_x_continuous(expand = c(0, 0)) +
+    addRidge(tbl_subgroup, alpha = 0.4, fill = sub) +
+    addRidge(tbl_all, alpha = 0.8, add_interval = add_interval) +
+    scale_x_continuous(expand = c(0, 0), transform = "asn") +
     theme_minimal() +
     guides(fill = guide_legend(nrow = 2)) +
     labs(
       title = "The distribution of eigenvector centrality in the population",
-      subtitle = "A high overlap of the distribution indicates similarity of connectedness across the subgroup.",
+      subtitle = "A high overlap of the distribution indicates similarity of connectedness across the subgroups.",
       x = "",
       y = "",
       fill = "Subgroup Distribution: "
@@ -744,8 +748,12 @@ vizEigenRidge <- function(tbl_combined, ...) {
     )
 
   # Combine the main and legend plots
-  plt <- plt_main +
-    inset_element(plt_legend, left = 0.4, right = 1.0, top = 0.3, bottom = 0, clip = FALSE)
+  if (add_interval) {
+    plt <- plt_main +
+      inset_element(plt_legend, left = 0.55, right = 1.0, top = 0.3, bottom = 0, clip = FALSE)
+  } else {
+    plt <- plt_main
+  }
 
   return(plt)
 }

@@ -492,6 +492,7 @@ list(
 
   # Generate a ridge plot of high eigenvector centrality in the population and subgroups
   tar_target(plt_hi_eigen_ridge, vizEigenRidge(tbl_combined)),
+  tar_target(plt_hi_eigen_ridge_plain, vizEigenRidge(tbl_combined, add_interval = FALSE)),
 
   # Plot the reconstructed time-series
   tar_map(
@@ -529,12 +530,12 @@ list(
   tar_quarto(abstract_eupha, "docs/abstract/eupha.qmd"),
   tar_quarto(abstract_ispor, "docs/abstract/ispor.qmd"),
   tar_quarto(abstract_short, "docs/abstract/short.qmd"),
-  tar_quarto(report, "docs", profile = "report", extra_files = "docs/exec-summary", priority = 0),
+  #tar_quarto(report, "docs", profile = "report", extra_files = "docs/exec-summary", priority = 0),
   tar_quarto(summary, "docs", profile = "summary", priority = 0),
   tar_quarto(report_descriptive, "docs", profile = "descriptive", priority = 0),
   tar_quarto(report_arima, "docs", profile = "arima", priority = 0),
   tar_quarto(report_seasonality, "docs", profile = "seasonality", priority = 0),
-  tar_quarto(report_spectral, "docs", profile = "spectral", priority = 0),
+  #tar_quarto(report_spectral, "docs", profile = "spectral", priority = 0),
   tar_quarto(article, "docs/article.qmd"),
   tar_quarto(supplementary, "docs/supplementary.qmd"),
   tar_quarto(cover_letter_ije, "docs/submission/cover-letter.md"),
