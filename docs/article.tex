@@ -414,8 +414,8 @@ adults aged 18 to 65 years and prescribed anxiolytics or antidepressants
 at least once in the period 2018-2022. For this study, only a subset of
 the database was used to construct the DPN: anonymized patient
 identifiers, age, prescription start and end dates, and ATC codes. No
-additional individual-level data were included to align with internal
-research data management regulations. Other demographic or clinical
+additional individual-level data were included to align with general
+data minimization requirements. Other demographic or clinical
 information available in the database was not extracted.
 
 \subsection{Graph theory}\label{graph-theory}
@@ -658,12 +658,12 @@ Since the sum of all eigenvector centralities \(c_i\) in equation
 \(\frac{1}{n}\), where \(n\) is 24, representing the total number of
 nodes. In such a network, each node has an equal probability of being
 connected to any other, and thus no node is more ``influential'' than
-another. This expected value, \(\frac{1}{n}\), serves as a baseline
+another. This expected value, \(\frac{1}{24}\), serves as a baseline
 under a null model of uniform connectivity. Assuming eigenvector
 centrality scores approximately follow a normal distribution, we applied
 a one-sample Student's T-test with Bonferroni correction to assess how
 much each eigenvector centrality differs from the expected values. Nodes
-with \(c_i\) greater than \(\frac{1}{n}\) were categorized as having
+with \(c_i\) greater than \(\frac{1}{24}\) were categorized as having
 high eigenvector centrality, and those below the expected value were
 considered low.
 
@@ -693,11 +693,11 @@ varied slightly, and the average age steadily increased over the year.
 These findings imply that the population demography stays relatively
 stable overtime without any indication of sudden changes. Importantly,
 the COVID-19 pandemic in 2020 did not substantially influence dispensing
-volumes because the community pharmacy remained in service, as a part of
+volumes because the community pharmacy remained in service as a part of
 nationwide policy. There was no significant disruption in prescription
 trends during and after the pandemic, with an average of 2,230,028 in
-annual dispensing (standard deviation/SD: 47,478, interquartile
-range/IQR: 64,009).
+annual dispensing for all medication classes (standard deviation/SD:
+47,478, interquartile range/IQR: 64,009).
 
 \global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
 
@@ -1120,7 +1120,7 @@ for the subsequent analysis.
 
 \caption{\label{fig-ssa}Singular spectrum analysis (SSA)-based
 decomposition of antidepressant dispensing volumes 2018-2022. The SSA
-separates the original time-series into the overall trend, residuals,
+separated the original time-series into the overall trend, residuals,
 and 25 oscillatory components (F1-F25). The green line represents the
 reconstructed time-series using the trend component, F1, and F2,
 highlighting the primary pattern in the series.}
@@ -1262,7 +1262,7 @@ smaller than that observed in the broader polypharmacy population.
 
 
 
-\multicolumn{1}{>{\raggedright}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{ t}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.75in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{1,449,535}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.16in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{3.95e-02\ [1.52e-03]}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.16in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{5.59e-01\ [3.26e-01]}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.16in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{7.10e-01\ [2.11e-01]}}}} \\
+\multicolumn{1}{>{\raggedright}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{Musculoskeletal}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.75in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{1,449,535}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.16in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{3.95e-02\ [1.52e-03]}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.16in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{5.59e-01\ [3.26e-01]}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.16in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{7}{7}\selectfont{\global\setmainfont{DejaVu Sans}{7.10e-01\ [2.11e-01]}}}} \\
 
 
 

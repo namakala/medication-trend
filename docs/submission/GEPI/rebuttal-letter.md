@@ -3,8 +3,8 @@ format: pdf
 var:
   date: "10 December 2025"
   journal: "Global Epidemiology"
-  editor: "Igor Burstyn, PhD"
-  greeting: "Dr. Igor Burstyn"
+  editor: "Assoc. Prof. Igor Burstyn, PhD"
+  greeting: "Professor Igor Burstyn"
   manuscript-id: "GEPI-D-25-00113"
 in-header: >
   \usepackage{amsmath}
@@ -25,7 +25,10 @@ University of Groningen
 
 Thank you for the opportunity to revise and resubmit our original research article entitled *"A temporal network analysis of drug co-prescription during antidepressants and anxiolytics dispensing in the Netherlands from 2018 to 2022"* (Manuscript ID: **{{< meta var.manuscript-id >}}**). We would like to express our gratitude for the reviewers for their constructive feedback, which has been important in enhancing the quality of our manuscript. Attached, please find detailed responses to each comment. All revisions in the manuscript are highlighted and noted by page and line numbers.
 
-Yours sincerely,  
+Yours sincerely,
+
+\vspace{3em}
+
 Aly Lamuri, PhD Candidate  
 
 **On behalf of other co-authors:**  
@@ -35,7 +38,7 @@ Jens H. Bos
 Frederike Jörg  
 Talitha L. Feenstra  
 
-\newpage
+\pagebreak
 
 We thank both reviewers for their constructive feedback.
 
@@ -55,31 +58,31 @@ We appreciate the reviewer’s suggestion to clarify prescription behaviors in o
 Was the full information of database used? Or only part? This should be specified in the methods.
 
 **Response:**  
-We agree this could be clarified. Only a subset of the database was used for this analysis. Specifically, we extracted anonymized patient identifiers, prescription start and end dates, and ATC codes. Other individual-level variables that are not required to build DPN were not requested to follow the internal regulation of research data management and to satisfy data minimization requirements. We have now clarified this in section 2.1 (paragraph 2) of the revised manuscript.
+We agree this could be clarified. Only a subset of the database was used for this analysis. Specifically, we extracted anonymized patient identifiers, prescription start and end dates, and ATC codes. Other individual-level variables that are not required to build DPN were not requested to satisfy data minimization requirements. We have now clarified this in section 2.1 (paragraph 2) of the revised manuscript.
 
 **Changes in the manuscript:**  
 
-> This analysis includes daily drug administration from a static cohort of adults aged 18 to 65 years and prescribed anxiolytics or antidepressants at least once in the period 2018-2022. For this study, only a subset of the database was used to construct the DPN: anonymized patient identifiers, age, prescription start and end dates, and ATC codes. No additional individual-level data were included to align with internal research data management regulations and general data minimization requirements. Other demographic or clinical information available in the database was not extracted.
+> This analysis includes daily drug administration from a static cohort of adults aged 18 to 65 years and prescribed anxiolytics or antidepressants at least once in the period 2018-2022. For this study, only a subset of the database was used to construct the DPN: anonymized patient identifiers, age, prescription start and end dates, and ATC codes. No additional individual-level data were included to align general data minimization requirements. Other demographic or clinical information available in the database was not extracted.
 
 **Comment 3:**  
 The expected $C_e$ should be provided, or no comparison can be made.
 
 **Response:**  
-We thank the reviewer for pointing out this clarification. The expected $C_e$ value was implicitly represented as $\frac{1}{n}$, where $n$ denotes the total number of medication classes. In our case, $n$ = 24, and therefore the expected $C_e$ equals $\frac{1}{24}$. We have now explicitly stated this in the section 2.5.5 to ensure clarity and facilitate comparison.
+We thank the reviewer for requesting this clarification. The expected $C_e$ value was implicitly represented as $\frac{1}{n}$, where $n$ denotes the total number of medication classes. In our case, $n$ = 24, and therefore the expected $C_e$ equals $\frac{1}{24}$. We have now explicitly stated this in the section 2.5.5 to ensure clarity and facilitate comparison.
 
 **Changes in the manuscript:**  
 
-> Since the sum of all eigenvector centralities $c_i$ in equation 5 equals 1, the expected eigenvector centrality $C_e$ for each node in a uniformly connected network is $\frac{1}{n}$, where $n$ is 24, representing the total number of nodes. In such a network, each node has an equal probability of being connected to any other, and thus no node is more "influential" than another. This expected value value, $\frac{1}{n}$, serves as a baseline under a null model of uniform connectivity. Assuming eigenvector centrality scores approximately follow a normal distribution, we applied a one-sample Student's T-test with Bonferroni correction to assess how much each eigenvector centrality differs from the expected values. Nodes with $c_i$ greater than $\frac{1}{n}$ were categorized as having high eigenvector centrality, and those below the expected value were considered low.
+> Since the sum of all eigenvector centralities $c_i$ in equation 5 equals 1, the expected eigenvector centrality $C_e$ for each node in a uniformly connected network is $\frac{1}{n}$, where $n$ is 24, representing the total number of nodes. In such a network, each node has an equal probability of being connected to any other, and thus no node is more "influential" than another. This expected value, $\frac{1}{24}$, serves as a baseline under a null model of uniform connectivity. Assuming eigenvector centrality scores approximately follow a normal distribution, we applied a one-sample Student's T-test with Bonferroni correction to assess how much each eigenvector centrality differs from the expected values. Nodes with $c_i$ greater than $\frac{1}{24}$ were categorized as having high eigenvector centrality, and those below the expected value were considered low.
 
 **Comment 4:**  
 There was COVID 19 epidemic in 2020. Would this influence the dispensing volume?
 
 **Response:**  
-We appreciate the reviewer’s thoughtful question. Based on our data, the COVID-19 pandemic did not substantially affect the overall dispensing volume. The total number of prescriptions remained relatively stable across the study period: 2018 – 2,215,195; 2019 – 2,279,405; 2020 – 2,279,204; 2021 – 2,224,839; and 2022 – 2,151,496. These figures indicate no significant deviation in dispensing trends during 2020. We have added this information to section 3.1 for completeness and explain this is as expected, since pharmacies stayed operational during the pandemic.
+We appreciate the reviewer’s thoughtful question. Based on our data, the COVID-19 pandemic did not substantially affect the overall dispensing volume. The total number of prescriptions for all medication classes remained relatively stable across the study period: 2018 – 2,215,195; 2019 – 2,279,405; 2020 – 2,279,204; 2021 – 2,224,839; and 2022 – 2,151,496. These figures indicate no significant deviation in dispensing trends for all medications during 2020. We have added this information to section 3.1 for completeness and explain this is as expected, since pharmacies stayed operational during the pandemic.
 
 **Changes in the manuscript:**  
 
-> IADB recorded 149,071 patients with at least one dispensing of antidepressants or anxiolytics within five years of data extraction. Table 1 captures the demographical dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes. Importantly, the COVID-19 pandemic in 2020 did not substantially influence dispensing volumes because the community pharmacy remained in service, as a part of nationwide policy. There was no significant disruption in prescription trends during and after the pandemic, with an average of 2,230,028 in annual dispensing (SD: 47,478, IQR: 64,009).
+> IADB recorded 149,071 patients with at least one dispensing of antidepressants or anxiolytics within five years of data extraction. Table 1 captures the demographical dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes. Importantly, the COVID-19 pandemic in 2020 did not substantially influence dispensing volumes because the community pharmacy remained in service as a part of nationwide policy. There was no significant disruption in prescription trends during and after the pandemic, with an average of 2,230,028 in annual dispensing for all medication classes (SD: 47,478, IQR: 64,009).
 
 **Comment 5:**  
 Figure 1. more detailed caption should be provided to better read the figure.
@@ -132,5 +135,3 @@ All abbreviations have now been fully spelled out at first use in the main text,
 **Changes in the supplementary:**  
 
 > Exploration on seasonality was done on detrended daily and weekly data by generating seasonal plots and calculating the autocorrelation (ACF) and partial autocorrelation function (PACF). Seasonal plots were generated for weekly and yearly pattern by using daily and weekly data, respectively.  To generate the seasonal plots, the data was first deconstructed based on its period. For daily data, the weekly period was used; while for monthly data, the yearly period was used. The weekly period was obtained by creating an ordered value formatted as year - week, e.g. `2018 - W01`. Similarly, monthly period was obtained by creating an ordered value formatted as year - month, e.g. `2018 - M01`. We then grouped the series by its deconstructed period and visually examine seasonality as overlapping pattern in most periods. To substantiate the findings, ACF and PACF plots were used to check on statistical significance of a given pattern.
-
-Once again, we appreciate the feedback and have made the necessary revisions to improve our work. We hope that our revised manuscript meets your expectations.

@@ -138,7 +138,7 @@ Classical and seasonal-trend decomposition techniques may not fully capture comp
 
 ### Determining relative importance
 
-Since the sum of all eigenvector centralities $c_i$ in equation [-@eq-eigen-centrality] equals 1, the expected eigenvector centrality $C_e$ for each node in a uniformly connected network is $\frac{1}{n}$, where $n$ is 24, representing the total number of nodes. In such a network, each node has an equal probability of being connected to any other, and thus no node is more "influential" than another. This expected value, $\frac{1}{n}$, serves as a baseline under a null model of uniform connectivity. Assuming eigenvector centrality scores approximately follow a normal distribution, we applied a one-sample Student's T-test with Bonferroni correction to assess how much each eigenvector centrality differs from the expected values. Nodes with $c_i$ greater than $\frac{1}{n}$ were categorized as having high eigenvector centrality, and those below the expected value were considered low.
+Since the sum of all eigenvector centralities $c_i$ in equation [-@eq-eigen-centrality] equals 1, the expected eigenvector centrality $C_e$ for each node in a uniformly connected network is $\frac{1}{n}$, where $n$ is 24, representing the total number of nodes. In such a network, each node has an equal probability of being connected to any other, and thus no node is more "influential" than another. This expected value, $\frac{1}{24}$, serves as a baseline under a null model of uniform connectivity. Assuming eigenvector centrality scores approximately follow a normal distribution, we applied a one-sample Student's T-test with Bonferroni correction to assess how much each eigenvector centrality differs from the expected values. Nodes with $c_i$ greater than $\frac{1}{24}$ were categorized as having high eigenvector centrality, and those below the expected value were considered low.
 
 ### Subgroup analysis
 
@@ -161,7 +161,7 @@ lo_mean <- prettyNum(lo_claim$mean_claim, big.mark = ",")
 
 ```
 
-IADB recorded `r n_patient` patients with at least one dispensing of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the demographical dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes. Importantly, the COVID-19 pandemic in 2020 did not substantially influence dispensing volumes because the community pharmacy remained in service, as a part of nationwide policy. There was no significant disruption in prescription trends during and after the pandemic, with an average of 2,230,028 in annual dispensing (standard deviation/SD: 47,478, interquartile range/IQR: 64,009).
+IADB recorded `r n_patient` patients with at least one dispensing of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the demographical dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes. Importantly, the COVID-19 pandemic in 2020 did not substantially influence dispensing volumes because the community pharmacy remained in service as a part of nationwide policy. There was no significant disruption in prescription trends during and after the pandemic, with an average of 2,230,028 in annual dispensing for all medication classes (standard deviation/SD: 47,478, interquartile range/IQR: 64,009).
 
 ```{r tbl-overview-patient}
 #| tbl-cap: "Number of participating patients with at least one dispensing of antidepressants or anxiolytics from 2018 to 2022"
@@ -320,7 +320,7 @@ Additional decomposition results for other medication classes are presented in t
 ```{r fig-ssa}
 #| fig-width: 16
 #| fig-height: 12
-#| fig-cap: Singular spectrum analysis (SSA)-based decomposition of antidepressant dispensing volumes 2018-2022. The SSA separates the original time-series into the overall trend, residuals, and 25 oscillatory components (F1-F25). The green line represents the reconstructed time-series using the trend component, F1, and F2, highlighting the primary pattern in the series.
+#| fig-cap: Singular spectrum analysis (SSA)-based decomposition of antidepressant dispensing volumes 2018-2022. The SSA separated the original time-series into the overall trend, residuals, and 25 oscillatory components (F1-F25). The green line represents the reconstructed time-series using the trend component, F1, and F2, highlighting the primary pattern in the series.
 
 tar_read(plt_ssa_recon_n_claim)[[17]]
 
