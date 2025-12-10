@@ -44,7 +44,7 @@ in:
 
 ```{r}
 
-pkgs <- c("targets", "magrittr", "ggplot2")
+pkgs <- c("targets", "magrittr", "ggplot2", "knitr")
 pkgs_load <- sapply(pkgs, library, character.only = TRUE)
 options(digits = 2)
 
@@ -110,7 +110,7 @@ In our setting, drug co-prescriptions from a single individual $p$ on a specific
 
 Centrality measures formalize the identification of important nodes in a graph [@estrada2012structure]. Different node centrality measures quantify different structural properties of a node. Previous work on DPNs highlighted four centrality measures that could be used to assess the importance of a medication within a co-prescription network [@Miglio2021]. Degree centrality in a DPN describes the number of co-prescription with the medication of interest. High (low) degree centrality means the medication is often (seldom) co-prescribed. Betweenness centrality indicates the frequency of a medication connecting two other medications by the shortest possible path. High (low) betweenness centrality means the medication is (not) a "bridge" between different kind of medications. Closeness centrality is the average distance between one medication to all other medications in the DPN. High (low) closeness centrality means that the medication is (not) commonly co-prescribed. Eigenvector centrality reflects the number of co-prescription with medications that have vital role in the DPN. High (low) eigenvector centrality means that the medication is often (seldom) co-prescribed with other important medications.
 
-The choice of centrality largely depends on the objective of network analysis. As a general guide, degree centrality is useful to identify popular medication and monitor drug overuse. Betweenness centrality is suitable for targeting for drug-interaction study and optimizing therapy plan. Closeness centrality indicates widely-used key medications and efficiency in treatment networks. Eigenvector centrality is helpful to identify influential medications and narrow down high-impact medications for drug monitoring. We defined high and low eigenvector centrality relative to the expected value $\frac{1}{n}$, based on the null model of uniform connectivity (see "Determining relative importance"). This study focused on eigenvector centrality to evaluate which medications have a significant influence on the prescription of antidepressants and anxiolytics. @eq-eigen-centrality outlines the calculation of eigenvector centrality; $c_i$ and $c_j$ are the centralities of nodes $\mathcal{v}_i$ and $\mathcal{v}_j$, respectively, with $i, j \in \mathcal{V}$; $\lambda$ is the eigenvalue; $A_{ji}\left(t\right)$ is an element on row $j$ and column $i$ from an adjacency matrix $A\left(t\right)$, representing the connection between node $\mathcal{v}_j$ and $\mathcal{v}_i$ with $i, j \in \mathcal{V}$.
+The choice of centrality largely depends on the objective of network analysis. As a general guide, degree centrality is useful to identify popular medication and monitor drug overuse. Betweenness centrality is suitable for targeting for drug-interaction study and optimizing therapy plan. Closeness centrality indicates widely-used key medications and efficiency in treatment networks. Eigenvector centrality is helpful to identify influential medications and narrow down high-impact medications for drug monitoring. We defined high and low eigenvector centrality relative to the expected value $C_e = \frac{1}{n}$, based on the null model of uniform connectivity (see "Determining relative importance"). This study focused on eigenvector centrality to evaluate which medications have a significant influence on the prescription of antidepressants and anxiolytics. @eq-eigen-centrality outlines the calculation of eigenvector centrality; $c_i$ and $c_j$ are the centralities of nodes $\mathcal{v}_i$ and $\mathcal{v}_j$, respectively, with $i, j \in \mathcal{V}$; $\lambda$ is the eigenvalue; $A_{ji}\left(t\right)$ is an element on row $j$ and column $i$ from an adjacency matrix $A\left(t\right)$, representing the connection between node $\mathcal{v}_j$ and $\mathcal{v}_i$ with $i, j \in \mathcal{V}$.
 
 $$
 \displaystyle c_i\left(t\right) = \frac{1}{\lambda} \sum_{j \neq i} A_{ji}\left(t\right) \cdot c_j\left(t\right)
@@ -134,11 +134,15 @@ Although five polypharmacy categories were described by @Shrivastava2013, augmen
 
 ### Decomposition with singular spectrum analysis
 
-Classical and seasonal-trend decomposition techniques may not fully capture complex periodic patterns in time-series data. Singular spectrum analysis (SSA) is a non-parametric method that leverages Hankel matrix embedding for decomposition. In this study, SSA was applied to identify trends and seasonal components in weekly aggregated prescription data. To better isolate trend and seasonal components, sequential SSA was applied. First, a basic SSA model with the lag parameter $L$ = 52 was used to extract the dominant trend. The residuals were then analyzed with a second SSA model using $L = \frac{N}{2}$ to capture complex periodic patterns. The extracted trend, residuals, and oscillatory components were evaluated visually and statistically, with Mann-Kendall trend tests applied to assess long-term changes. A complete documentation of this approach and its rationale was included in the supplementary file section S1.1.
+Classical and seasonal-trend decomposition techniques may not fully capture complex periodic patterns in time-series data. Singular spectrum analysis (SSA) is a non-parametric method that leverages Hankel matrix embedding for decomposition. In this study, SSA was applied to identify trends and seasonal components in weekly aggregated prescription data. To better isolate trend and seasonal components, sequential SSA was applied. First, a basic SSA model with the lag parameter $L$ = 52 was used to extract the dominant trend. The residuals were then analyzed with a second SSA model using $L = \frac{N}{2}$ to capture complex periodic patterns. The extracted trend, residuals, and oscillatory components were evaluated visually and statistically, with Mann-Kendall trend tests applied to assess long-term changes. A complete documentation of this approach and its rationale was included in the supplementary file section S1.2.
 
 ### Determining relative importance
 
-Since the sum of all eigenvector centralities $c_i$ in equation [-@eq-eigen-centrality] equals 1, the expected eigenvector centrality for each node in a uniformly connected network is $\frac{1}{n}$, where $n$ is the total number of nodes. In such a network, each node has an equal probability of being connected to any other, and thus no node is more "influential" than another. This expected value value, $\frac{1}{n}$, serves as a baseline under a null model of uniform connectivity. Assuming eigenvector centrality scores approximately follow a normal distribution, we applied a one-sample Student's T-test with Bonferroni correction to assess how much each eigenvector centrality differs from the expected values. Nodes with $c_i$ greater than $\frac{1}{n}$ were categorized as having high eigenvector centrality, and those below the expected value were considered low.
+Since the sum of all eigenvector centralities $c_i$ in equation [-@eq-eigen-centrality] equals 1, the expected eigenvector centrality $C_e$ for each node in a uniformly connected network is $\frac{1}{n}$, where $n$ is 24, representing the total number of nodes. In such a network, each node has an equal probability of being connected to any other, and thus no node is more "influential" than another. This expected value, $\frac{1}{n}$, serves as a baseline under a null model of uniform connectivity. Assuming eigenvector centrality scores approximately follow a normal distribution, we applied a one-sample Student's T-test with Bonferroni correction to assess how much each eigenvector centrality differs from the expected values. Nodes with $c_i$ greater than $\frac{1}{n}$ were categorized as having high eigenvector centrality, and those below the expected value were considered low.
+
+### Subgroup analysis
+
+Subgroup analyses were conducted by first categorizing the population into two age groups: $< 65$ and $\geq 65$ years [@Uddin2022]. The second categorization was based on general polypharmacy, defined a receiving $\geq 5$ medications for at least 30 consecutive days [@nicholson2024prevalence]. These subgroup classifications were combined to form three comparison pairs: $< 65$ vs. $\geq 65$ years; non-polypharmacy vs. polypharmacy; and the non-polypharmacy group aged $< 65$ years vs. the polypharmacy group aged $\geq 65$ years. A DPN was generated for each subgroup to calculate its respective eigenvector centrality.
 
 # Results
 
@@ -157,7 +161,7 @@ lo_mean <- prettyNum(lo_claim$mean_claim, big.mark = ",")
 
 ```
 
-IADB recorded `r n_patient` patients having at least one dispensing of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the demographical dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes.
+IADB recorded `r n_patient` patients with at least one dispensing of antidepressants or anxiolytics within five years of data extraction. @tbl-overview-patient captures the demographical dynamics of the population from 2018 to 2022. The ratio of male to female only varied slightly, and the average age steadily increased over the year. These findings imply that the population demography stays relatively stable overtime without any indication of sudden changes. Importantly, the COVID-19 pandemic in 2020 did not substantially influence dispensing volumes because the community pharmacy remained in service, as a part of nationwide policy. There was no significant disruption in prescription trends during and after the pandemic, with an average of 2,230,028 in annual dispensing (standard deviation/SD: 47,478, interquartile range/IQR: 64,009).
 
 ```{r tbl-overview-patient}
 #| tbl-cap: "Number of participating patients with at least one dispensing of antidepressants or anxiolytics from 2018 to 2022"
@@ -184,6 +188,13 @@ tar_read(res_tbl_patient) |>
     values    = c("", "Number of Patients (%)", "Mean Age (SD)"),
     colwidths = c(1, 3, 2),
     top       = TRUE
+  ) |>
+  flextable::footnote(
+    i = 1,
+    j = 5,
+    ref_symbols = "1",
+    part = "header",
+    value = flextable::as_paragraph("SD: Standard Deviation")
   ) |>
   flextable::align(align = "center", part = "all") |>
   flextable::align(j = 1, align = "left", part = "all") |>
@@ -218,6 +229,18 @@ res_tbl_overview$overview |>
     values    = c("", "Number of Prescriptions Dispensed"),
     colwidths = c(1, 3),
     top       = TRUE
+  ) |>
+  flextable::footnote(
+    i = 2,
+    j = c(2, 3),
+    ref_symbols = c("1", "2"),
+    part = "header",
+    value = flextable::as_paragraph(
+      c(
+        "SD: Standard Deviation",
+        "IQR: Interquartile Range"
+      )
+    )
   ) |>
   flextable::align(align = "center", part = "all") |>
   flextable::align(j = 1, align = "left", part = "all") |>
@@ -272,7 +295,7 @@ tar_read(res_tbl_poly) |>
     value = flextable::as_paragraph(
       c(
         "The total occurrence of co-prescription on the population level/prescription-day.",
-        "The expected occurrence of co-prescription per person/prescription-day.",
+        "SD: Standard Deviation; The expected occurrence of co-prescription per person/prescription-day.",
         "The overall number of medications a patient uses, including those prescribed for multiple psychiatric symptom clusters as well as for comorbid non-psychiatric conditions.",
         "Prescription day is defined as the number of dispensed medication per day.",
         "Multi-class co-prescription is defined as the co-prescription of medications from different ATC classification."
@@ -297,7 +320,7 @@ Additional decomposition results for other medication classes are presented in t
 ```{r fig-ssa}
 #| fig-width: 16
 #| fig-height: 12
-#| fig-cap: Time-series decomposition of antidepressants dispensing data using singular spectrum analysis-based approach
+#| fig-cap: Singular spectrum analysis (SSA)-based decomposition of antidepressant dispensing volumes 2018-2022. The SSA separates the original time-series into the overall trend, residuals, and 25 oscillatory components (F1-F25). The green line represents the reconstructed time-series using the trend component, F1, and F2, highlighting the primary pattern in the series.
 
 tar_read(plt_ssa_recon_n_claim)[[17]]
 
@@ -340,6 +363,10 @@ diffMed <- function(med_obj1, med_obj2, FUN) {
 
 Seven medication classes exhibited high centrality, as shown in @fig-hi-eigen and @tbl-desc. Notably, highly dispensed medications generally had high eigenvector centrality, consistent with the theoretical expectations from @eq-eigen-centrality. However, this relationship was not strictly proportional. For example, although antidepressants had a higher number of prescription dispensed compared to medications for the respiratory system (`r diffMed(antidepressants, respiratory, reportMedClaim)`), they exhibited lower eigenvector centrality (`r diffMed(antidepressants, respiratory, reportMedEigen)`). A similar pattern was observed for anxiolytics, which had more dispensing than analgesics (`r diffMed(anxiolytics, analgesics, reportMedClaim)`) but lower eigenvector centrality (`r diffMed(anxiolytics, analgesics, reportMedEigen)`). These discrepancies show that higher centrality scores capture more than just a high dispensing volume.
 
+The distribution of eigenvector centralities exhibited a central peak at intermediate values and heavy tails at both extremes, reflecting the temporal fluctuations of node influence. This pattern arose from the recursive nature of eigenvector centrality, where each node's importance depended on the importance of its neighbors. Aggregating centrality value over time captured the evolving dynamics of the network, where nodes occasionally attained a relatively higher or lower centrality. In contrast, the width of the distribution remained relatively stable, indicating that many co-prescription connections persisted consistently over time.
+
+The eigenvector centrality patterns shown in @fig-hi-eigen also highlight the distribution of several subgroups, each distinguished by color. Most subgroup distribution largely overlapped with the general population, represented by the gray density curves. However, two subgroups consistently diverged from this overall pattern: the polypharmacy group and the subset of polypharmacy patients aged $\geq 65$ years. These subgroups exhibited higher eigenvector centralities across four medication classes, demonstrating a more tightly connected co-prescription patterns within these groups. In addition, the $\geq 65$ years subgroup showed elevated eigenvector centralities in three medication classes, although its magnitude was smaller than that observed in the broader polypharmacy population.
+
 ```{r tbl-desc}
 #| tbl-cap: Descriptive statistics of dispensing data from 2018 to 2022, ordered by Eigenvector centrality
 
@@ -370,12 +397,13 @@ res_recon_stat |>
     top       = TRUE
   ) |>
   flextable::footnote(
-    i = 2,
-    j = c(4, 5),
-    ref_symbols = c("1", "2"),
+    i = c(1, 2, 2),
+    j = c(3, 4, 5),
+    ref_symbols = c("1", "2", "3"),
     part = "header",
     value = flextable::as_paragraph(
       c(
+        "SD: Standard Deviation",
         "Defined Daily Dose, representing the assumed average maintenance dose per day for a drug used for its main indication in adults (WHO definition).",
         "Edge weight assigned to each medication class in the drug prescription network, reflecting the strength of co-prescription connections (see Methods: Data pre-processing to build the data matrix)."
       )
@@ -391,11 +419,11 @@ res_recon_stat |>
 ```
 
 ```{r fig-hi-eigen}
-#| fig-cap: Clusters of medication with a significant co-prescription patterns on antidepressants and anxiolytics dispensing
+#| fig-cap: Clusters of medications showing significant co-prescription patterns for antidepressnts and anxiolytics. The vertical dashed line indicates the expected eigenvector centrality, calculated as 1/24. This line provides a reference for identifying medication classes with eigenvector centrality exceeding the threshold.
 #| fig-width: 9
 #| fig-height: 10
 
-tar_read(plt_hi_eigen_ridge)
+tar_read(plt_hi_eigen_ridge_plain)
 
 ```
 

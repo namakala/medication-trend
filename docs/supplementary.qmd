@@ -35,6 +35,10 @@ options(digits = 2)
 
 # Methods
 
+## Exploring seasonality in the dataset
+
+{{< include exec-summary/_seasonality.qmd >}}
+
 ## Decomposition with singular spectrum analysis
 
 {{< include exec-summary/_spectral.qmd >}}
