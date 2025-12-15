@@ -129,8 +129,10 @@ We thank the reviewer for these valuable suggestions regarding subgroup analyses
 **Comment 2:**  
 Abbreviations used in tables and figures (e.g., SD, IQR, ACF, PACF) should be fully spelled out at first use or included in the respective footnotes.
 
+Numerical expressions such as "9.48e-02" are more commonly formatted as "9.48e-2" in standard scientific notation; adopting a consistent style may improve readability.
+
 **Response:**  
-All abbreviations have now been fully spelled out at first use in the main text, tables, figures, and the supplementary material to ensure clarity for readers.
+All abbreviations have now been fully spelled out at first use in the main text, tables, figures, and the supplementary material to ensure clarity for readers. Moreover, we also revised the supplementary to include the definition of ACF and PACF, also the rationale for using these approaches. All scientific notations have been standardized and formatted as "9.48e-2."
 
 **Changes in the supplementary:**  
 
