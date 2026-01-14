@@ -8,13 +8,11 @@ $$
 \displaystyle \sum_{p=1}^P A^{p}\left(t\right), \ \text{where} \ A\left(t\right) \in \ \mathbb{Z}_+^{n\times n}.
 $$ {#eq-DPN}
 
-The matrix $A\left(t\right)$ captures the population frequency of co-prescriptions (off-diagonal) and single prescriptions (diagonal) in the data at
-
-the specified time $t$. Each element $A_{ij}\left(t\right)$ in the matrix was interpreted as the number of patients being prescribed medication classes $i$ and $j$, with $i,j\in \mathcal{V}$, on the same day $t$. 
+The matrix $A\left(t\right)$ captures the population frequency of co-prescriptions (off-diagonal) and single prescriptions (diagonal) in the data at the specified time $t$. Each element $A_{ij}\left(t\right)$ in the matrix was interpreted as the number of patients being prescribed medication classes $i$ and $j$, with $i,j\in \mathcal{V}$, on the same day $t$. 
 
 The population-level DPN is then a weighted undirected graph $\mathcal{G}\left(t\right) = \left(\mathcal{V}, \mathcal{E}\left(t\right)\right)$ observed over $T$ discrete time points $t=1,\dots,T$, where:
-- $\mathcal{V}$ is the fixed set of $n$ nodes,
-- $\mathcal{E}_t \subseteq \{ \{i, j\} : i, j \in \mathcal{V}, i \neq j \}$ is the edge set at time $t$.
+$\mathcal{V}$ is the fixed set of $n$ nodes;
+$\mathcal{E}_t \subseteq \{ \{i, j\} : i, j \in \mathcal{V}, i \neq j \}$ is the edge set at time $t$.
 
 The population-level DPN at time $t$ is fully described by its symmetric weighted adjacency matrix $A\left(t\right) \in \mathbb{Z}_+^{n \times n}$, which is defined as:
 
@@ -51,4 +49,4 @@ $$
 }
 $$ {#eq-regularize-mtx}
 
-This weighting approach scaled the edge weight that deviate substantially from the standard $\omega_B = 1$, improving comparability across medication classes. To remain consistent with standard network representations and avoid confounding self-loops, the diagonal elements were omitted.
+This weighting approach scaled the edge weight that deviate substantially from the standard $\omega_B = 1$, improving comparability across medication classes. Although diagonal elements capture single-class dispensing frequencies, they were excluded from network analyses to avoid self-loops. Because DDD represents a standardized population-level metric rather than individual dosage, our weighting scheme was applied as a descriptive adjustment.

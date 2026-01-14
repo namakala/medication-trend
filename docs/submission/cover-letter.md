@@ -1,10 +1,10 @@
 ---
 format: pdf
 var:
-  date: "08 August 2025"
+  date: "15 December 2025"
   journal: "Global Epidemiology"
-  editor: "Prof. George Maldonado, PhD, MSPH"
-  greeting: "Professor Maldonado"
+  editor: "Assoc. Prof. Igor Burstyn, PhD"
+  greeting: "Professor Igor Burstyn"
 ---
 
 \pagenumbering{gobble}

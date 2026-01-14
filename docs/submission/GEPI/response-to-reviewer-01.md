@@ -1,7 +1,7 @@
 ---
 format: pdf
 var:
-  date: "10 December 2025"
+  date: "15 December 2025"
   journal: "Global Epidemiology"
   editor: "Assoc. Prof. Igor Burstyn, PhD"
   greeting: "Professor Igor Burstyn"
@@ -23,7 +23,7 @@ University of Groningen
 
 **Dear {{< meta var.greeting >}},**
 
-Thank you for the opportunity to revise and resubmit our original research article entitled *"A temporal network analysis of drug co-prescription during antidepressants and anxiolytics dispensing in the Netherlands from 2018 to 2022"* (Manuscript ID: **{{< meta var.manuscript-id >}}**). We would like to express our gratitude for the reviewers for their constructive feedback, which has been important in enhancing the quality of our manuscript. Attached, please find detailed responses to each comment. All revisions in the manuscript are highlighted and noted by page and line numbers.
+Thank you for the opportunity to revise and resubmit our original research article entitled *"A temporal network analysis of drug co-prescription during antidepressants and anxiolytics dispensing in the Netherlands from 2018 to 2022"* (Manuscript ID: **{{< meta var.manuscript-id >}}**). We would like to express our gratitude for the reviewers for their constructive feedback, which has been important in enhancing the quality of our manuscript. Attached, please find detailed responses to each comment. All revisions in the manuscript are highlighted.
 
 Yours sincerely,
 
@@ -124,7 +124,7 @@ We thank the reviewer for these valuable suggestions regarding subgroup analyses
 
   > The distribution of eigenvector centralities exhibited a central peak at intermediate values and heavy tails at both extremes, reflecting the temporal fluctuations of node influence. This pattern arose from the recursive nature of eigenvector centrality, where each node's importance depends on the importance of its neighbors. Aggregating centrality value over time captures the evolving dynamics of the network, where nodes occasionally attain a relatively higher or lower centrality. In contrast, the width of the distribution remained relatively stable, indicating that many co-prescription connections persisted consistently over time.
   > 
-  > The eigenvector centrality patterns shown in Figure 2 also highlight the distribution of several subgroups, each distinguished by color. Most subgroup distribution largely overlapped with the general population, represented by the gray density curves. However, two subgroups consistently diverged from this overall pattern: the polypharmacy group and the subset of polypharmacy patiens aged $\geq 65$ years. These subgroups exhibited higher eigenvector centralities across four medication classes, demonstrating a more tightly connected co-prescription patterns within these groups. In addition, the $\geq 65$ years subgroup showed elevated eigenvector centralities in three medication classes, although its magnitude was smaller than that observed in the broader polypharmacy population.
+  > The eigenvector centrality patterns shown in Figure 2 also highlight the distribution of several subgroups, each distinguished by color. Most subgroup distribution largely overlapped with the general population, represented by the gray density curves. However, two subgroups consistently diverged from this overall pattern: the polypharmacy group and the subset of polypharmacy patients aged $\geq 65$ years. These subgroups exhibited higher eigenvector centralities across four medication classes, demonstrating a more tightly connected co-prescription patterns within these groups. In addition, the $\geq 65$ years subgroup showed elevated eigenvector centralities in three medication classes, although its magnitude was smaller than that observed in the broader polypharmacy population.
 
 **Comment 2:**  
 Abbreviations used in tables and figures (e.g., SD, IQR, ACF, PACF) should be fully spelled out at first use or included in the respective footnotes.

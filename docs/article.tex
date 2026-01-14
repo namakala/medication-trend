@@ -376,14 +376,21 @@ importance of a medication in polypharmacy patterns \citep{Askar2021}.
 Addressing concerns about standardized polypharmacy indicators raised by
 \citet{Sirois2016} and \citet{Delara2022}, we highlight eigenvector
 centrality as a key measure of a medication's connection to highly
-prescribed drugs. A high eigenvector centrality suggests frequent
-co-prescription with commonly used medications, reflecting prescribing
-trends. Building on prior studies \citep{Cavallo2012, Bazzoni2015}, we
-hypothesize that eigenvector centrality serves as a meaningful
-quantitative indicator of polypharmacy. Therefore, this study aimed to
-assess the structural characteristics of temporal DPNs, focusing on the
-role of eigenvector centrality in identifying associated medications in
-adult patients prescribed for antidepressants or anxiolytics.
+prescribed drugs. In this context, eigenvector centrality offers a
+useful descriptive measure because it captures not only the number of
+co-prescriptions involving a medication, but also the connectedness of
+the medications with which it is co-prescribed. Medications with high
+eigenvector centrality are therefore structurally embedded within
+densely connected prescribing patterns, reflecting their position within
+broader co-prescription structures. Building on prior studies
+\citep{Cavallo2012, Bazzoni2015}, this study focuses on eigenvector
+centrality as a network-based indicator of structural connectedness in
+co-prescription patterns, rather than as a direct measure of clinical
+polypharmacy at the individual level. Specifically, we aim to assess the
+structural characteristics of temporal DPNs derived from dispensing
+data, with particular emphasis on identifying medication classes that
+occupy central positions within co-prescription networks among adult
+patients prescribed antidepressants or anxiolytics.
 
 \section{Methods}\label{methods}
 
@@ -409,13 +416,13 @@ code. Medication dispensed during hospitalization and over-the-counter
 drugs are not captured, but prescription medication records in community
 pharmacies are otherwise complete.
 
-This analysis includes daily drug administration from a static cohort of
-adults aged 18 to 65 years and prescribed anxiolytics or antidepressants
-at least once in the period 2018-2022. For this study, only a subset of
-the database was used to construct the DPN: anonymized patient
-identifiers, age, prescription start and end dates, and ATC codes. No
-additional individual-level data were included to align with general
-data minimization requirements. Other demographic or clinical
+This analysis includes daily drug dispensing record from a static cohort
+of adults aged 18 to 65 years and prescribed anxiolytics or
+antidepressants at least once in the period 2018-2022. For this study,
+only a subset of the database was used to construct the DPN: anonymized
+patient identifiers, age, prescription start and end dates, and ATC
+codes. No additional individual-level data were included to align with
+general data minimization requirements. Other demographic or clinical
 information available in the database was not extracted.
 
 \subsection{Graph theory}\label{graph-theory}
@@ -466,17 +473,15 @@ computing their element-wise sum, that is,
 
 The matrix \(A\left(t\right)\) captures the population frequency of
 co-prescriptions (off-diagonal) and single prescriptions (diagonal) in
-the data at
-
-the specified time \(t\). Each element \(A_{ij}\left(t\right)\) in the
-matrix was interpreted as the number of patients being prescribed
-medication classes \(i\) and \(j\), with \(i,j\in \mathcal{V}\), on the
-same day \(t\).
+the data at the specified time \(t\). Each element
+\(A_{ij}\left(t\right)\) in the matrix was interpreted as the number of
+patients being prescribed medication classes \(i\) and \(j\), with
+\(i,j\in \mathcal{V}\), on the same day \(t\).
 
 The population-level DPN is then a weighted undirected graph
 \(\mathcal{G}\left(t\right) = \left(\mathcal{V}, \mathcal{E}\left(t\right)\right)\)
-observed over \(T\) discrete time points \(t=1,\dots,T\), where: -
-\(\mathcal{V}\) is the fixed set of \(n\) nodes, -
+observed over \(T\) discrete time points \(t=1,\dots,T\), where:
+\(\mathcal{V}\) is the fixed set of \(n\) nodes;
 \(\mathcal{E}_t \subseteq \{ \{i, j\} : i, j \in \mathcal{V}, i \neq j \}\)
 is the edge set at time \(t\).
 
@@ -529,9 +534,11 @@ as the average of their individual weights:
 
 This weighting approach scaled the edge weight that deviate
 substantially from the standard \(\omega_B = 1\), improving
-comparability across medication classes. To remain consistent with
-standard network representations and avoid confounding self-loops, the
-diagonal elements were omitted.
+comparability across medication classes. Although diagonal elements
+capture single-class dispensing frequencies, they were excluded from
+network analyses to avoid self-loops. Because DDD represents a
+standardized population-level metric rather than individual dosage, our
+weighting scheme was applied as a descriptive adjustment.
 
 \subsection{Centrality measures in graph
 theory}\label{centrality-measures-in-graph-theory}
@@ -540,7 +547,7 @@ Centrality measures formalize the identification of important nodes in a
 graph \citep{estrada2012structure}. Different node centrality measures
 quantify different structural properties of a node. Previous work on
 DPNs highlighted four centrality measures that could be used to assess
-the importance of a medication within a co-prescription network
+the position of a medication within a co-prescription network
 \citep{Miglio2021}. Degree centrality in a DPN describes the number of
 co-prescription with the medication of interest. High (low) degree
 centrality means the medication is often (seldom) co-prescribed.
@@ -551,9 +558,9 @@ between different kind of medications. Closeness centrality is the
 average distance between one medication to all other medications in the
 DPN. High (low) closeness centrality means that the medication is (not)
 commonly co-prescribed. Eigenvector centrality reflects the number of
-co-prescription with medications that have vital role in the DPN. High
-(low) eigenvector centrality means that the medication is often (seldom)
-co-prescribed with other important medications.
+co-prescription with medications that have a prominent network position
+in the DPN. High (low) eigenvector centrality means that the medication
+is often (seldom) co-prescribed with other central medications.
 
 The choice of centrality largely depends on the objective of network
 analysis. As a general guide, degree centrality is useful to identify
@@ -563,11 +570,11 @@ plan. Closeness centrality indicates widely-used key medications and
 efficiency in treatment networks. Eigenvector centrality is helpful to
 identify influential medications and narrow down high-impact medications
 for drug monitoring. We defined high and low eigenvector centrality
-relative to the expected value \(C_e = \frac{1}{n}\), based on the null
-model of uniform connectivity (see ``Determining relative importance'').
-This study focused on eigenvector centrality to evaluate which
-medications have a significant influence on the prescription of
-antidepressants and anxiolytics. Equation~\ref{eq-eigen-centrality}
+relative to the expected value \(C_e = \frac{1}{n}\), based on the
+heuristic reference of uniform connectivity and unweighted network (see
+``Determining relative importance''). This study focused on eigenvector
+centrality to evaluate which medications are central on the prescription
+of antidepressants and anxiolytics. Equation~\ref{eq-eigen-centrality}
 outlines the calculation of eigenvector centrality; \(c_i\) and \(c_j\)
 are the centralities of nodes \(\mathcal{v}_i\) and \(\mathcal{v}_j\),
 respectively, with \(i, j \in \mathcal{V}\); \(\lambda\) is the
@@ -586,11 +593,11 @@ the connection between node \(\mathcal{v}_j\) and \(\mathcal{v}_i\) with
 analysis}\label{exploratory-descriptive-analysis}
 
 The data was extracted as a daily time series and aggregated into weekly
-and monthly intervals for analysis. It includes four metrics: daily
-prescription dispensing, daily patients, dispensing-to-patient ratio,
-and eigenvector centrality. For each metric, a univariate descriptive
-analysis was performed, reporting the mean, median, standard deviation,
-and interquartile range to summarize centrality and dispersion.
+intervals for analysis. It includes four metrics: daily prescription
+dispensing, daily patients, dispensing-to-patient ratio, and eigenvector
+centrality. For each metric, a univariate descriptive analysis was
+performed, reporting the mean, median, standard deviation, and
+interquartile range to summarize centrality and dispersion.
 
 \subsubsection{Exploring seasonality in the
 dataset}\label{exploring-seasonality-in-the-dataset}
@@ -603,12 +610,11 @@ respectively. To generate the seasonal plots, the data was first
 deconstructed based on its period. For daily data, the weekly period was
 used; while for weekly data, the yearly period was used. The weekly
 period was obtained by creating an ordered value formatted as year -
-week, e.g.~\texttt{2018\ -\ W01}. Similarly, monthly period was obtained
-by creating an ordered value formatted as year - month,
-e.g.~\texttt{2018\ -\ M01}. We then grouped the series by its
-deconstructed period and visually examine seasonality as overlapping
-pattern in most periods. To substantiate the findings, ACF and PACF
-plots were used to check on statistical significance of a given pattern.
+week, e.g.~\texttt{2018\ -\ W01}, whereas the yearly period was an order
+from 2018 to 2022. We then grouped the series by its deconstructed
+period and visually examine seasonality as overlapping pattern in most
+periods. To substantiate the findings, ACF and PACF plots were used to
+check on statistical significance of a given pattern.
 
 \subsubsection{Summarizing
 co-prescription}\label{summarizing-co-prescription}
@@ -627,9 +633,8 @@ Although five polypharmacy categories were described by
 \citet{Shrivastava2013}, augmentation and adjunctive polypharmacy
 require clinical context such as diagnoses to determine the rationale
 for combined prescriptions, which is not available in our data source.
-Therefore, focusing on the three categories that rely solely on
-medication class information is the most reasonable approach for this
-study.
+Therefore, this study only focused on the three categories that rely
+solely on medication class information.
 
 \subsubsection{Decomposition with singular spectrum
 analysis}\label{decomposition-with-singular-spectrum-analysis}
@@ -637,48 +642,45 @@ analysis}\label{decomposition-with-singular-spectrum-analysis}
 Classical and seasonal-trend decomposition techniques may not fully
 capture complex periodic patterns in time-series data. Singular spectrum
 analysis (SSA) is a non-parametric method that leverages Hankel matrix
-embedding for decomposition. In this study, SSA was applied to identify
-trends and seasonal components in weekly aggregated prescription data.
-To better isolate trend and seasonal components, sequential SSA was
-applied. First, a basic SSA model with the lag parameter \(L\) = 52 was
-used to extract the dominant trend. The residuals were then analyzed
-with a second SSA model using \(L = \frac{N}{2}\) to capture complex
-periodic patterns. The extracted trend, residuals, and oscillatory
-components were evaluated visually and statistically, with Mann-Kendall
-trend tests applied to assess long-term changes. A complete
-documentation of this approach and its rationale was included in the
-supplementary file section S1.2.
+embedding for decomposition. In this study, SSA was applied to
+descriptively identify trends and seasonal components in weekly
+aggregated prescription data. First, a basic SSA model with the lag
+parameter \(L\) = 52 was used to extract the dominant trend. The
+residuals were then analyzed with a second SSA model using
+\(L = \frac{N}{2}\) to capture complex periodic patterns. The extracted
+trend, residuals, and oscillatory components were evaluated visually and
+statistically, with Mann-Kendall trend tests applied to assess long-term
+changes. A complete documentation of this approach and its rationale was
+included in the supplementary file section S1.2.
 
 \subsubsection{Determining relative
 importance}\label{determining-relative-importance}
 
-Since the sum of all eigenvector centralities \(c_i\) in equation
-\ref{eq-eigen-centrality} equals 1, the expected eigenvector centrality
-\(C_e\) for each node in a uniformly connected network is
+Since the sum of all normalized eigenvector centralities \(c_i\) in
+equation \ref{eq-eigen-centrality} equals 1, the expected eigenvector
+centrality \(C_e\) for each node in a uniformly connected network is
 \(\frac{1}{n}\), where \(n\) is 24, representing the total number of
 nodes. In such a network, each node has an equal probability of being
-connected to any other, and thus no node is more ``influential'' than
+connected to any other, and thus no node is more ``central'' than
 another. This expected value, \(\frac{1}{24}\), serves as a baseline
-under a null model of uniform connectivity. Assuming eigenvector
-centrality scores approximately follow a normal distribution, we applied
-a one-sample Student's T-test with Bonferroni correction to assess how
-much each eigenvector centrality differs from the expected values. Nodes
-with \(c_i\) greater than \(\frac{1}{24}\) were categorized as having
-high eigenvector centrality, and those below the expected value were
+reference of uniform connectivity and unweighted network. Nodes with
+\(c_i\) greater than \(\frac{1}{24}\) were categorized as having high
+eigenvector centrality, and those below the expected value were
 considered low.
 
 \subsubsection{Subgroup analysis}\label{subgroup-analysis}
 
 Subgroup analyses were conducted by first categorizing the population
 into two age groups: \(< 65\) and \(\geq 65\) years \citep{Uddin2022}.
-The second categorization was based on general polypharmacy, defined a
+The second categorization was based on general polypharmacy, defined as
 receiving \(\geq 5\) medications for at least 30 consecutive days
 \citep{nicholson2024prevalence}. These subgroup classifications were
 combined to form three comparison pairs: \(< 65\) vs.~\(\geq 65\) years;
 non-polypharmacy vs.~polypharmacy; and the non-polypharmacy group aged
-\(< 65\) years vs.~the polypharmacy group aged \(\geq 65\) years. A DPN
-was generated for each subgroup to calculate its respective eigenvector
-centrality.
+\(< 65\) years vs.~the polypharmacy group aged \(\geq 65\) years.
+Separate population-level DPNs were constructed independently for each
+subgroup using the same pre-processing and weighting procedures to
+calculate its respective eigenvector centrality.
 
 \section{Results}\label{results}
 
@@ -694,10 +696,10 @@ These findings imply that the population demography stays relatively
 stable overtime without any indication of sudden changes. Importantly,
 the COVID-19 pandemic in 2020 did not substantially influence dispensing
 volumes because the community pharmacy remained in service as a part of
-nationwide policy. There was no significant disruption in prescription
-trends during and after the pandemic, with an average of 2,230,028 in
-annual dispensing for all medication classes (standard deviation/SD:
-47,478, interquartile range/IQR: 64,009).
+nationwide policy. There was no clear change in prescription trends
+during and after the pandemic, with an average of 2,230,028 in annual
+dispensing for all medication classes (standard deviation/SD: 47,478,
+interquartile range/IQR: 64,009).
 
 \global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
 
@@ -797,14 +799,11 @@ Visual inspection of daily dispensing volumes revealed consistent weekly
 cycles. Dispensing peaked on Monday, with an average of 7,222 {[}SD:
 999.79{]} and dropped to its lowest on Saturday, with an average of
 2,808 {[}SD: 174.08{]} dispensing. The variation between weekends and
-weekdays showed a regular and repeating structure in the data. There was
-a large margin of difference between the highest and lowest average
-number of prescription dispensed, with a peak on Monday, followed by a
-decline throughout the week and the lowest levels occurring during
-weekends, as shown in Table~\ref{tbl-overview-daily}. The cyclical
-patterns are detailed in the supplementary material section S2.1.
-Seasonality was explored as dependencies at daily and weekly lags and
-further described in the supplementary material section S2.2 and S2.3.
+weekdays showed a regular and repeating structure in the data, as shown
+in Table~\ref{tbl-overview-daily}. The cyclical patterns are detailed in
+the supplementary material section S2.1. Seasonality was explored as
+dependencies at daily and weekly lags and further described in the
+supplementary material section S2.2 and S2.3.
 
 \global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
 
@@ -1101,13 +1100,13 @@ panel in Figure~\ref{fig-ssa} displays the reconstructed time-series
 (green line) overlaid on the original data points (gray line).
 
 Additional decomposition results for other medication classes are
-presented in the supplementary section S2.4. Broadly antidepressants
+presented in the supplementary section S2.4. Broadly, antidepressants
 exhibited a steady increasing trend over time, while anxiolytics showed
 a gradual decline both in dispensing frequency and eigenvector
 centrality. Notably, the decomposition made long-term directional
 patterns more discernible across all medication classes, emphasizing the
 utility of SSA in isolating interpretable temporal dynamics from complex
-dispensing data. These decomposed trends provides the reconstructed data
+dispensing data. These decomposed trends provided the reconstructed data
 for the subsequent analysis.
 
 \begin{figure}
@@ -1133,7 +1132,7 @@ measures}\label{eigenvector-centrality-measures}
 Seven medication classes exhibited high centrality, as shown in
 Figure~\ref{fig-hi-eigen} and Table~\ref{tbl-desc}. Notably, highly
 dispensed medications generally had high eigenvector centrality,
-consistent with the theoretical expectations from
+consistent with the definition of eigenvector centrality in
 Equation~\ref{eq-eigen-centrality}. However, this relationship was not
 strictly proportional. For example, although antidepressants had a
 higher number of prescription dispensed compared to medications for the
@@ -1163,11 +1162,11 @@ population, represented by the gray density curves. However, two
 subgroups consistently diverged from this overall pattern: the
 polypharmacy group and the subset of polypharmacy patients aged
 \(\geq 65\) years. These subgroups exhibited higher eigenvector
-centralities across four medication classes, demonstrating a more
-tightly connected co-prescription patterns within these groups. In
-addition, the \(\geq 65\) years subgroup showed elevated eigenvector
-centralities in three medication classes, although its magnitude was
-smaller than that observed in the broader polypharmacy population.
+centralities across four medication classes, indicating denser
+co-prescription structures within these groups. In addition, the
+\(\geq 65\) years subgroup showed elevated eigenvector centralities in
+three medication classes, although its magnitude was smaller than that
+observed in the broader polypharmacy population.
 
 \global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
 
@@ -1184,7 +1183,8 @@ smaller than that observed in the broader polypharmacy population.
 \begin{longtable}[c]{|p{1.57in}|p{0.75in}|p{1.16in}|p{1.16in}|p{1.16in}}
 
 \caption{\label{tbl-desc}Descriptive statistics of dispensing data from
-2018 to 2022, ordered by Eigenvector centrality}
+2018 to 2022, ordered by Eigenvector centrality. Centrality values
+represent averages over the study period.}
 
 \tabularnewline
 
@@ -1395,37 +1395,37 @@ smaller than that observed in the broader polypharmacy population.
 
 \caption{\label{fig-hi-eigen}Clusters of medications showing significant
 co-prescription patterns for antidepressnts and anxiolytics. The
-vertical dashed line indicates the expected eigenvector centrality,
-calculated as 1/24. This line provides a reference for identifying
-medication classes with eigenvector centrality exceeding the threshold.}
+vertical dashed line represents a reference value corresponding to equal
+connectedness across medication classes. This is used for identifying
+medication classes with eigenvector centrality exceeding the threshold.
+The grey density area represents eigenvector centrality in the
+population, while the colored density areas represent the subgroups.}
 
 \end{figure}%
 
 \section{Discussion}\label{discussion}
 
 This network analysis of dispensing data in individuals using
-antidepressants or anxiolytics revealed distinct co-prescription
+antidepressants or anxiolytics revealed distinct population-level
 patterns. While same-class co-prescription was more common among
 antidepressant users, multi-class co-prescription predominated among
 those receiving anxiolytics. Notably, in both groups, multi-class
 co-prescription was at least ten times more prevalent than same-class
-co-prescription. Seven medication classes exhibited high eigenvector
-centrality, indicating their strong influence on co-prescription
-dynamics. These include medications for the alimentary tract and
-metabolism (ATC code \texttt{A}), blood and blood-forming organs
-(\texttt{B}), cardiovascular system (\texttt{C}), respiratory system
-(\texttt{R}), and analgesics (\texttt{N02}). These classes do not merely
-appear frequently but also serve as key connectors within prescribing
-networks, linking psychiatric treatments to chronic disease management.
-Their centrality suggests that they play a role in structuring
-multi-class co-prescription, either as standard co-prescriptions due to
-clinical guidelines or as necessary adjuncts in managing comorbidities
-or side effects, e.g., ATC \texttt{A} class. These findings align with
-the theoretical basis of eigenvector centrality, which incorporates not
-only the frequency of a node but also the influence of its connections.
-Accordingly, medications with high dispensing volume may have lower
-centrality if they are co-prescribed with less central or sparsely
-connected drug classes.
+co-prescription. Seven medication classes consistently exhibited high
+eigenvector centrality, indicating that these classes occupied
+structurally central positions within the co-prescription network. These
+include medications for the alimentary tract and metabolism (ATC code
+\texttt{A}), blood and blood-forming organs (\texttt{B}), cardiovascular
+system (\texttt{C}), respiratory system (\texttt{R}), and analgesics
+(\texttt{N02}). Importantly, high eigenvector centrality reflects
+structural connectedness within the prescribing network, rather than
+clinical influence or treatment intent. Medication classes with high
+centrality were frequently co-prescribed with other highly connected
+classes, linking psychiatric and non-psychiatric medications within
+broader dispensing patterns. Such central positioning likely reflects
+the co-occurrence of psychiatric treatment with the pharmacological
+management of chronic conditions and comorbidities, rather than specific
+prescribing strategies directed at psychiatric symptoms alone.
 
 The predomination of multi-class co-prescription among anxiolytics
 recipients is consistent with the recommendations in the Dutch College
@@ -1436,10 +1436,9 @@ weeks, as an adjunct to Selective Serotonin Reuptake Inhibitors (SSRIs)
 during treatment initiation. In contrast, the NHG guideline for
 depressive disorders recommends initiating pharmacotherapy with a single
 SSRI and discourages the combination of multiple antidepressants
-\citep{NHG2023Depression}. Therefore, the higher rate of multi-class
-co-prescription observed among anxiolytic users is consistent with
-evidence-based clinical practice, rather than an artifact of sampling or
-measurement methods.
+\citep{NHG2023Depression}. These findings are consistent with
+evidence-based clinical recommendations and are unlikely to be solely
+attributable to sampling or measurement artifacts.
 
 Our findings also align with previous research showing that
 antidepressants and anxiolytics are frequently co-prescribed with other
@@ -1448,11 +1447,12 @@ contribute most to psychopharmaca polypharmacy
 \citep{de2004polypharmacy}. Additionally, our study offers a more
 granular view of these patterns by characterizing their network
 properties. By distinguishing between same-class and multi-class
-co-prescriptions and evaluating medication centrality, we discover that
-certain drug classes function as hubs within the prescribing landscape.
-These characteristics likely reflect the underlying burden of
-multimorbidity in the population, where the bidirectional associations
-between depression/anxiety and chronic illnesses is well established
+co-prescriptions and evaluating medication centrality, our analysis
+highlights that certain medication classes consistently occupy central
+positions within the prescribing network. These characteristics are
+consistent with the high prevalence of multimorbidity in populations
+treated for depression and anxiety, where associations between
+psychiatric conditions and chronic illnesses are well documented
 \citep{qi2024longitudinal}. Conditions such as diabetes mellitus,
 thyroid disorders, and asthma have been linked to an increased risk of
 depression \citep{jang2024temporal}. The need for long-term
@@ -1478,12 +1478,12 @@ regimens, providing the basis for further monitoring and evaluation.
 By mapping the relationships between medications, DPN enables the
 detection of patterns that would be challenging to observe through
 standard statistical methods. For instance, the high centrality of
-certain medication classes suggests that they play a pivotal role in
-multi-class co-prescription, likely due to their involvement in managing
-both psychiatric and non-psychiatric conditions. As such, network
-analysis is a suitable approach for generating hypotheses for further
-causal or predictive studies, which has also been thoroughly discussed
-by \citet{Askar2021}.
+certain medication classes suggests that they occupy central positions
+within multi-class co-prescription structures, potentially reflecting
+their frequent co-prescription in the management of both psychiatric and
+non-psychiatric conditions. As such, network analysis is a suitable
+approach for generating hypotheses for further causal or predictive
+studies, which has also been thoroughly discussed by \citet{Askar2021}.
 
 We acknowledge several limitations in this study. First, data
 aggregation at the population level resulted in the loss of
@@ -1520,19 +1520,21 @@ interventions for optimizing medication regimens.
 
 \section{Conclusion}\label{conclusion}
 
-This study demonstrates the utility of DPN in uncovering the patterns of
-co-prescriptions among antidepressants and anxiolytics recipients. We
-found that multi-class regimens were markedly more prevalent,
-particularly among anxiolytic users, consistent with clinical
-guidelines. Moreover, we identified seven highly central medication
-classes that act as hubs in the prescribing network, linking psychiatric
-medications to the management of chronic somatic conditions. These
-findings emphasize the role of multimorbidity in shaping co-prescription
-behaviors and highlight the importance of these seven classes in both
-psychiatric care and broader chronic disease management. Our study
-contributes a network-based perspective to drug utilization research,
-offering an alternative approach to identifying high-impact medication
-classes that warrant further monitoring and future investigation.
+This study demonstrates the usefulness of drug prescription networks
+(DPNs) for characterizing population-level co-prescription patterns
+among individuals prescribed antidepressants or anxiolytics. We observed
+that multi-class co-prescription regimens were substantially more
+prevalent than same-class co-prescription, particularly among users of
+anxiolytics, consistent with existing clinical practice guidelines.
+
+By applying network-based measures, we identified seven medication
+classes that consistently occupied structurally central positions within
+the co-prescription network. These central positions reflect frequent
+co-prescription with other highly connected medication classes and are
+indicative of broader prescribing structures that integrate psychiatric
+treatments with medications commonly used for chronic somatic
+conditions. Such patterns are consistent with the high burden of
+multimorbidity in populations treated for depression and anxiety.
 
 \section*{Author Contributions}\label{author-contributions}
 \addcontentsline{toc}{section}{Author Contributions}
